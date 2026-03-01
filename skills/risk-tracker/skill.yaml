@@ -1,0 +1,6 @@
+name: risk-tracker
+version: "1.0.0"
+description: "Maintain a living risk register across the project — sourcing risks from plan-gen assessments, blocked tasks, security findings, spec compliance gaps, dependency vulnerabilities, and manual entries. Auto-escalates when signals worsen. Feeds into /gate-briefing and /pipeline-monitor."
+category: decision-support
+argument_hint: "scan|update|report [--escalate] [path/to/spec-or-all]"
+roles: [product-owner, devops-sre, scrum-master, tech-lead]

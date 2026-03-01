@@ -1,0 +1,6 @@
+name: review-fix
+version: "1.0.0"
+description: "Parse review report findings and auto-fix CRITICAL and HIGH issues with test verification, producing a traceability report mapping each finding to its resolution"
+category: development
+argument_hint: "path/to/reports/review-*.md [--all] [--severity HIGH] [--dry-run]"
+roles: [developer, tech-lead]

@@ -1,0 +1,6 @@
+name: rollback-assessor
+version: "1.0.0"
+description: "Evaluate whether a rollback is safe by checking for irreversible database migrations, API contract changes with live consumers, feature flag dependencies, and data state incompatibilities — produces a GO/NO-GO recommendation"
+category: production-support
+argument_hint: "['<commit-to-rollback-to>'|'HEAD~N'|'<tag-name>']"
+roles: [devops-sre, tech-lead]

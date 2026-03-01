@@ -1,0 +1,6 @@
+name: feature-balance-sheet
+version: "1.0.0"
+description: ""
+category: decision-support
+argument_hint: "quick|deep [feature-description-or-spec-path]"
+roles: [product-owner, architect, tech-lead]

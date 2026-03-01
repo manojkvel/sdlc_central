@@ -1,0 +1,647 @@
+version: "1.0.0"
+description: "SDLC Central skill catalog — machine-readable index with role mappings"
+
+categories:
+  development:
+    description: "Code review, testing, documentation"
+    skills: [review, security-audit, test-gen, doc-gen, design-review, review-fix, spec-fix, pr-orchestrator, design-to-code, design-token-sync]
+  planning:
+    description: "Specification, planning, and task breakdown"
+    skills: [spec-gen, plan-gen, task-gen, impact-analysis, plan-merge, user-story-refiner]
+  quality:
+    description: "Testing, regression, and performance"
+    skills: [regression-check, perf-review, quality-gate, visual-review, bug-report]
+  pipeline-automation:
+    description: "Pipeline orchestration and monitoring"
+    skills: [pipeline-orchestrator, wave-scheduler, auto-triage, pipeline-monitor, feedback-loop, drift-detector]
+  decision-support:
+    description: "Gates, tracking, and decision capture"
+    skills: [gate-briefing, scope-tracker, risk-tracker, decision-log, feature-balance-sheet]
+  spec-lifecycle:
+    description: "Spec creation, review, and evolution"
+    skills: [spec-review, spec-evolve, spec-fix]
+  governance:
+    description: "Compliance, standards, and auditing"
+    skills: [skill-gap-analyzer, license-compliance-audit, release-readiness-checker, api-contract-analyzer, cross-repo-standards-enforcer, approval-workflow-auditor, code-ownership-mapper, component-audit]
+  production-support:
+    description: "Incident detection, triage, and recovery"
+    skills: [incident-detector, incident-triager, rollback-assessor, incident-postmortem-synthesizer]
+  release:
+    description: "Release preparation and notes"
+    skills: [release-notes]
+  reporting:
+    description: "Trends, dashboards, and metrics"
+    skills: [report-trends, slo-sla-tracker, changelog-plain, progress-summary, demo-prep]
+  maintenance:
+    description: "Dependency updates and tech debt"
+    skills: [dependency-update, tech-debt-audit, migration-tracker]
+  knowledge-transfer:
+    description: "Onboarding and reverse engineering"
+    skills: [onboarding-guide, reverse-engineer, codebase-qa]
+  integration:
+    description: "PM tool sync and task implementation"
+    skills: [board-sync, task-implementer]
+
+skills:
+  - name: api-contract-analyzer
+    description: "Detect breaking API changes by comparing the API surface of a branch against the baseline"
+    category: governance
+    command: "/api-contract-analyzer"
+    argument_hint: "[branch-or-commit-to-compare | 'full']"
+    roles: [architect, qa, designer, devops-sre, tech-lead]
+
+  - name: approval-workflow-auditor
+    description: "Audit DevOps branch policies, environment approvals, and pipeline gates"
+    category: governance
+    command: "/approval-workflow-auditor"
+    argument_hint: "['full'|'branch-policies'|'pipelines'|'environments']"
+    roles: [devops-sre, tech-lead]
+
+  - name: auto-triage
+    description: "Automated failure recovery for the SDLC pipeline"
+    category: pipeline-automation
+    command: "/auto-triage"
+    argument_hint: "path/to/failed-artifact-or-report [--max-retries 3]"
+    roles: [scrum-master, tech-lead]
+
+  - name: board-sync
+    description: "Sync SDLC artifacts with a project management tool"
+    category: integration
+    command: "/board-sync"
+    argument_hint: "push|status|pull [--provider azure-boards|jira|github-projects|linear|clickup]"
+    roles: [product-owner, scrum-master, tech-lead]
+
+  - name: bug-report
+    description: "Generate a structured, actionable bug report from a plain-English description of the problem"
+    category: quality
+    command: "/bug-report"
+    argument_hint: "'description of the bug or unexpected behavior'"
+    roles: [product-owner, qa, designer, scrum-master, tech-lead]
+
+  - name: changelog-plain
+    description: "Translate technical changelogs and release notes into plain business language for non-technical stakeholders"
+    category: reporting
+    command: "/changelog-plain"
+    argument_hint: "[path/to/release-notes.md | '--from v1.0' | 'latest']"
+    roles: [product-owner, scrum-master, designer, tech-lead]
+
+  - name: codebase-qa
+    description: "Answer plain-English questions about what the codebase does, supports, or how it behaves — without requiring the asker to read code"
+    category: knowledge-transfer
+    command: "/codebase-qa"
+    argument_hint: "'your question about the codebase'"
+    roles: [product-owner, qa, designer, scrum-master, tech-lead]
+
+  - name: code-ownership-mapper
+    description: "Map code ownership from git history — identify experts, knowledge silos, bus factor risks"
+    category: governance
+    command: "/code-ownership-mapper"
+    argument_hint: "['full'|'risks'|directory-or-module]"
+    roles: [architect, tech-lead]
+
+  - name: component-audit
+    description: "Audit codebase components against the Figma design system to detect drift, unmapped components, and stale mappings"
+    category: governance
+    command: "/component-audit"
+    argument_hint: "<figma-url-or-file-key> [--scope full|unmapped|stale]"
+    roles: [designer, architect, tech-lead]
+
+  - name: cross-repo-standards-enforcer
+    description: "Audit a repository against organizational standards"
+    category: governance
+    command: "/cross-repo-standards-enforcer"
+    argument_hint: "['full'|'quick'|focus-area]"
+    roles: [devops-sre, tech-lead]
+
+  - name: decision-log
+    description: "Capture and track architectural decisions alongside specs and plans"
+    category: decision-support
+    command: "/decision-log"
+    argument_hint: "capture|extract|review path/to/spec.md"
+    roles: [product-owner, architect, tech-lead]
+
+  - name: demo-prep
+    description: "Generate a sprint demo walkthrough script from recent changes — what to show, click paths, and known limitations"
+    category: reporting
+    command: "/demo-prep"
+    argument_hint: "['sprint' | '--since 2025-01-01' | path/to/spec.md]"
+    roles: [product-owner, scrum-master, designer, tech-lead]
+
+  - name: dependency-update
+    description: "Check for outdated and vulnerable dependencies"
+    category: maintenance
+    command: "/dependency-update"
+    argument_hint: "[--fix] [--fix-security] [--dry-run]"
+    roles: [developer, devops-sre, tech-lead]
+
+  - name: design-to-code
+    description: "Translate a Figma design into production code using MCP-backed design context, component mappings, and project conventions"
+    category: development
+    command: "/design-to-code"
+    argument_hint: "<figma-url-or-node-id> [--file-key KEY]"
+    roles: [designer, developer, tech-lead]
+
+  - name: design-token-sync
+    description: "Extract design tokens from Figma variables and sync colors, spacing, and typography with the codebase token files"
+    category: development
+    command: "/design-token-sync"
+    argument_hint: "<figma-url-or-file-key> [--format css|tailwind|json|scss]"
+    roles: [designer, developer, tech-lead]
+
+  - name: design-review
+    description: "Review architecture and design patterns"
+    category: development
+    command: "/design-review"
+    argument_hint: "[file-or-module-or-'full']"
+    roles: [architect, developer, designer, tech-lead]
+
+  - name: doc-gen
+    description: "Generate or update documentation"
+    category: development
+    command: "/doc-gen"
+    argument_hint: "[file-or-module-or-'api'|'readme'|'changelog']"
+    roles: [developer, designer, tech-lead]
+
+  - name: drift-detector
+    description: "Monitor divergence between spec intent and implementation reality"
+    category: pipeline-automation
+    command: "/drift-detector"
+    argument_hint: "scan|report [--depth shallow|deep] [path/to/spec-or-all]"
+    roles: [product-owner, qa, tech-lead]
+
+  - name: feature-balance-sheet
+    description: "Pre-spec cost-benefit assessment and portfolio analysis"
+    category: decision-support
+    command: "/feature-balance-sheet"
+    argument_hint: "quick|deep [feature-description-or-spec-path]"
+    roles: [product-owner, architect, tech-lead]
+
+  - name: feedback-loop
+    description: "Analyze pipeline execution history to identify patterns"
+    category: pipeline-automation
+    command: "/feedback-loop"
+    argument_hint: "analyze|calibrate|recommend [path/to/spec-or-all]"
+    roles: [scrum-master, tech-lead]
+
+  - name: gate-briefing
+    description: "Generate decision-ready briefings at HITL gates"
+    category: decision-support
+    command: "/gate-briefing"
+    argument_hint: "[--audience engineering|executive|compliance] path/to/spec"
+    roles: [product-owner, architect, scrum-master, tech-lead]
+
+  - name: impact-analysis
+    description: "Analyze blast radius of proposed changes"
+    category: planning
+    command: "/impact-analysis"
+    argument_hint: "[file-or-feature-description]"
+    roles: [architect, developer, tech-lead]
+
+  - name: incident-detector
+    description: "Correlate deployments with observability signals to detect incidents"
+    category: production-support
+    command: "/incident-detector"
+    argument_hint: "['scan'|'recent'|service-name-or-alert-context]"
+    roles: [devops-sre, tech-lead]
+
+  - name: incident-postmortem-synthesizer
+    description: "Analyze incident history and surface recurring patterns"
+    category: production-support
+    command: "/incident-postmortem-synthesizer"
+    argument_hint: "['full'|'recent'|incident-id-or-date-range]"
+    roles: [devops-sre, tech-lead]
+
+  - name: incident-triager
+    description: "Produce triage reports with root cause candidates"
+    category: production-support
+    command: "/incident-triager"
+    argument_hint: "'<incident-description>'"
+    roles: [devops-sre, tech-lead]
+
+  - name: license-compliance-audit
+    description: "Scan dependencies for OSS license conflicts"
+    category: governance
+    command: "/license-compliance-audit"
+    argument_hint: "['full'|'production'|package-name]"
+    roles: [tech-lead]
+
+  - name: migration-tracker
+    description: "Track long-running technical migration progress"
+    category: maintenance
+    command: "/migration-tracker"
+    argument_hint: "['status'|'init'|migration-name]"
+    roles: [architect, devops-sre, tech-lead]
+
+  - name: onboarding-guide
+    description: "Generate how-this-codebase-works guide"
+    category: knowledge-transfer
+    command: "/onboarding-guide"
+    argument_hint: "['full'|module-path]"
+    roles: [developer, tech-lead]
+
+  - name: perf-review
+    description: "Review code for performance issues"
+    category: quality
+    command: "/perf-review"
+    argument_hint: "[file-or-module or 'diff']"
+    roles: [developer, qa, tech-lead]
+
+  - name: pipeline-monitor
+    description: "Continuous health monitoring for running SDLC pipelines"
+    category: pipeline-automation
+    command: "/pipeline-monitor"
+    argument_hint: "scan|dashboard|alerts [path/to/spec-or-all]"
+    roles: [scrum-master, devops-sre, tech-lead]
+
+  - name: pipeline-orchestrator
+    description: "End-to-end SDLC pipeline automation"
+    category: pipeline-automation
+    command: "/pipeline-orchestrator"
+    argument_hint: "run|resume|status [--gates minimal|standard|strict] path/to/spec"
+    roles: [tech-lead]
+
+  - name: plan-gen
+    description: "Generate implementation plan from approved spec"
+    category: planning
+    command: "/plan-gen"
+    argument_hint: "path/to/spec.md"
+    roles: [architect, developer, tech-lead]
+
+  - name: plan-merge
+    description: "Merge multiple plan outputs into unified execution plan"
+    category: planning
+    command: "/plan-merge"
+    argument_hint: "specs/*/plan.md [--dry-run]"
+    roles: [architect, tech-lead]
+
+  - name: progress-summary
+    description: "Generate a plain-English progress report from git activity, open PRs, and spec status for stakeholders"
+    category: reporting
+    command: "/progress-summary"
+    argument_hint: "['daily' | 'weekly' | 'sprint' | '--since 2025-01-01']"
+    roles: [product-owner, scrum-master, tech-lead]
+
+  - name: pr-orchestrator
+    description: "Analyze PR changes and auto-run relevant skills"
+    category: development
+    command: "/pr-orchestrator"
+    argument_hint: "['auto'|'strict'|'quick']"
+    roles: [developer, tech-lead]
+
+  - name: quality-gate
+    description: "Automated stage gate enforcement between pipeline stages"
+    category: quality
+    command: "/quality-gate"
+    argument_hint: "spec-to-plan|plan-to-tasks|tasks-to-impl|impl-to-release path/to/artifact"
+    roles: [product-owner, qa, tech-lead]
+
+  - name: regression-check
+    description: "Predict what might break from recent changes"
+    category: quality
+    command: "/regression-check"
+    argument_hint: ""
+    roles: [developer, qa, tech-lead]
+
+  - name: release-notes
+    description: "Auto-generate categorized release notes"
+    category: release
+    command: "/release-notes"
+    argument_hint: "[--format markdown|changelog|json] [--version vX.Y.Z]"
+    roles: [product-owner, tech-lead]
+
+  - name: release-readiness-checker
+    description: "Pre-release go/no-go gate"
+    category: governance
+    command: "/release-readiness-checker"
+    argument_hint: "[version-tag-or-branch]"
+    roles: [product-owner, qa, devops-sre, tech-lead]
+
+  - name: report-trends
+    description: "Analyze report history and surface trends"
+    category: reporting
+    command: "/report-trends"
+    argument_hint: "[metric-or-'all' or 'dashboard']"
+    roles: [product-owner, architect, qa, devops-sre, scrum-master, tech-lead]
+
+  - name: reverse-engineer
+    description: "Reverse-engineer codebase into full technical docs"
+    category: knowledge-transfer
+    command: "/reverse-engineer"
+    argument_hint: "['full'|directory-path]"
+    roles: [architect, tech-lead]
+
+  - name: review
+    description: "Comprehensive code review"
+    category: development
+    command: "/review"
+    argument_hint: ""
+    roles: [developer, tech-lead]
+
+  - name: review-fix
+    description: "Auto-fix CRITICAL and HIGH review findings"
+    category: development
+    command: "/review-fix"
+    argument_hint: "path/to/reports/review-*.md [--all] [--dry-run]"
+    roles: [developer, tech-lead]
+
+  - name: risk-tracker
+    description: "Maintain a living risk register"
+    category: decision-support
+    command: "/risk-tracker"
+    argument_hint: "scan|update|report [--escalate] [path/to/spec-or-all]"
+    roles: [product-owner, devops-sre, scrum-master, tech-lead]
+
+  - name: rollback-assessor
+    description: "Evaluate rollback safety"
+    category: production-support
+    command: "/rollback-assessor"
+    argument_hint: "['<commit>'|'HEAD~N'|'<tag>']"
+    roles: [devops-sre, tech-lead]
+
+  - name: scope-tracker
+    description: "Track scope changes across project lifecycle"
+    category: decision-support
+    command: "/scope-tracker"
+    argument_hint: "log|report|trend [path/to/spec-or-all]"
+    roles: [product-owner, scrum-master, tech-lead]
+
+  - name: security-audit
+    description: "Security vulnerability scan"
+    category: development
+    command: "/security-audit"
+    argument_hint: ""
+    roles: [developer, qa, devops-sre, tech-lead]
+
+  - name: skill-gap-analyzer
+    description: "Analyze codebase and recommend missing skills"
+    category: governance
+    command: "/skill-gap-analyzer"
+    argument_hint: "['full'|'quick'|focus-area]"
+    roles: [tech-lead]
+
+  - name: slo-sla-tracker
+    description: "Track SLOs, DORA metrics, and error budgets"
+    category: reporting
+    command: "/slo-sla-tracker"
+    argument_hint: "['full'|'summary'|service-name]"
+    roles: [devops-sre, tech-lead]
+
+  - name: spec-evolve
+    description: "Manage spec lifecycle with versioned revisions"
+    category: spec-lifecycle
+    command: "/spec-evolve"
+    argument_hint: "revise|child|resolve path/to/spec.md"
+    roles: [architect, tech-lead]
+
+  - name: spec-fix
+    description: "Close spec compliance gaps"
+    category: spec-lifecycle
+    command: "/spec-fix"
+    argument_hint: "path/to/spec-review.md [--dry-run]"
+    roles: [developer, tech-lead]
+
+  - name: spec-gen
+    description: "Generate structured technical specification"
+    category: planning
+    command: "/spec-gen"
+    argument_hint: "'feature description' or path to requirements file"
+    roles: [product-owner, architect, developer, designer, tech-lead]
+
+  - name: spec-review
+    description: "Validate implementation matches spec"
+    category: spec-lifecycle
+    command: "/spec-review"
+    argument_hint: "path/to/spec.md"
+    roles: [architect, developer, qa, designer, tech-lead]
+
+  - name: task-gen
+    description: "Break plan into atomic implementable tasks"
+    category: planning
+    command: "/task-gen"
+    argument_hint: "path/to/plan.md"
+    roles: [developer, tech-lead]
+
+  - name: task-implementer
+    description: "Implement tasks with TDD and traceability"
+    category: integration
+    command: "/task-implementer"
+    argument_hint: "path/to/tasks.md"
+    roles: [developer, tech-lead]
+
+  - name: tech-debt-audit
+    description: "Codebase health check"
+    category: maintenance
+    command: "/tech-debt-audit"
+    argument_hint: "[directory-or-'full']"
+    roles: [architect, developer, tech-lead]
+
+  - name: test-gen
+    description: "Generate comprehensive tests"
+    category: development
+    command: "/test-gen"
+    argument_hint: "[file-or-module-path]"
+    roles: [developer, qa, tech-lead]
+
+  - name: user-story-refiner
+    description: "Transform a rough feature idea into a structured user story with acceptance criteria, edge cases, and scope boundaries"
+    category: planning
+    command: "/user-story-refiner"
+    argument_hint: "'rough feature idea or requirement'"
+    roles: [product-owner, designer, scrum-master, tech-lead]
+
+  - name: visual-review
+    description: "Compare implemented UI against the Figma design to identify layout, spacing, color, and typography discrepancies"
+    category: quality
+    command: "/visual-review"
+    argument_hint: "<figma-url-or-node-id> [--implementation path/to/component]"
+    roles: [designer, qa, developer, tech-lead]
+
+  - name: wave-scheduler
+    description: "Compute execution schedule from task dependencies"
+    category: pipeline-automation
+    command: "/wave-scheduler"
+    argument_hint: "[--max-parallel N] path/to/tasks.md"
+    roles: [developer, scrum-master, tech-lead]
+
+roles:
+  product-owner:
+    skill_count: 18
+    skills:
+      - feature-balance-sheet
+      - spec-gen
+      - quality-gate
+      - gate-briefing
+      - scope-tracker
+      - board-sync
+      - report-trends
+      - risk-tracker
+      - release-readiness-checker
+      - release-notes
+      - decision-log
+      - drift-detector
+      - changelog-plain
+      - progress-summary
+      - demo-prep
+      - user-story-refiner
+      - bug-report
+      - codebase-qa
+    pipelines:
+      - feature-intake
+      - sprint-health
+      - release-signoff
+      - stakeholder-update
+      - idea-to-spec
+      - sprint-demo
+
+  architect:
+    skill_count: 18
+    skills:
+      - design-review
+      - plan-gen
+      - quality-gate
+      - decision-log
+      - tech-debt-audit
+      - code-ownership-mapper
+      - api-contract-analyzer
+      - report-trends
+      - migration-tracker
+      - impact-analysis
+      - plan-merge
+      - spec-gen
+      - spec-review
+      - spec-evolve
+      - feature-balance-sheet
+      - gate-briefing
+      - reverse-engineer
+      - component-audit
+    pipelines:
+      - design-to-plan
+      - system-health
+      - migration-planning
+
+  developer:
+    skill_count: 22
+    skills:
+      - task-gen
+      - wave-scheduler
+      - task-implementer
+      - spec-review
+      - review-fix
+      - pr-orchestrator
+      - review
+      - security-audit
+      - test-gen
+      - dependency-update
+      - tech-debt-audit
+      - regression-check
+      - spec-fix
+      - doc-gen
+      - perf-review
+      - plan-gen
+      - spec-gen
+      - impact-analysis
+      - onboarding-guide
+      - design-review
+      - design-to-code
+      - visual-review
+    pipelines:
+      - feature-build
+      - pr-workflow
+      - maintenance
+
+  qa:
+    skill_count: 13
+    skills:
+      - spec-review
+      - test-gen
+      - regression-check
+      - perf-review
+      - report-trends
+      - release-readiness-checker
+      - quality-gate
+      - security-audit
+      - api-contract-analyzer
+      - drift-detector
+      - visual-review
+      - bug-report
+      - codebase-qa
+    pipelines:
+      - test-strategy
+      - regression-suite
+      - release-validation
+      - bug-to-fix
+
+  devops-sre:
+    skill_count: 14
+    skills:
+      - release-readiness-checker
+      - incident-detector
+      - slo-sla-tracker
+      - incident-triager
+      - rollback-assessor
+      - approval-workflow-auditor
+      - cross-repo-standards-enforcer
+      - pipeline-monitor
+      - dependency-update
+      - security-audit
+      - incident-postmortem-synthesizer
+      - migration-tracker
+      - report-trends
+      - risk-tracker
+    pipelines:
+      - deploy-verify
+      - incident-response
+      - platform-health
+
+  tech-lead:
+    skill_count: 60
+    skills: all
+    pipelines:
+      - full-pipeline
+      - team-health
+      - governance
+
+  scrum-master:
+    skill_count: 14
+    skills:
+      - board-sync
+      - scope-tracker
+      - risk-tracker
+      - feedback-loop
+      - report-trends
+      - pipeline-monitor
+      - auto-triage
+      - wave-scheduler
+      - gate-briefing
+      - changelog-plain
+      - progress-summary
+      - demo-prep
+      - bug-report
+      - codebase-qa
+    pipelines:
+      - sprint-tracking
+      - retrospective-data
+      - impediment-tracker
+
+  designer:
+    skill_count: 13
+    skills:
+      - spec-gen
+      - spec-review
+      - design-review
+      - api-contract-analyzer
+      - doc-gen
+      - design-to-code
+      - design-token-sync
+      - component-audit
+      - visual-review
+      - bug-report
+      - codebase-qa
+      - user-story-refiner
+      - changelog-plain
+    pipelines:
+      - spec-collaboration
+      - design-validation
+      - design-implementation
+      - design-system-sync
+      - design-handoff

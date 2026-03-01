@@ -1,0 +1,63 @@
+# SDLC Skills — Designer
+
+## Your Skills (13)
+
+### Design-to-Code (Figma MCP)
+- `/design-to-code <figma-url>` — Translate a Figma design into production code
+- `/design-token-sync <figma-url> --format tailwind` — Sync design tokens from Figma to codebase
+- `/component-audit <figma-url>` — Audit component coverage between Figma and codebase
+- `/visual-review <figma-url> --implementation path/to/component` — Compare UI against Figma design
+
+### Specification
+- `/spec-gen '<feature>'` — Generate structured spec from a feature request
+- `/spec-review specs/NNN/spec.md` — Validate implementation matches spec
+- `/user-story-refiner 'rough feature idea'` — Transform an idea into a structured user story
+
+### Design Validation
+- `/design-review [file-or-'full']` — Review architecture and design patterns
+- `/api-contract-analyzer main` — Detect breaking API changes between versions
+
+### Communication & Collaboration
+- `/bug-report 'the export button does nothing'` — Generate a structured bug report from a description
+- `/codebase-qa 'does our app support dark mode?'` — Ask questions about the codebase in plain English
+- `/changelog-plain latest` — Translate technical changes into plain language
+
+### Documentation
+- `/doc-gen api` — Generate or update API documentation
+
+## Your Pipelines (5)
+
+### Design Implementation
+Translate a Figma design into verified code:
+```
+/run-pipeline designer/design-implementation https://figma.com/design/abc123/MyDesign?node-id=1-234
+```
+Chain: design-to-code → component-audit → design-to-code → visual-review → design-token-sync
+
+### Design System Sync
+Synchronize tokens and audit component coverage:
+```
+/run-pipeline designer/design-system-sync https://figma.com/design/abc123/DesignSystem
+```
+Chain: design-token-sync → component-audit → design-token-sync → design-review
+
+### Design Handoff
+Prepare a design for engineering handoff:
+```
+/run-pipeline designer/design-handoff https://figma.com/design/abc123/MyDesign?node-id=1-234
+```
+Chain: design-to-code → spec-gen → spec-review → doc-gen
+
+### Spec Collaboration
+Validate design aligns with specification:
+```
+/run-pipeline designer/spec-collaboration specs/NNN/spec.md
+```
+Chain: spec-gen → spec-review
+
+### Design Validation
+Validate design implementation:
+```
+/run-pipeline designer/design-validation
+```
+Chain: design-review → api-contract-analyzer

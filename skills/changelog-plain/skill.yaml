@@ -1,0 +1,6 @@
+name: changelog-plain
+version: "1.0.0"
+description: "Translate technical changelogs and release notes into plain business language for non-technical stakeholders"
+category: reporting
+argument_hint: "[path/to/release-notes.md | '--from v1.0' | 'latest']"
+roles: [product-owner, scrum-master, designer, tech-lead]

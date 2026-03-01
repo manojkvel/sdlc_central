@@ -1,0 +1,6 @@
+name: code-ownership-mapper
+version: "1.0.0"
+description: "Map code ownership from git history — identify experts, knowledge silos, orphaned code, and bus factor risks"
+category: governance
+argument_hint: "['full'|'risks'|directory-or-module]"
+roles: [architect, tech-lead]

@@ -1,0 +1,6 @@
+name: skill-gap-analyzer
+version: "1.0.0"
+description: "Analyze a codebase and its existing Claude Code skills to identify what additional skills are needed — designed for standardized governance across multiple codebases"
+category: governance
+argument_hint: "['full'|'quick'|focus-area]"
+roles: [tech-lead]

@@ -1,0 +1,6 @@
+name: spec-gen
+version: "1.0.0"
+description: "Generate a structured technical specification from a feature request, user story, or bug report — defining WHAT and WHY, never HOW"
+category: planning
+argument_hint: "'feature description' or path to requirements file"
+roles: [product-owner, architect, developer, designer, tech-lead]

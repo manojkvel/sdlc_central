@@ -1,0 +1,6 @@
+name: scope-tracker
+version: "1.0.0"
+description: "Track scope changes across the project lifecycle — logs every change request, spec revision, child spec creation, and HITL gate condition as a formal scope change with effort delta, timeline impact, and approval status. Produces a scope change ledger for PM visibility and stakeholder reporting."
+category: decision-support
+argument_hint: "log|report|trend [path/to/spec-or-all]"
+roles: [product-owner, scrum-master, tech-lead]

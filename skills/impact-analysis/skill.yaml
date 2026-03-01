@@ -1,0 +1,6 @@
+name: impact-analysis
+version: "1.0.0"
+description: "Analyze which files, services, APIs, and teams a proposed change would affect"
+category: planning
+argument_hint: "[file-or-feature-description]"
+roles: [architect, developer, tech-lead]

@@ -1,0 +1,6 @@
+name: design-to-code
+version: "1.0.0"
+description: "Translate a Figma design into production code using MCP-backed design context, component mappings, and project conventions"
+category: development
+argument_hint: "<figma-url-or-node-id> [--file-key KEY]"
+roles: [designer, developer, tech-lead]

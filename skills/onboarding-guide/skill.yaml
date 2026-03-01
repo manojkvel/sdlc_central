@@ -1,0 +1,6 @@
+name: onboarding-guide
+version: "1.0.0"
+description: "Auto-generate a \"how this codebase works\" guide for new team members"
+category: knowledge-transfer
+argument_hint: "['full'|module-path]"
+roles: [developer, tech-lead]

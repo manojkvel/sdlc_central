@@ -1,0 +1,6 @@
+name: task-gen
+version: "1.0.0"
+description: "Break an implementation plan into atomic, implementable tasks with acceptance criteria — ready for agents or engineers to pick up"
+category: planning
+argument_hint: "path/to/plan.md"
+roles: [developer, tech-lead]

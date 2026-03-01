@@ -1,0 +1,6 @@
+name: incident-triager
+version: "1.0.0"
+description: "When an incident is detected or reported, pull relevant logs, recent git history, and deployment diffs to produce a triage report with root cause candidates, affected services, and recommended remediation paths"
+category: production-support
+argument_hint: "['<incident-description>'|'<commit-hash>'|'<service-name>'|'<error-message>']"
+roles: [devops-sre, tech-lead]

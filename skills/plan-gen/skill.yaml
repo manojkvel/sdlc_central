@@ -1,0 +1,6 @@
+name: plan-gen
+version: "1.0.0"
+description: "Generate a technical implementation plan from an approved spec — defining HOW to build it, in what order, with what file changes"
+category: planning
+argument_hint: "path/to/spec.md"
+roles: [architect, developer, tech-lead]

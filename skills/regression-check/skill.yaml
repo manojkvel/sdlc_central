@@ -1,0 +1,5 @@
+name: regression-check
+version: "1.0.0"
+description: "Analyze a diff against existing tests to predict what might break"
+category: quality
+roles: [developer, qa, tech-lead]

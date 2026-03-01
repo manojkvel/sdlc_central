@@ -1,0 +1,6 @@
+name: spec-evolve
+version: "1.0.0"
+description: "Manage spec lifecycle — versioned revisions, child spec creation, and open question resolution — with automatic blast-radius analysis to determine which downstream artifacts (plan, tasks, board items, implementation) need re-processing. Use after /spec-review finds gaps, after HITL gate feedback, when stakeholders change requirements, or when /task-implementer hits an ambiguity."
+category: spec-lifecycle
+argument_hint: "revise|child|resolve [--trigger spec-review|gate|stakeholder|implementation] path/to/spec.md"
+roles: [architect, tech-lead]

@@ -1,0 +1,6 @@
+name: pipeline-orchestrator
+version: "1.0.0"
+description: "End-to-end SDLC pipeline automation — chains skills (spec-gen → plan-gen → task-gen → task-implementer → board-sync → spec-review → release-readiness-checker) into an executable DAG, pausing only at HITL gates for human approval. Handles branching when /spec-evolve triggers re-processing, concurrent wave execution, and failure recovery via /auto-triage."
+category: pipeline-automation
+argument_hint: "run|resume|status [--from stage] [--to stage] [--gates minimal|standard|strict] path/to/spec-or-feature-request"
+roles: [tech-lead]

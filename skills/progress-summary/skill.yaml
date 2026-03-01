@@ -1,0 +1,6 @@
+name: progress-summary
+version: "1.0.0"
+description: "Generate a plain-English progress report from git activity, open PRs, and spec status for stakeholders"
+category: reporting
+argument_hint: "['daily' | 'weekly' | 'sprint' | '--since 2025-01-01']"
+roles: [product-owner, scrum-master, tech-lead]

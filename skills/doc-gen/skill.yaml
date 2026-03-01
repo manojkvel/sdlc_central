@@ -1,0 +1,6 @@
+name: doc-gen
+version: "1.0.0"
+description: "Generate or update documentation for a module, API, or the full project"
+category: development
+argument_hint: "[file-or-module-or-'api'|'readme'|'changelog']"
+roles: [developer, designer, tech-lead]

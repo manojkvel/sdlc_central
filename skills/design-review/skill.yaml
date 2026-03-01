@@ -1,0 +1,6 @@
+name: design-review
+version: "1.0.0"
+description: "Review architecture and design patterns for scalability, maintainability, and correctness"
+category: development
+argument_hint: "[file-or-module-or-'full']"
+roles: [architect, developer, designer, tech-lead]

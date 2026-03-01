@@ -1,0 +1,6 @@
+name: reverse-engineer
+version: "1.0.0"
+description: "Reverse-engineer a codebase from source code only (ignoring existing docs) and produce full technical documentation — HLD, LLD, architecture diagrams, sequence diagrams, data models, and more"
+category: knowledge-transfer
+argument_hint: "['full'|directory-path]"
+roles: [architect, tech-lead]

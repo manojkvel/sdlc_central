@@ -1,0 +1,6 @@
+name: tech-debt-audit
+version: "1.0.0"
+description: "Monthly health check — code complexity, duplication, outdated patterns, and structural issues"
+category: maintenance
+argument_hint: "[directory-or-'full']"
+roles: [architect, developer, tech-lead]

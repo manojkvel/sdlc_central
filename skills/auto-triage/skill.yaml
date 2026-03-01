@@ -1,0 +1,6 @@
+name: auto-triage
+version: "1.0.0"
+description: "Automated failure recovery for the SDLC pipeline — classifies failures from any pipeline stage, attempts automated recovery (retry, /review-fix, /spec-fix, /spec-evolve), and only escalates to a HITL gate when the failure genuinely requires a human decision. Sits between /quality-gate failure and human escalation."
+category: pipeline-automation
+argument_hint: "path/to/failed-artifact-or-report [--max-retries 3] [--escalate-after 2]"
+roles: [scrum-master, tech-lead]

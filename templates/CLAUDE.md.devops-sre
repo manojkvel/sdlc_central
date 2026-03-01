@@ -1,0 +1,48 @@
+# SDLC Skills — DevOps/SRE
+
+## Your Skills (14)
+
+### Deployment & Release
+- `/release-readiness-checker vX.Y.Z` — Pre-release go/no-go verdict
+- `/rollback-assessor HEAD~3` — Evaluate rollback safety (GO/NO-GO)
+- `/dependency-update --fix-security` — Fix vulnerable dependencies
+
+### Incident Management
+- `/incident-detector scan` — Correlate deployments with error signals
+- `/incident-triager '<description>'` — Triage report with root cause candidates
+- `/incident-postmortem-synthesizer recent` — Surface recurring incident patterns
+
+### Platform Governance
+- `/approval-workflow-auditor full` — Audit branch policies and pipeline gates
+- `/cross-repo-standards-enforcer full` — Audit repo against org standards
+- `/slo-sla-tracker full` — Track SLOs, DORA metrics, error budgets
+- `/pipeline-monitor scan --all` — Detect stuck tasks and pipeline anomalies
+
+### Security & Compliance
+- `/security-audit src/` — Security vulnerability scan
+- `/migration-tracker status` — Track migration progress
+- `/report-trends dashboard` — Health dashboard with trends
+- `/risk-tracker scan --all --escalate` — Risk register with escalation
+
+## Your Pipelines (3)
+
+### Deploy & Verify
+Post-deployment health check:
+```
+/run-pipeline devops-sre/deploy-verify vX.Y.Z
+```
+Chain: release-readiness-checker → incident-detector → slo-sla-tracker
+
+### Incident Response
+Incident detection through remediation:
+```
+/run-pipeline devops-sre/incident-response 'API 500 errors since 14:30'
+```
+Chain: incident-detector → incident-triager → rollback-assessor
+
+### Platform Health
+Platform governance audit:
+```
+/run-pipeline devops-sre/platform-health
+```
+Chain: slo-sla-tracker → approval-workflow-auditor → cross-repo-standards-enforcer

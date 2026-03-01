@@ -1,0 +1,6 @@
+name: incident-detector
+version: "1.0.0"
+description: "Correlate deployment history with observability alerts, error logs, and service health signals to detect active or emerging incidents and classify their severity"
+category: production-support
+argument_hint: "['scan'|'recent'|service-name-or-alert-context]"
+roles: [devops-sre, tech-lead]

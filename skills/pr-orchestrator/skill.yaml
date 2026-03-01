@@ -1,0 +1,6 @@
+name: pr-orchestrator
+version: "1.0.0"
+description: "Analyze a PR's changed files and automatically determine which skills to run — acts as the phase gate for your SDLC pipeline"
+category: development
+argument_hint: "['auto'|'strict'|'quick'] [branch-name]"
+roles: [developer, tech-lead]

@@ -1,0 +1,6 @@
+name: perf-review
+version: "1.0.0"
+description: "Review code for performance issues — N+1 queries, memory leaks, missing indexes, inefficient patterns"
+category: quality
+argument_hint: "[file-or-module or 'diff']"
+roles: [developer, qa, tech-lead]

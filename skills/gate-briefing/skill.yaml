@@ -1,0 +1,6 @@
+name: gate-briefing
+version: "1.0.0"
+description: "Generate decision-ready briefings at HITL gates — summarizes what the agent produced, key decisions made, risks identified, quality metrics, and a recommendation (APPROVE / APPROVE WITH CONDITIONS / REJECT). Supports audience modes (engineering, executive, compliance) for different stakeholder views."
+category: decision-support
+argument_hint: "[--audience engineering|executive|compliance] [--gate approve-spec|approve-plan|approve-release|custom] path/to/spec"
+roles: [product-owner, architect, scrum-master, tech-lead]

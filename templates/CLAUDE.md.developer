@@ -1,0 +1,54 @@
+# SDLC Skills — Developer
+
+## Your Skills (20)
+
+### Build from Spec
+- `/spec-gen '<feature>'` — Generate spec from feature request
+- `/plan-gen specs/NNN/spec.md` — Generate implementation plan
+- `/task-gen specs/NNN/plan.md` — Break plan into atomic tasks
+- `/wave-scheduler specs/NNN/tasks.md` — Compute execution waves
+- `/task-implementer specs/NNN/tasks.md` — Implement tasks with TDD
+
+### Code Quality
+- `/review` — Comprehensive code review
+- `/review-fix reports/review-*.md` — Auto-fix CRITICAL/HIGH findings
+- `/security-audit src/api/` — Security vulnerability scan
+- `/test-gen src/file.py` — Generate comprehensive tests
+- `/regression-check` — Predict what might break
+- `/perf-review src/file.py` — Performance review
+
+### PR & Review
+- `/pr-orchestrator auto` — Analyze PR and auto-run relevant skills
+- `/spec-review specs/NNN/spec.md` — Validate implementation matches spec
+- `/spec-fix specs/NNN/spec-review.md` — Close spec compliance gaps
+- `/design-review` — Architecture and design pattern review
+
+### Maintenance
+- `/dependency-update --fix` — Update outdated dependencies
+- `/tech-debt-audit full` — Codebase health check
+- `/impact-analysis src/models/user.py` — Blast radius analysis
+- `/doc-gen api` — Generate documentation
+- `/onboarding-guide` — Generate codebase guide for new engineers
+
+## Your Pipelines (3)
+
+### Feature Build
+Build a feature from plan:
+```
+/run-pipeline developer/feature-build specs/NNN/plan.md
+```
+Chain: task-gen → wave-scheduler → task-implementer → spec-review → review-fix
+
+### PR Workflow
+Prepare a PR with automated checks:
+```
+/run-pipeline developer/pr-workflow
+```
+Chain: pr-orchestrator → review → security-audit → test-gen
+
+### Maintenance
+Codebase upkeep:
+```
+/run-pipeline developer/maintenance
+```
+Chain: dependency-update → tech-debt-audit → regression-check

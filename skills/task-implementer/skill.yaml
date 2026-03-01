@@ -1,0 +1,6 @@
+name: task-implementer
+version: "1.0.0"
+description: "Implement agent-ready tasks from a task breakdown — writing code, tests, and producing a traceability report that maps every change back to its task and acceptance criterion"
+category: integration
+argument_hint: "path/to/tasks.md"
+roles: [developer, tech-lead]

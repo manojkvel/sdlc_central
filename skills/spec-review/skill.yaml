@@ -1,0 +1,6 @@
+name: spec-review
+version: "1.0.0"
+description: "Validate that an implementation matches its original spec — flag drift, missing acceptance criteria, and undocumented behavior"
+category: spec-lifecycle
+argument_hint: "path/to/spec.md [path/to/implementation-branch-or-dir]"
+roles: [architect, developer, qa, designer, tech-lead]

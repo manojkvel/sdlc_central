@@ -1,0 +1,6 @@
+name: user-story-refiner
+version: "1.0.0"
+description: "Transform a rough feature idea into a structured user story with acceptance criteria, edge cases, and scope boundaries"
+category: planning
+argument_hint: "'rough feature idea or requirement'"
+roles: [product-owner, designer, scrum-master, tech-lead]

@@ -1,0 +1,6 @@
+name: test-gen
+version: "1.0.0"
+description: "Generate comprehensive tests for a module (pytest for Python, Jest/Vitest for TypeScript)"
+category: development
+argument_hint: "[file-or-module-path]"
+roles: [developer, qa, tech-lead]

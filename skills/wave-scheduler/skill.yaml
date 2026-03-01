@@ -1,0 +1,6 @@
+name: wave-scheduler
+version: "1.0.0"
+description: "Compute an execution schedule from task dependency graphs — assigns tasks to execution waves respecting dependency ordering, file conflict avoidance, HITL gate positions, parallelism limits, and priority overrides. Produces a machine-readable schedule consumed by /pipeline-orchestrator."
+category: pipeline-automation
+argument_hint: "[--max-parallel N] [--respect-priority] path/to/tasks.md"
+roles: [developer, scrum-master, tech-lead]

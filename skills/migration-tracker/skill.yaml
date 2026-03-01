@@ -1,0 +1,6 @@
+name: migration-tracker
+version: "1.0.0"
+description: "Track progress of long-running technical migrations — framework upgrades, library replacements, and pattern adoptions"
+category: maintenance
+argument_hint: "['status'|'init'|migration-name]"
+roles: [architect, devops-sre, tech-lead]

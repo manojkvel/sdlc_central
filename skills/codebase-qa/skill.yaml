@@ -1,0 +1,6 @@
+name: codebase-qa
+version: "1.0.0"
+description: "Answer plain-English questions about what the codebase does, supports, or how it behaves — without requiring the asker to read code"
+category: knowledge-transfer
+argument_hint: "'your question about the codebase'"
+roles: [product-owner, qa, designer, scrum-master, tech-lead]

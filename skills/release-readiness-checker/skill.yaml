@@ -1,0 +1,6 @@
+name: release-readiness-checker
+version: "1.0.0"
+description: "Pre-release gate — aggregates signals from pipelines, tests, audits, and docs to give a go/no-go verdict"
+category: governance
+argument_hint: "[version-tag-or-branch]"
+roles: [product-owner, qa, devops-sre, tech-lead]

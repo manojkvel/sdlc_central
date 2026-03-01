@@ -1,0 +1,6 @@
+name: api-contract-analyzer
+version: "1.0.0"
+description: "Detect breaking API changes by comparing the API surface of a branch against the baseline"
+category: governance
+argument_hint: "[branch-or-commit-to-compare | 'full']"
+roles: [architect, qa, designer, devops-sre, tech-lead]

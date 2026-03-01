@@ -1,0 +1,47 @@
+# SDLC Skills — Product Owner
+
+## Your Skills (12)
+
+### Feature Evaluation
+- `/feature-balance-sheet quick '<idea>'` — Quick go/no-go cost-benefit filter before writing a spec
+- `/feature-balance-sheet deep specs/NNN/spec.md` — Full portfolio analysis after spec is written
+- `/spec-gen '<feature request>'` — Generate a structured specification from a feature idea
+- `/decision-log capture specs/NNN/spec.md` — Record decision rationale alongside spec creation
+
+### Quality & Compliance
+- `/quality-gate spec-to-plan specs/NNN/spec.md` — Validate spec meets quality bar before planning
+- `/gate-briefing specs/NNN/ --audience executive` — Generate decision briefing for approval gates
+- `/drift-detector scan --all` — Detect spec-to-implementation divergence
+
+### Sprint & Scope
+- `/scope-tracker report specs/NNN/` — Track scope changes with effort deltas
+- `/board-sync push specs/NNN/tasks.md` — Push work items to PM tool (Jira, Azure Boards, etc.)
+- `/report-trends dashboard` — Health dashboard with trend analysis
+- `/risk-tracker scan --all` — Living risk register with auto-escalation
+
+### Release
+- `/release-readiness-checker vX.Y.Z` — Pre-release go/no-go verdict
+- `/release-notes --version vX.Y.Z` — Auto-generate categorized release notes
+
+## Your Pipelines (3)
+
+### Feature Intake
+Evaluate a feature request end-to-end:
+```
+/run-pipeline product-owner/feature-intake 'Add SSO login'
+```
+Chain: balance-sheet (quick) → spec-gen → quality-gate → balance-sheet (deep) → gate-briefing
+
+### Sprint Health
+Sprint dashboard with scope and risk tracking:
+```
+/run-pipeline product-owner/sprint-health
+```
+Chain: scope-tracker → board-sync → report-trends → risk-tracker
+
+### Release Signoff
+Release go/no-go decision:
+```
+/run-pipeline product-owner/release-signoff vX.Y.Z
+```
+Chain: release-readiness-checker → gate-briefing → release-notes

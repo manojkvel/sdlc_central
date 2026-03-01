@@ -1,0 +1,6 @@
+name: feedback-loop
+version: "1.0.0"
+description: "Analyze pipeline execution history to identify patterns, calibrate estimates, measure skill effectiveness, and produce actionable tuning recommendations. Feeds improvements back into skill prompts, gate thresholds, and scheduling heuristics. Run after each pipeline completion or periodically across all pipelines."
+category: pipeline-automation
+argument_hint: "analyze|calibrate|recommend [path/to/spec-or-all]"
+roles: [scrum-master, tech-lead]

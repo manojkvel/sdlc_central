@@ -1,0 +1,74 @@
+# Tool mappings: skill category → Claude Code allowed-tools
+# Used by the Claude Code adapter to reconstruct SKILL.md frontmatter
+
+default: "Read, Write, Grep, Glob, Bash(git log, git diff, ls, find, date)"
+
+categories:
+  planning:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git shortlog, ls, find, tree)"
+
+  development:
+    tools: "Read, Write, Grep, Glob, Bash(git diff, git log, git show, date)"
+
+  quality:
+    tools: "Read, Write, Grep, Glob, Bash(git diff, git log, git show, date)"
+
+  pipeline-automation:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git diff, git show, ls, find, cat, wc, date, jq)"
+
+  decision-support:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git diff, ls, find, cat, wc, date, jq)"
+
+  spec-lifecycle:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git diff, git show, ls, find, tree, wc)"
+
+  governance:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git shortlog, cat, ls, find, date)"
+
+  production-support:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git diff, git show, git blame, kubectl, curl, date, cat, ls, jq)"
+
+  release:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git diff, git tag, git show, git shortlog, ls, find, cat, wc, date, jq)"
+
+  reporting:
+    tools: "Read, Write, Grep, Glob, Bash(ls, date, node)"
+
+  maintenance:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git shortlog, wc, find, cat, ls, date)"
+
+  knowledge-transfer:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git shortlog, ls, wc, cat)"
+
+  integration:
+    tools: "Read, Write, Grep, Glob, Bash(git log, git diff, ls, find, cat, date)"
+
+# Per-skill overrides for skills that need specific tools beyond their category default
+overrides:
+  board-sync: "Read, Write, Grep, Glob, Bash(az boards work-item create, az boards work-item update, az boards work-item show, az boards work-item relation add, az boards query, gh project item-list, gh project item-create, gh project item-edit, gh issue create, gh issue edit, gh issue close, curl, git log, git diff, ls, find, cat), MCP(atlassian, linear, clickup)"
+  dependency-update: "Read, Write, Grep, Glob, Bash(npm outdated, npm audit, pip list --outdated, pip audit, pip install, npm install, npm test, npx vitest, npx jest, pytest, git diff, git stash, cat, date)"
+  doc-gen: "Read, Write, Edit, Glob, Grep, Bash(git log, git diff, git tag)"
+  spec-fix: "Read, Write, Edit, Glob, Grep, Bash(git diff, git log, git status, git add, git stash, ls, find, tree, npm test, npx vitest, npx jest, pytest, npm run lint, flake8, ruff, mypy, tsc, date)"
+  review-fix: "Read, Write, Edit, Glob, Grep, Bash(git diff, git log, git status, git add, git stash, ls, find, tree, npm test, npx vitest, npx jest, pytest, npm run lint, flake8, ruff, mypy, tsc, date)"
+  task-implementer: "Read, Write, Edit, Glob, Grep, Bash(git diff, git log, git status, git add, git stash, ls, find, tree, npm test, npx vitest, npx jest, pytest, make, date)"
+  test-gen: "Read, Write, Edit, Glob, Grep, Bash(pytest, npx vitest, npx jest, git diff, git show)"
+  security-audit: "Read, Write, Grep, Glob, Bash(git diff, git log, git show, npm audit, pip audit, date)"
+  regression-check: "Read, Write, Grep, Glob, Bash(git diff, git log, git show, pytest --collect-only, npx vitest --reporter=verbose --run, date)"
+  incident-detector: "Read, Write, Grep, Glob, Bash(git log, git diff, git show, kubectl, curl, date, cat, ls, jq)"
+  incident-triager: "Read, Write, Grep, Glob, Bash(git log, git diff, git show, git blame, git bisect, kubectl, curl, date, cat, ls, jq)"
+  release-readiness-checker: "Read, Write, Grep, Glob, Bash(git log, git tag, git diff, git status, npm test, npm run, pytest, cat, ls, date)"
+  license-compliance-audit: "Read, Write, Grep, Glob, Bash(npm ls, npm info, pip show, pip list, cat, jq, date)"
+  skill-gap-analyzer: "Read, Write, Grep, Glob, Bash(ls, find, tree, wc, git log, git shortlog, npm list, pip list, cat)"
+  auto-triage: "Read, Write, Grep, Glob, Bash(git log, git diff, git show, git stash, git checkout, ls, find, cat, wc, date, jq)"
+  slo-sla-tracker: "Read, Write, Grep, Glob, Bash(git log, cat, ls, node, date)"
+  design-to-code: "Read, Write, Edit, Glob, Grep, Bash(git diff, git log, ls, find, tree, date), MCP(figma)"
+  design-token-sync: "Read, Write, Edit, Glob, Grep, Bash(ls, find, cat, date), MCP(figma)"
+  component-audit: "Read, Write, Glob, Grep, Bash(git log, ls, find, tree, wc, date), MCP(figma)"
+  visual-review: "Read, Write, Glob, Grep, Bash(ls, find, cat, date), MCP(figma)"
+  changelog-plain: "Read, Write, Grep, Glob, Bash(git log, git tag, git describe, git diff, git show, git shortlog, ls, cat, date)"
+  bug-report: "Read, Write, Grep, Glob, Bash(git log, git diff, ls, find, cat, date)"
+  codebase-qa: "Read, Glob, Grep, Bash(git log, ls, find, tree, cat, date)"
+  progress-summary: "Read, Write, Grep, Glob, Bash(git log, git shortlog, git tag, git status, git diff, ls, find, cat, wc, date)"
+  demo-prep: "Read, Write, Grep, Glob, Bash(git log, git diff, git describe, git tag, ls, find, cat, date)"
+  user-story-refiner: "Read, Write, Grep, Glob, Bash(git log, ls, find, tree, cat, date)"
+  pipeline-orchestrator: "Read, Write, Grep, Glob, Bash(git log, git diff, git show, ls, find, cat, wc, date, jq)"

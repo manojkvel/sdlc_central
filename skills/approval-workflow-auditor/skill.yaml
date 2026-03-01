@@ -1,0 +1,6 @@
+name: approval-workflow-auditor
+version: "1.0.0"
+description: "Audit DevOps branch policies, environment approvals, and pipeline gates to verify governance processes are enforced"
+category: governance
+argument_hint: "['full'|'branch-policies'|'pipelines'|'environments']"
+roles: [devops-sre, tech-lead]

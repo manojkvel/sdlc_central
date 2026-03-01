@@ -1,0 +1,6 @@
+name: visual-review
+version: "1.0.0"
+description: "Compare implemented UI against the Figma design to identify layout, spacing, color, and typography discrepancies"
+category: quality
+argument_hint: "<figma-url-or-node-id> [--implementation path/to/component]"
+roles: [designer, qa, developer, tech-lead]

@@ -1,0 +1,42 @@
+# SDLC Skills — QA
+
+## Your Skills (10)
+
+### Test Planning
+- `/spec-review specs/NNN/spec.md` — Validate implementation matches spec
+- `/test-gen src/file.py` — Generate comprehensive tests
+- `/regression-check` — Predict what might break from recent changes
+- `/quality-gate impl-to-release specs/NNN/` — Stage gate enforcement
+
+### Quality Analysis
+- `/perf-review src/file.py` — Performance review (N+1 queries, memory, compute)
+- `/security-audit src/api/` — Security vulnerability scan
+- `/drift-detector scan --all` — Detect spec-to-implementation divergence
+- `/api-contract-analyzer main` — Detect breaking API changes
+
+### Release Validation
+- `/release-readiness-checker vX.Y.Z` — Pre-release go/no-go verdict
+- `/report-trends dashboard` — Health dashboard with trend analysis
+
+## Your Pipelines (3)
+
+### Test Strategy
+Create test plan from spec:
+```
+/run-pipeline qa/test-strategy specs/NNN/spec.md
+```
+Chain: spec-review → test-gen → regression-check
+
+### Regression Suite
+Regression and performance analysis:
+```
+/run-pipeline qa/regression-suite
+```
+Chain: regression-check → perf-review → report-trends
+
+### Release Validation
+Pre-release quality gate:
+```
+/run-pipeline qa/release-validation vX.Y.Z
+```
+Chain: release-readiness-checker → spec-review → quality-gate

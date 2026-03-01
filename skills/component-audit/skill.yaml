@@ -1,0 +1,6 @@
+name: component-audit
+version: "1.0.0"
+description: "Audit codebase components against the Figma design system to detect drift, unmapped components, and stale mappings"
+category: governance
+argument_hint: "<figma-url-or-file-key> [--scope full|unmapped|stale]"
+roles: [designer, architect, tech-lead]

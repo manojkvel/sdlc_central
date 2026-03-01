@@ -1,0 +1,5 @@
+name: security-audit
+version: "1.0.0"
+description: "Security vulnerability scan of code changes or a specific module"
+category: development
+roles: [developer, qa, devops-sre, tech-lead]

@@ -1,0 +1,6 @@
+name: decision-log
+version: "1.0.0"
+description: ""
+category: decision-support
+argument_hint: "capture|extract|review path/to/spec.md"
+roles: [product-owner, architect, tech-lead]

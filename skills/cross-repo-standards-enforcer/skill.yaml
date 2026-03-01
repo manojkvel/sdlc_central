@@ -1,0 +1,6 @@
+name: cross-repo-standards-enforcer
+version: "1.0.0"
+description: "Audit a repository against organizational standards for structure, config, naming, and pipeline conventions"
+category: governance
+argument_hint: "['full'|'quick'|focus-area]"
+roles: [devops-sre, tech-lead]

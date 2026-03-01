@@ -1,0 +1,6 @@
+name: board-sync
+version: "1.0.0"
+description: "Sync SDLC artifacts (specs, plans, tasks, implementation reports) with a project management tool — creating epics, stories, and tasks in Azure Boards, Jira, GitHub Projects, Linear, or ClickUp, and keeping status in sync as implementation progresses. Use this after /task-gen to push work items to your PM tool, or after /task-implementer to update statuses."
+category: integration
+argument_hint: "push|status|pull [--provider azure-boards|jira|github-projects|linear|clickup] [path/to/tasks.md]"
+roles: [product-owner, scrum-master, tech-lead]

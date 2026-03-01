@@ -1,0 +1,6 @@
+name: plan-merge
+version: "1.0.0"
+description: "Merge multiple /plan-gen outputs into a unified execution plan — resolving cross-plan dependencies, identifying shared file changes, determining parallelism, and producing a single sequenced execution order. Use this after running /plan-gen individually on multiple specs that originated from the same initiative or share common codebase areas."
+category: planning
+argument_hint: "specs/*/plan.md [--dry-run]"
+roles: [architect, tech-lead]

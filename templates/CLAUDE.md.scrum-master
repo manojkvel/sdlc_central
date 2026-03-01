@@ -1,0 +1,42 @@
+# SDLC Skills — Scrum Master
+
+## Your Skills (9)
+
+### Sprint Management
+- `/board-sync push specs/NNN/tasks.md` — Push work items to PM tool
+- `/board-sync status specs/NNN/` — Sync implementation status
+- `/scope-tracker report specs/NNN/` — Track scope changes with effort deltas
+- `/wave-scheduler specs/NNN/tasks.md` — Compute execution waves from dependencies
+
+### Risk & Impediments
+- `/risk-tracker scan --all --escalate` — Living risk register with auto-escalation
+- `/pipeline-monitor scan --all` — Detect stuck tasks, fix loops, stale artifacts
+- `/auto-triage reports/failure.md` — Classify failures and attempt recovery
+- `/gate-briefing specs/NNN/ --audience engineering` — Gate decision briefings
+
+### Retrospective & Improvement
+- `/feedback-loop analyze --all` — Pipeline effectiveness, estimate calibration
+- `/report-trends dashboard` — Health dashboard with trend analysis
+
+## Your Pipelines (3)
+
+### Sprint Tracking
+Sprint progress dashboard:
+```
+/run-pipeline scrum-master/sprint-tracking
+```
+Chain: board-sync → scope-tracker → risk-tracker
+
+### Retrospective Data
+Gather data for retrospectives:
+```
+/run-pipeline scrum-master/retrospective-data
+```
+Chain: feedback-loop → report-trends → scope-tracker
+
+### Impediment Tracker
+Resolve blockers:
+```
+/run-pipeline scrum-master/impediment-tracker
+```
+Chain: pipeline-monitor → auto-triage → risk-tracker

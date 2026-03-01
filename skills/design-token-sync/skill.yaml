@@ -1,0 +1,6 @@
+name: design-token-sync
+version: "1.0.0"
+description: "Extract design tokens from Figma variables and sync colors, spacing, and typography with the codebase token files"
+category: development
+argument_hint: "<figma-url-or-file-key> [--format css|tailwind|json|scss]"
+roles: [designer, developer, tech-lead]

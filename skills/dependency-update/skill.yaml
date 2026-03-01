@@ -1,0 +1,6 @@
+name: dependency-update
+version: "1.0.0"
+description: "Check for outdated and vulnerable dependencies, propose safe updates, and optionally apply them with --fix mode"
+category: maintenance
+argument_hint: "[--fix] [--fix-security] [--dry-run]"
+roles: [developer, devops-sre, tech-lead]

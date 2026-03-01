@@ -1,0 +1,6 @@
+name: pipeline-monitor
+version: "1.0.0"
+description: "Continuous health monitoring for running SDLC pipelines — detects stuck tasks, quality regressions, fix loops, resource conflicts, stale artifacts, and unresolved impediments. Produces a live health dashboard and triggers alerts when anomalies exceed thresholds."
+category: pipeline-automation
+argument_hint: "scan|dashboard|alerts [--threshold strict|normal|relaxed] [path/to/spec-or-all]"
+roles: [scrum-master, devops-sre, tech-lead]

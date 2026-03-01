@@ -1,0 +1,38 @@
+{
+  "name": "sdlc-central",
+  "version": "1.0.0",
+  "description": "SDLC Central — 50 Claude Code skills and 22 composable pipelines for the full software development lifecycle",
+  "bin": {
+    "sdlc-central": "./bin/sdlc-central.js"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "sdlc",
+    "skills",
+    "pipelines",
+    "devops",
+    "code-review",
+    "testing",
+    "specification",
+    "agile"
+  ],
+  "author": "SDLC Central Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "../skills/",
+    "../pipelines/",
+    "../templates/",
+    "../config/",
+    "../registry/"
+  ]
+}

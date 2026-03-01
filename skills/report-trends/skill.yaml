@@ -1,0 +1,6 @@
+name: report-trends
+version: "1.0.0"
+description: "Analyze all saved reports to surface trends, regressions, and improvements over time"
+category: reporting
+argument_hint: "[metric-or-'all' or 'dashboard']"
+roles: [product-owner, architect, qa, devops-sre, scrum-master, tech-lead]

@@ -1,0 +1,6 @@
+name: incident-postmortem-synthesizer
+version: "1.0.0"
+description: "Analyze incident history from git, reports, and tickets to surface recurring patterns and generate actionable postmortem insights"
+category: production-support
+argument_hint: "['full'|'recent'|incident-id-or-date-range]"
+roles: [devops-sre, tech-lead]

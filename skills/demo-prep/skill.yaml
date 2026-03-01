@@ -1,0 +1,6 @@
+name: demo-prep
+version: "1.0.0"
+description: "Generate a sprint demo walkthrough script from recent changes — what to show, click paths, and known limitations"
+category: reporting
+argument_hint: "['sprint' | '--since 2025-01-01' | path/to/spec.md]"
+roles: [product-owner, scrum-master, designer, tech-lead]

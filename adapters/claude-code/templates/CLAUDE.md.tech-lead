@@ -1,0 +1,56 @@
+# SDLC Skills — Tech Lead
+
+## Your Skills (All 50)
+
+As Tech Lead, you have access to every skill in SDLC Central. Here are the key workflows:
+
+### End-to-End Pipeline
+- `/pipeline-orchestrator run '<feature>'` — Full pipeline: spec → plan → tasks → impl → release
+- `/pipeline-orchestrator resume specs/NNN/` — Resume from last checkpoint
+- `/pipeline-orchestrator status --all` — View all pipeline progress
+
+### Feature Lifecycle
+- `/feature-balance-sheet quick '<idea>'` — Pre-spec go/no-go
+- `/spec-gen '<feature>'` → `/plan-gen` → `/task-gen` → `/task-implementer`
+- `/quality-gate <transition> specs/NNN/` — Enforce stage gates
+- `/gate-briefing specs/NNN/ --audience engineering` — Decision briefings
+
+### Team & Process Health
+- `/code-ownership-mapper risks` — Bus factor and knowledge silos
+- `/skill-gap-analyzer full` — Missing skills for this codebase
+- `/feedback-loop analyze --all` — Pipeline effectiveness metrics
+- `/report-trends dashboard` — Cross-metric health dashboard
+
+### Governance & Compliance
+- `/license-compliance-audit full` — OSS license conflicts
+- `/cross-repo-standards-enforcer full` — Org standards audit
+- `/approval-workflow-auditor full` — Branch policy audit
+- `/api-contract-analyzer main` — Breaking API changes
+
+### Production
+- `/incident-detector scan` → `/incident-triager` → `/rollback-assessor`
+- `/slo-sla-tracker full` — SLOs, DORA metrics, error budgets
+- `/release-readiness-checker vX.Y.Z` → `/release-notes`
+
+## Your Pipelines (3)
+
+### Full Pipeline
+End-to-end delivery automation:
+```
+/run-pipeline tech-lead/full-pipeline '<feature request>'
+```
+Chain: pipeline-orchestrator (full DAG with all gates)
+
+### Team Health
+Team and process health assessment:
+```
+/run-pipeline tech-lead/team-health
+```
+Chain: code-ownership-mapper → skill-gap-analyzer → report-trends → feedback-loop
+
+### Governance
+Compliance audit:
+```
+/run-pipeline tech-lead/governance
+```
+Chain: license-compliance-audit → cross-repo-standards-enforcer → approval-workflow-auditor

@@ -1,0 +1,6 @@
+name: slo-sla-tracker
+version: "1.0.0"
+description: "Track service-level objectives against actual metrics, calculate error budgets, and flag SLO breaches"
+category: reporting
+argument_hint: "['full'|'summary'|service-name]"
+roles: [devops-sre, tech-lead]

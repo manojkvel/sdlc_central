@@ -1,0 +1,6 @@
+name: license-compliance-audit
+version: "1.0.0"
+description: "Scan all dependencies for OSS license conflicts with your organization's licensing policy"
+category: governance
+argument_hint: "['full'|'production'|package-name]"
+roles: [tech-lead]

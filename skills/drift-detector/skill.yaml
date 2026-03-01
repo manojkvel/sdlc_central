@@ -1,0 +1,6 @@
+name: drift-detector
+version: "1.0.0"
+description: "Monitor divergence between spec intent and implementation reality across pipeline runs — catches gradual erosion of acceptance criteria, accumulating deferred findings, architecture decision drift, and constraint violations that individual /spec-review passes might miss. Run periodically or before major releases."
+category: pipeline-automation
+argument_hint: "scan|report [--depth shallow|deep] [path/to/spec-or-all]"
+roles: [product-owner, qa, tech-lead]

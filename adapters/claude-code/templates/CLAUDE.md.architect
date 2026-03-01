@@ -1,0 +1,51 @@
+# SDLC Skills — Architect
+
+## Your Skills (17)
+
+### Design & Planning
+- `/design-review [file-or-'full']` — Review architecture and design patterns
+- `/plan-gen specs/NNN/spec.md` — Generate implementation plan from approved spec
+- `/impact-analysis <file-or-feature>` — Blast radius analysis for proposed changes
+- `/plan-merge specs/*/plan.md` — Merge multiple plans into unified execution plan
+- `/reverse-engineer full` — Reverse-engineer codebase into full technical docs
+
+### Specification
+- `/spec-gen '<feature>'` — Generate structured technical specification
+- `/spec-review specs/NNN/spec.md` — Validate implementation matches spec
+- `/spec-evolve revise specs/NNN/spec.md` — Version a spec with amendments
+- `/feature-balance-sheet deep specs/NNN/spec.md` — Full cost-benefit portfolio analysis
+
+### Architecture Health
+- `/tech-debt-audit full` — Codebase health check
+- `/code-ownership-mapper risks` — Map ownership, knowledge silos, bus factor
+- `/api-contract-analyzer main` — Detect breaking API changes
+- `/migration-tracker status` — Track migration progress
+
+### Decision Support
+- `/decision-log capture specs/NNN/spec.md` — Capture decision rationale
+- `/gate-briefing specs/NNN/ --audience engineering` — Gate decision briefing
+- `/quality-gate spec-to-plan specs/NNN/spec.md` — Stage gate enforcement
+- `/report-trends all` — Trend analysis across reports
+
+## Your Pipelines (3)
+
+### Design to Plan
+Spec → implementation plan with quality gates:
+```
+/run-pipeline architect/design-to-plan specs/NNN/spec.md
+```
+Chain: design-review → plan-gen → quality-gate → decision-log
+
+### System Health
+Architectural health assessment:
+```
+/run-pipeline architect/system-health
+```
+Chain: tech-debt-audit → code-ownership-mapper → api-contract-analyzer → report-trends
+
+### Migration Planning
+Plan a technical migration:
+```
+/run-pipeline architect/migration-planning '<migration description>'
+```
+Chain: migration-tracker → impact-analysis → plan-gen → plan-merge

@@ -1,0 +1,6 @@
+name: bug-report
+version: "1.0.0"
+description: "Generate a structured, actionable bug report from a plain-English description of the problem"
+category: quality
+argument_hint: "'description of the bug or unexpected behavior'"
+roles: [product-owner, qa, designer, scrum-master, tech-lead]

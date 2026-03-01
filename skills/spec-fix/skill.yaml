@@ -1,0 +1,6 @@
+name: spec-fix
+version: "1.0.0"
+description: "Close spec compliance gaps by implementing missing acceptance criteria, resolving scope creep, enforcing business rules, and adding missing tests — producing a traceability report mapping each gap to its resolution"
+category: spec-lifecycle
+argument_hint: "path/to/specs/<NNN>-<slug>/spec-review.md [--dry-run] [--scope-creep-only] [--ac AC-3]"
+roles: [developer, tech-lead]

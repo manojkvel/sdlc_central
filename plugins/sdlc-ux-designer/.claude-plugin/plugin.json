@@ -1,0 +1,7 @@
+{
+  "name": "sdlc-ux-designer",
+  "version": "1.0.0",
+  "description": "UX designer skills for SDLC Central — Figma-integrated design-to-code, token sync, component audit, and visual review",
+  "author": { "name": "SDLC Central" },
+  "keywords": ["figma", "design", "ux", "design-system", "sdlc"]
+}

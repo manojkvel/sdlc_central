@@ -1,0 +1,6 @@
+name: release-notes
+version: "1.0.0"
+description: "Auto-generate categorized release notes from pipeline artifacts — features added (traced to specs), bugs fixed (traced to tasks), breaking changes (from /api-contract-analyzer), known issues, and upgrade instructions. Produces markdown, CHANGELOG entry, or structured JSON for a release page."
+category: release
+argument_hint: "[--format markdown|changelog|json] [--since tag-or-date] [--version v2.4.0] path/to/spec-or-all"
+roles: [product-owner, tech-lead]

@@ -1,0 +1,6 @@
+name: quality-gate
+version: "1.0.0"
+description: "Automated stage gate enforcement between pipeline stages — validates quality criteria (test coverage, security findings, spec compliance, API contracts) before allowing progression. Blocks the pipeline and routes to /auto-triage or HITL gate when thresholds are not met. Use between every major pipeline stage transition."
+category: quality
+argument_hint: "spec-to-plan|plan-to-tasks|tasks-to-impl|impl-to-release [--strict] path/to/artifact"
+roles: [product-owner, qa, tech-lead]
