@@ -1,6 +1,8 @@
 # SDLC Central — Team Productivity Hub
 
-A central repository of **50 skills** and **22 composable pipelines** covering the full software development lifecycle. Works with **any coding agent** — Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, Aider, Gemini, Antigravity, or any AGENTS.md-compatible tool.
+A central repository of **60 skills** and **30 composable pipelines** covering the full software development lifecycle. Works with **any coding agent** — Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, Aider, Gemini, Antigravity, or any AGENTS.md-compatible tool.
+
+Includes **Figma MCP integration** for design-to-code workflows and **non-coder skills** for product owners, designers, QA, and scrum masters.
 
 ## Quickstart
 
@@ -18,6 +20,9 @@ bash /path/to/sdlc_central/setup/install-role.sh architect --agent antigravity
 
 # Or via npm:
 npx sdlc-central install --role developer --agent cursor
+
+# Standalone UX designer plugin (Claude Code only):
+claude plugin install sdlc-ux-designer
 ```
 
 ## Supported Agents
@@ -50,14 +55,40 @@ my-project/.claude/               my-project/.cursor/             my-project/.gi
 
 | Role | Skills | Pipelines | Best For |
 |------|--------|-----------|----------|
-| **Product Owner** | 12 | feature-intake, sprint-health, release-signoff | Feature evaluation, sprint tracking, release decisions |
-| **Architect** | 17 | design-to-plan, system-health, migration-planning | System design, tech health, migration planning |
-| **Developer** | 20 | feature-build, pr-workflow, maintenance | Building features, PR prep, codebase upkeep |
-| **QA** | 10 | test-strategy, regression-suite, release-validation | Test planning, regression, release gates |
+| **Product Owner** | 18 | feature-intake, sprint-health, release-signoff, stakeholder-update, idea-to-spec, sprint-demo | Feature evaluation, sprint tracking, stakeholder communication |
+| **Architect** | 18 | design-to-plan, system-health, migration-planning | System design, tech health, migration planning |
+| **Developer** | 22 | feature-build, pr-workflow, maintenance | Building features, PR prep, codebase upkeep |
+| **QA** | 13 | test-strategy, regression-suite, release-validation, bug-to-fix | Test planning, regression, bug reporting |
 | **DevOps/SRE** | 14 | deploy-verify, incident-response, platform-health | Deployments, incidents, platform governance |
-| **Tech Lead** | 50 | full-pipeline, team-health, governance | End-to-end oversight, team health, compliance |
-| **Scrum Master** | 9 | sprint-tracking, retrospective-data, impediment-tracker | Sprint progress, retros, blocker resolution |
-| **Designer** | 5 | spec-collaboration, design-validation | Design-spec alignment, implementation validation |
+| **Tech Lead** | 60 | full-pipeline, team-health, governance | End-to-end oversight, team health, compliance |
+| **Scrum Master** | 14 | sprint-tracking, retrospective-data, impediment-tracker | Sprint progress, retros, blocker resolution |
+| **Designer** | 13 | spec-collaboration, design-validation, design-implementation, design-system-sync, design-handoff | Figma-to-code, design system management, spec collaboration |
+
+## Figma MCP Integration
+
+The designer role includes 4 skills powered by the Figma MCP server:
+
+| Skill | What It Does |
+|-------|-------------|
+| `design-to-code` | Translate a Figma design into production code using design context and Code Connect mappings |
+| `design-token-sync` | Extract design tokens (colors, spacing, typography) from Figma and sync with codebase |
+| `component-audit` | Audit codebase components against Figma design system for drift |
+| `visual-review` | Compare implemented UI against Figma design for visual fidelity |
+
+The installer creates a `.mcp.json` at your project root for team-shared Figma MCP access.
+
+## Non-Coder Skills
+
+6 skills designed for team members who don't write code:
+
+| Skill | What It Does | For Who |
+|-------|-------------|---------|
+| `changelog-plain` | Translate technical changelogs into plain business language | PO, SM, Designer |
+| `bug-report` | Generate structured bug reports from "the button doesn't work" | PO, QA, Designer, SM |
+| `codebase-qa` | Answer "does our app support X?" without reading code | PO, QA, Designer, SM |
+| `progress-summary` | Plain-English progress report from git activity | PO, SM |
+| `demo-prep` | Sprint demo script with click paths and landmine warnings | PO, SM, Designer |
+| `user-story-refiner` | Rough idea → structured user story with acceptance criteria | PO, Designer, SM |
 
 ## Using Pipelines
 
@@ -67,8 +98,17 @@ Pipelines chain skills into automated workflows:
 # Product Owner: evaluate a feature end-to-end
 /run-pipeline product-owner/feature-intake 'Add SSO login'
 
+# Product Owner: rough idea to reviewed spec
+/run-pipeline product-owner/idea-to-spec 'users should be able to export their data'
+
 # Developer: build from plan
 /run-pipeline developer/feature-build specs/047-sso-login/plan.md
+
+# Designer: Figma design to verified code
+/run-pipeline designer/design-implementation https://figma.com/design/abc123/MyDesign?node-id=1-234
+
+# QA: bug description to actionable report
+/run-pipeline qa/bug-to-fix 'checkout fails when cart has more than 50 items'
 
 # DevOps: incident response
 /run-pipeline devops-sre/incident-response 'API 500 errors since 14:30'
@@ -83,7 +123,7 @@ Each pipeline:
 
 ## Using Individual Skills
 
-All 50 skills are available in your agent's native format:
+All 60 skills are available in your agent's native format:
 
 ```bash
 # Claude Code:  /spec-gen 'Add OAuth2 login'
@@ -130,7 +170,7 @@ node --test tests/*.test.js
 ```
 
 Tests validate:
-- **Skill manifest** — all 50 skills have valid `skill.yaml`, `prompt.md`, and `SKILL.md`
+- **Skill manifest** — all 60 skills have valid `skill.yaml`, `prompt.md`, and `SKILL.md`
 - **Pipeline schema** — all pipeline YAML files parse correctly, skill references exist, no dependency cycles
 - **Gate config** — all profiles have correct types and thresholds
 - **Installer consistency** — every skill and pipeline referenced by installers exists on disk
@@ -141,8 +181,8 @@ Tests validate:
 - [Getting Started](docs/getting-started.md) — First-time setup walkthrough
 - [Core Concepts](docs/concepts.md) — Skills, pipelines, gates, HITL checkpoints
 - [Role Guides](docs/guides/) — "Here's how YOU use this" per role
-- [Skill Reference](docs/skill-reference.md) — All 50 skills documented
-- [Pipeline Reference](docs/pipeline-reference.md) — All 22 pipelines explained
+- [Skill Reference](docs/skill-reference.md) — All 60 skills documented
+- [Pipeline Reference](docs/pipeline-reference.md) — All 30 pipelines explained
 - [Customization](docs/customization.md) — Custom pipelines, config overrides
 - [Step-by-Step Walkthrough](docs/walkthrough.md) — How to use this framework, start to finish (RBAC example)
 - **Agent Guides:**
@@ -159,7 +199,7 @@ Tests validate:
 
 ```
 sdlc_central/
-├── skills/           # 50 skill definitions (source of truth)
+├── skills/           # 60 skill definitions (source of truth)
 │   └── <skill>/
 │       ├── SKILL.md      # Claude Code native format (backward compat)
 │       ├── skill.yaml    # Universal metadata
@@ -174,7 +214,9 @@ sdlc_central/
 │   ├── gemini/           # → GEMINI.md
 │   ├── antigravity/      # → .antigravity/rules/
 │   └── agents-md/        # → AGENTS.md
-├── pipelines/        # 22 pipeline YAML workflows (agent-agnostic)
+├── pipelines/        # 30 pipeline YAML workflows (agent-agnostic)
+├── plugins/          # Standalone Claude Code plugins
+│   └── sdlc-ux-designer/ # 4 Figma MCP skills as installable plugin
 ├── registry/         # Skill catalog + role matrix
 ├── templates/        # Per-role CLAUDE.md templates
 ├── setup/            # Install, update, uninstall scripts
