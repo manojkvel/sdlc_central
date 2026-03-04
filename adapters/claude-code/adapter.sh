@@ -105,6 +105,9 @@ done
 if [ -f "$SDLC_ROOT/pipelines/_engine/PIPELINE-RUNNER.md" ]; then
   mkdir -p "$PROJECT_DIR/.claude/pipelines/_engine"
   cp "$SDLC_ROOT/pipelines/_engine/PIPELINE-RUNNER.md" "$PROJECT_DIR/.claude/pipelines/_engine/PIPELINE-RUNNER.md"
+  # Also install as a skill so /run-pipeline is discoverable as a slash command
+  mkdir -p "$PROJECT_DIR/.claude/skills/run-pipeline"
+  cp "$SDLC_ROOT/pipelines/_engine/PIPELINE-RUNNER.md" "$PROJECT_DIR/.claude/skills/run-pipeline/SKILL.md"
 fi
 
 # Install progress template
