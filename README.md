@@ -1,6 +1,6 @@
 # SDLC Central — Team Productivity Hub
 
-A central repository of **60 skills** and **30 composable pipelines** covering the full software development lifecycle. Works with **any coding agent** — Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, Aider, Gemini, Antigravity, or any AGENTS.md-compatible tool.
+A central repository of **61 skills** and **30 composable pipelines** covering the full software development lifecycle. Works with **any coding agent** — Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, Aider, Gemini, Antigravity, or any AGENTS.md-compatible tool.
 
 Includes **Figma MCP integration** for design-to-code workflows and **non-coder skills** for product owners, designers, QA, and scrum masters.
 
@@ -123,7 +123,7 @@ Each pipeline:
 
 ## Using Individual Skills
 
-All 60 skills are available in your agent's native format:
+All 61 skills are available in your agent's native format:
 
 ```bash
 # Claude Code:  /spec-gen 'Add OAuth2 login'
@@ -170,7 +170,7 @@ node --test tests/*.test.js
 ```
 
 Tests validate:
-- **Skill manifest** — all 60 skills have valid `skill.yaml`, `prompt.md`, and `SKILL.md`
+- **Skill manifest** — all 61 skills have valid `skill.yaml`, `prompt.md`, and `SKILL.md`
 - **Pipeline schema** — all pipeline YAML files parse correctly, skill references exist, no dependency cycles
 - **Gate config** — all profiles have correct types and thresholds
 - **Installer consistency** — every skill and pipeline referenced by installers exists on disk
@@ -181,7 +181,7 @@ Tests validate:
 - [Getting Started](docs/getting-started.md) — First-time setup walkthrough
 - [Core Concepts](docs/concepts.md) — Skills, pipelines, gates, HITL checkpoints
 - [Role Guides](docs/guides/) — "Here's how YOU use this" per role
-- [Skill Reference](docs/skill-reference.md) — All 60 skills documented
+- [Skill Reference](docs/skill-reference.md) — All 61 skills documented
 - [Pipeline Reference](docs/pipeline-reference.md) — All 30 pipelines explained
 - [Customization](docs/customization.md) — Custom pipelines, config overrides
 - [Step-by-Step Walkthrough](docs/walkthrough.md) — How to use this framework, start to finish (RBAC example)

@@ -4,7 +4,7 @@ description: "SDLC Central skill catalog — machine-readable index with role ma
 categories:
   development:
     description: "Code review, testing, documentation"
-    skills: [review, security-audit, test-gen, doc-gen, design-review, review-fix, spec-fix, pr-orchestrator, design-to-code, design-token-sync]
+    skills: [review, security-audit, security-audit-deep, test-gen, doc-gen, design-review, review-fix, spec-fix, pr-orchestrator, design-to-code, design-token-sync]
   planning:
     description: "Specification, planning, and task breakdown"
     skills: [spec-gen, plan-gen, task-gen, impact-analysis, plan-merge, user-story-refiner]
@@ -366,10 +366,17 @@ skills:
     roles: [product-owner, scrum-master, tech-lead]
 
   - name: security-audit
-    description: "Security vulnerability scan"
+    description: "Fast security scan for per-PR gating (~5 min) — semgrep, deps, secrets, mechanized auth, OWASP Top 10"
     category: development
     command: "/security-audit"
-    argument_hint: ""
+    argument_hint: "[path/to/module]"
+    roles: [developer, qa, devops-sre, tech-lead]
+
+  - name: security-audit-deep
+    description: "Deep security audit for release gates and monthly compliance — IaC, Trivy container scan, SBOM, CVSS, compliance frameworks, STRIDE threat model"
+    category: development
+    command: "/security-audit-deep"
+    argument_hint: "[path/to/module]"
     roles: [developer, qa, devops-sre, tech-lead]
 
   - name: skill-gap-analyzer
@@ -520,7 +527,7 @@ roles:
       - migration-planning
 
   developer:
-    skill_count: 22
+    skill_count: 23
     skills:
       - task-gen
       - wave-scheduler
@@ -530,6 +537,7 @@ roles:
       - pr-orchestrator
       - review
       - security-audit
+      - security-audit-deep
       - test-gen
       - dependency-update
       - tech-debt-audit
@@ -550,7 +558,7 @@ roles:
       - maintenance
 
   qa:
-    skill_count: 13
+    skill_count: 14
     skills:
       - spec-review
       - test-gen
@@ -560,6 +568,7 @@ roles:
       - release-readiness-checker
       - quality-gate
       - security-audit
+      - security-audit-deep
       - api-contract-analyzer
       - drift-detector
       - visual-review
@@ -572,7 +581,7 @@ roles:
       - bug-to-fix
 
   devops-sre:
-    skill_count: 14
+    skill_count: 15
     skills:
       - release-readiness-checker
       - incident-detector
@@ -584,6 +593,7 @@ roles:
       - pipeline-monitor
       - dependency-update
       - security-audit
+      - security-audit-deep
       - incident-postmortem-synthesizer
       - migration-tracker
       - report-trends
@@ -594,7 +604,7 @@ roles:
       - platform-health
 
   tech-lead:
-    skill_count: 60
+    skill_count: 61
     skills: all
     pipelines:
       - full-pipeline

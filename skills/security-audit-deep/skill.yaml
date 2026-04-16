@@ -1,0 +1,5 @@
+name: security-audit-deep
+version: "1.0.0"
+description: "Deep security audit for release gates and monthly compliance — IaC, container image, SBOM, CVSS, compliance, threat model"
+category: development
+roles: [developer, qa, devops-sre, tech-lead]

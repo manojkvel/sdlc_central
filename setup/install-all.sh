@@ -80,6 +80,7 @@ SKILLS=(
   rollback-assessor
   scope-tracker
   security-audit
+  security-audit-deep
   skill-gap-analyzer
   slo-sla-tracker
   spec-evolve
