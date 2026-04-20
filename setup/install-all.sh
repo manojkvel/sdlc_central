@@ -286,4 +286,8 @@ case "$AGENT" in
     echo "Quick start: AGENTS.md is at your project root."
     echo "Compatible with any tool that reads AGENTS.md."
     ;;
+  tabnine)
+    echo "Quick start: Run 'tabnine' in your project."
+    echo "Context is in TABNINE.md; per-skill detail in .sdlc/skills/"
+    ;;
 esac

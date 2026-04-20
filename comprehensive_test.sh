@@ -2,7 +2,7 @@
 # Comprehensive test: all roles x all agents
 SDLC_ROOT="/Users/kvel/Documents/manoj_ws/sdlc_central"
 ALL_ROLES="product-owner architect developer qa devops-sre scrum-master designer"
-ALL_AGENTS="claude-code cursor copilot windsurf cline aider gemini antigravity agents-md"
+ALL_AGENTS="claude-code cursor copilot windsurf cline aider gemini antigravity agents-md tabnine"
 
 PASS=0
 FAIL=0
@@ -54,4 +54,4 @@ done
 
 echo ""
 echo "TOTAL: $PASS passed, $FAIL failed out of $((PASS + FAIL)) tests"
-echo "(7 roles x 9 agents + 9 tech-lead = 72 tests)"
+echo "(7 roles x 10 agents + 10 tech-lead = 80 tests)"

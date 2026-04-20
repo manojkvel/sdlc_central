@@ -34,6 +34,8 @@ elif [ -d ".antigravity" ]; then
   DETECTED_AGENT="antigravity"
 elif [ -f "GEMINI.md" ]; then
   DETECTED_AGENT="gemini"
+elif [ -f "TABNINE.md" ]; then
+  DETECTED_AGENT="tabnine"
 fi
 
 echo "Select your coding agent:"
@@ -47,6 +49,7 @@ echo "  6) Aider           (CONVENTIONS.md)"
 echo "  7) Gemini          (GEMINI.md)"
 echo "  8) Antigravity     (.antigravity/rules/)"
 echo "  9) AGENTS.md       (universal fallback)"
+echo " 10) Tabnine CLI     (TABNINE.md)"
 echo ""
 
 if [ -n "$DETECTED_AGENT" ]; then
@@ -67,6 +70,7 @@ case "${AGENT_NUM:-1}" in
   7) AGENT="gemini" ;;
   8) AGENT="antigravity" ;;
   9) AGENT="agents-md" ;;
+  10) AGENT="tabnine" ;;
   *)
     echo "Unknown selection: $AGENT_NUM — defaulting to claude-code"
     AGENT="claude-code"
@@ -167,5 +171,8 @@ case "$AGENT" in
     ;;
   agents-md)
     echo "AGENTS.md is at your project root — compatible with any AGENTS.md-aware tool."
+    ;;
+  tabnine)
+    echo "Run 'tabnine' in your project — context is in TABNINE.md and .sdlc/skills/"
     ;;
 esac

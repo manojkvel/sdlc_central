@@ -50,7 +50,7 @@ if [ -z "$ROLE" ]; then
 fi
 
 # Validate agent
-VALID_AGENTS="claude-code cursor copilot windsurf cline aider gemini antigravity agents-md"
+VALID_AGENTS="claude-code cursor copilot windsurf cline aider gemini antigravity agents-md tabnine"
 if ! echo "$VALID_AGENTS" | grep -qw "$AGENT"; then
   echo "Unknown agent: $AGENT"
   echo "Valid agents: $VALID_AGENTS"
@@ -266,6 +266,9 @@ case "$AGENT" in
     ;;
   agents-md)
     echo "AGENTS.md installed at project root."
+    ;;
+  tabnine)
+    echo "TABNINE.md installed at project root + per-skill detail in .sdlc/skills/"
     ;;
 esac
 

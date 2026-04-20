@@ -36,6 +36,9 @@ transform_tool_syntax() {
     gemini|antigravity)
       sed 's/^Search for files: /Find files: /;s/^Search for content: /Search in files: /'
       ;;
+    tabnine)
+      sed 's/^Search for files: /Find files: /;s/^Search for content: /Search in files: /'
+      ;;
     windsurf|agents-md)
       # Keep agent-agnostic syntax as-is
       cat

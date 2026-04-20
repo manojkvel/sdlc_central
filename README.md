@@ -1,6 +1,6 @@
 # SDLC Central — Team Productivity Hub
 
-A central repository of **61 skills** and **30 composable pipelines** covering the full software development lifecycle. Works with **any coding agent** — Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, Aider, Gemini, Antigravity, or any AGENTS.md-compatible tool.
+A central repository of **61 skills** and **30 composable pipelines** covering the full software development lifecycle. Works with **any coding agent** — Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, Aider, Gemini, Antigravity, Tabnine CLI, or any AGENTS.md-compatible tool.
 
 Includes **Figma MCP integration** for design-to-code workflows and **non-coder skills** for product owners, designers, QA, and scrum masters.
 
@@ -37,6 +37,7 @@ claude plugin install sdlc-ux-designer
 | **Aider** | `CONVENTIONS.md` + `.sdlc/skills/` | Via `.aider.conf.yml` |
 | **Gemini** | `GEMINI.md` at project root | Project-level instructions |
 | **Antigravity** | `.antigravity/rules/*.md` | Rules & Workflows |
+| **Tabnine CLI** | `TABNINE.md` + `.sdlc/skills/` | Hierarchical context files |
 | **AGENTS.md** | `AGENTS.md` at project root | Universal fallback |
 
 ## What Gets Installed
