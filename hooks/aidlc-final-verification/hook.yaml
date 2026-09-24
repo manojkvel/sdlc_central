@@ -1,0 +1,10 @@
+name: aidlc-final-verification
+event: [stop, pre-command]
+tiers: [2, 3]
+design_ref: "Conversion Technical Guide > Guardrail layer: hooks"
+description: "No release-ready claim or release command without verification, review and an approved scorecard"
+codes:
+  F01: no verification, or FAIL rows
+  F02: open CRITICAL/HIGH review findings
+  F03: scorecard missing or blocked
+  F04: stale evidence

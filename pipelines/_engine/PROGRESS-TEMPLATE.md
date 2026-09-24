@@ -1,5 +1,11 @@
 # Pipeline Progress File — Template
 
+> **With an AIDLC track root**, the progress file is `<track root>/state.md`: its
+> `## AIDLC_RESUME` block (schema `config/schemas/state-resume.schema.json`) and
+> `## Phases` table replace `pipeline-progress.md`. The template is
+> `templates/track/state.md`, laid down by `setup/init-track.sh`. The format below
+> is kept for projects without a track root.
+
 Format for `pipeline-progress.md`, the persistent file that gives an agent instant re-orientation on resume.
 
 ```markdown

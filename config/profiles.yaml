@@ -1,0 +1,34 @@
+# AIDLC workflow profiles by work type.
+# A profile seeds the tier floor, gates that cannot be skipped, and the artifacts
+# the hygiene and final-verification hooks require, before size and contract
+# inference runs. Squads may add their own profiles.
+# Design reference: AIDLC Conversion Technical Guide, "Gate and approval layer".
+
+profiles:
+  feature:
+    tier_floor: 2
+    required_artifacts: [SPEC.md, PLAN.md, PLAN_CHECK.md, VERIFICATION.md, REVIEW.md]
+  bugfix:
+    tier_floor: 1
+    skip_artifacts: [TECHNICAL_DESIGN.md]
+    required_artifacts: [unit.md]
+  poc:
+    tier_floor: 1
+    skip_artifacts: [TECHNICAL_DESIGN.md]
+    required_artifacts: [unit.md]
+  security:
+    tier_floor: 2
+    escalate_all_gates_to: security-sensitive
+    required_personas: [aidlc-security-standards-reviewer]
+    required_artifacts: [SPEC.md, TECHNICAL_DESIGN.md, PLAN.md, PLAN_CHECK.md, VERIFICATION.md, REVIEW.md]
+  infra:
+    tier_floor: 2
+    required_plan_sections: ["## Permitted destructive commands", "## Rollback"]
+    required_artifacts: [SPEC.md, PLAN.md, PLAN_CHECK.md, VERIFICATION.md]
+  data:
+    tier_floor: 2
+    require_data_contract: true
+    required_artifacts: [SPEC.md, PLAN.md, PLAN_CHECK.md, VERIFICATION.md]
+  migration:
+    tier_floor: 2
+    required_artifacts: [SPEC.md, PLAN.md, PLAN_CHECK.md, VERIFICATION.md, migration-tracker.md]

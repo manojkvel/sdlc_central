@@ -1,0 +1,76 @@
+#!/bin/bash
+# aidlc-pre-write-guard — runs before every file write or edit.
+# Blocks source writes before the plan is checked or while a gate is open,
+# writes to secret targets, writes to the hook machinery, and hand edits to
+# the decision log. Inert until the project has a track root (init-track.sh).
+AIDLC_HOOK_NAME="aidlc-pre-write-guard"
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/_lib/track-parse.sh"
+aidlc_require_jq
+aidlc_read_input
+aidlc_load_state
+
+TARGET="$(aidlc_field .path)"
+[ -z "$TARGET" ] && exit 0
+ABS="$(aidlc_abs "$TARGET")"
+REL="$(aidlc_rel "$ABS")"
+
+aidlc_active || exit 0
+
+# W05: the agent must not be able to switch its own guardrails off.
+if aidlc_is_protected_path "$REL"; then
+  aidlc_block W05 "protected path $REL (hook scripts, hook config and install record change only through setup/update.sh)" \
+    "ask a human to run the installer if the hooks need to change"
+fi
+
+# W04: obvious secret targets.
+if aidlc_is_secret_target "$REL"; then
+  aidlc_block W04 "secret target $REL" "keep secrets out of the repository; reference them from the environment"
+fi
+
+TRACK_REL="$(aidlc_rel "$AIDLC_TRACK")"
+
+# W07: only the approval guard writes decision records.
+case "$REL" in
+  "$TRACK_REL"/human-decisions.md|*/human-decisions.md)
+    aidlc_block W07 "human-decisions.md is written only by aidlc-human-approval-guard" \
+      "reply with a structured decision string, for example APPROVE PLAN" ;;
+esac
+
+# Planning artifacts, durable docs and the agent directory stay writable.
+AGENT_DIR="$(aidlc_agent_dir_name "$AIDLC_PROJECT")"
+case "$REL" in
+  "$TRACK_REL"/*|docs/aidlc/*|"$AGENT_DIR"/*) exit 0 ;;
+esac
+
+# From here on the target is source, test or config.
+if [ "$AIDLC_PHASE" = "none" ] || [ ! -d "$AIDLC_PHASE_DIR" ]; then
+  aidlc_block W01 "no active phase for source write to $REL" \
+    "start a unit of work with /run-pipeline aidlc/unit-of-work, or create $TRACK_REL/phases/NN-slug/unit.md for a tier 1 fix"
+fi
+
+TIER="$(aidlc_tier)"
+
+if [ "$TIER" = "1" ]; then
+  if [ -f "$AIDLC_PHASE_DIR/unit.md" ] || [ -f "$AIDLC_PHASE_DIR/PLAN.md" ]; then exit 0; fi
+  aidlc_block W02 "tier 1 phase $AIDLC_PHASE has no inline unit.md or PLAN.md" \
+    "write a short unit.md with the fix, its acceptance check and the files it touches"
+fi
+
+if [ "$AIDLC_GATE" != "none" ]; then
+  aidlc_block W03 "gate open: $AIDLC_GATE for phase $AIDLC_PHASE" \
+    "record the decision for $AIDLC_GATE before writing source"
+fi
+
+if [ ! -f "$AIDLC_PHASE_DIR/PLAN_CHECK.md" ] || ! grep -q '^## PLAN CHECK PASSED' "$AIDLC_PHASE_DIR/PLAN_CHECK.md"; then
+  aidlc_block W02 "plan not checked for phase $AIDLC_PHASE" \
+    "run the plan-check step until PLAN_CHECK.md ends with ## PLAN CHECK PASSED"
+fi
+
+case "$AIDLC_STAGE" in
+  execution|verification|review) ;;
+  *) aidlc_block W06 "stage $AIDLC_STAGE does not permit source writes" \
+       "advance the pipeline to execution through its gates" ;;
+esac
+
+# Tier 3 contract precheck lands with the contract registry (phase 4 of the delivery plan).
+exit 0

@@ -3,7 +3,7 @@
 # Install ALL SDLC Central Skills (50 skills + all pipelines)
 # ------------------------------------------------------------------
 # Run this from your project root:
-#   bash /path/to/sdlc_central/setup/install-all.sh [--agent <agent>]
+#   bash /path/to/sdlc_central/setup/install-all.sh [--agent <agent>] [--no-hooks] [--tier-default 1|2|3] [--track-root <path>]
 # ------------------------------------------------------------------
 
 set -e
@@ -15,6 +15,9 @@ VERSION="1.0.0"
 
 # --- Parse arguments ---
 AGENT="claude-code"
+NO_HOOKS=0
+TIER_DEFAULT=""
+TRACK_ROOT=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --agent)
@@ -23,6 +26,26 @@ while [ $# -gt 0 ]; do
       ;;
     --agent=*)
       AGENT="${1#*=}"
+      shift
+      ;;
+    --no-hooks)
+      NO_HOOKS=1
+      shift
+      ;;
+    --tier-default)
+      TIER_DEFAULT="$2"
+      shift 2
+      ;;
+    --tier-default=*)
+      TIER_DEFAULT="${1#*=}"
+      shift
+      ;;
+    --track-root)
+      TRACK_ROOT="$2"
+      shift 2
+      ;;
+    --track-root=*)
+      TRACK_ROOT="${1#*=}"
       shift
       ;;
     *)
@@ -65,7 +88,7 @@ SKILLS=(
   perf-review
   pipeline-monitor
   pipeline-orchestrator
-  plan-gen
+  plan-gen plan-check
   plan-merge
   pr-orchestrator
   quality-gate
@@ -194,6 +217,27 @@ else
   echo "  ○ balance-sheet-config.json (exists — preserved)"
 fi
 
+# --- AIDLC: work-type profiles (preserve existing) ---
+if [ ! -f "$CONFIG_DIR/profiles.yaml" ] && [ -f "$SDLC_ROOT/config/profiles.yaml" ]; then
+  cp "$SDLC_ROOT/config/profiles.yaml" "$CONFIG_DIR/profiles.yaml"
+  echo "  ✓ profiles.yaml"
+fi
+
+# --- AIDLC: hooks ---
+echo ""
+echo "Hooks:"
+source "$SDLC_ROOT/adapters/_shared/hooks.sh"
+HOOK_LEVEL="$(hook_support_level "$AGENT")"
+if [ "$NO_HOOKS" = "1" ]; then
+  HOOKS_INSTALLED=false
+  HOOK_LEVEL="none"
+  echo "  ○ skipped (--no-hooks)"
+else
+  emit_hooks "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
+  HOOKS_INSTALLED=true
+fi
+echo "  Hook enforcement on $AGENT: $HOOK_LEVEL. Hooks stay inert until the project has a track root (setup/init-track.sh)."
+
 # --- Write tracking file ---
 TRACKING_DIR="$PROJECT_DIR/.sdlc"
 mkdir -p "$TRACKING_DIR"
@@ -203,6 +247,14 @@ if [ "$AGENT" = "claude-code" ]; then
   TRACKING_FILE="$PROJECT_DIR/.claude/sdlc-central.json"
 fi
 
+# --- AIDLC settings: keep previous values unless a flag overrides them ---
+if [ -f "$TRACKING_FILE" ] && command -v jq >/dev/null 2>&1; then
+  [ -z "$TRACK_ROOT" ] && TRACK_ROOT="$(jq -r '.track_root // empty' "$TRACKING_FILE" 2>/dev/null)"
+  [ -z "$TIER_DEFAULT" ] && TIER_DEFAULT="$(jq -r '.tier_default // empty' "$TRACKING_FILE" 2>/dev/null)"
+fi
+[ -z "$TRACK_ROOT" ] && TRACK_ROOT=".track"
+[ -z "$TIER_DEFAULT" ] && TIER_DEFAULT="2"
+
 cat > "$TRACKING_FILE" << EOF
 {
   "version": "$VERSION",
@@ -211,7 +263,11 @@ cat > "$TRACKING_FILE" << EOF
   "agent": "$AGENT",
   "roles": ["all"],
   "skill_count": $INSTALLED,
-  "pipelines_installed": true
+  "pipelines_installed": true,
+  "track_root": "$TRACK_ROOT",
+  "tier_default": $TIER_DEFAULT,
+  "hooks_installed": $HOOKS_INSTALLED,
+  "hook_support_level": "$HOOK_LEVEL"
 }
 EOF
 echo ""

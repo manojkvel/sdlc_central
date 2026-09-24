@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdlc-central/schemas/contract.schema.json",
+  "title": "AIDLC contract header (front matter of contracts/C-NNN.md)",
+  "type": "object",
+  "required": ["id", "kind", "producer", "consumers", "version", "status"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^C-[0-9]{3,}$"},
+    "kind": {"enum": ["data", "api", "ui", "uat"]},
+    "producer": {"type": "string", "pattern": "^WS-[0-9]{3,}$"},
+    "consumers": {"type": "array", "items": {"type": "string", "pattern": "^WS-[0-9]{3,}$"}},
+    "schema": {"type": "string", "description": "OpenAPI path, expectation suite, DDL or component spec"},
+    "version": {"type": "string"},
+    "status": {"enum": ["DRAFT", "APPROVED", "BREACHED", "SUPERSEDED"]},
+    "approved_by_decision": {"type": "string", "pattern": "^HD-[0-9]{3,}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "APPROVED"}}}, "then": {"required": ["approved_by_decision"]}}
+  ]
+}

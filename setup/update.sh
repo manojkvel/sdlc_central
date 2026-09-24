@@ -42,6 +42,10 @@ INSTALLED_VERSION=$(grep '"version"' "$TRACKING" | head -1 | sed 's/.*: *"//' | 
 INSTALLED_ROLES=$(grep '"roles"' "$TRACKING" | sed 's/.*\[//' | sed 's/\].*//' | tr -d '"' | tr ',' ' ')
 INSTALLED_AGENT=$(grep '"agent"' "$TRACKING" 2>/dev/null | sed 's/.*: *"//' | sed 's/".*//')
 
+# AIDLC: keep the hook choice made at install time (settings such as track_root are preserved by the installers)
+UPDATE_FLAGS=""
+if grep -q '"hooks_installed": *false' "$TRACKING"; then UPDATE_FLAGS="--no-hooks"; fi
+
 # Default to claude-code if no agent recorded (legacy installations)
 if [ -z "$INSTALLED_AGENT" ]; then
   INSTALLED_AGENT="claude-code"
@@ -62,11 +66,11 @@ fi
 if echo "$INSTALLED_ROLES" | grep -q "all"; then
   echo "Updating all skills and pipelines..."
   echo ""
-  bash "$SCRIPT_DIR/install-all.sh" --agent "$INSTALLED_AGENT"
+  bash "$SCRIPT_DIR/install-all.sh" --agent "$INSTALLED_AGENT" $UPDATE_FLAGS
 else
   for role in $INSTALLED_ROLES; do
     echo "Updating role: $role"
-    bash "$SCRIPT_DIR/install-role.sh" "$role" --agent "$INSTALLED_AGENT"
+    bash "$SCRIPT_DIR/install-role.sh" "$role" --agent "$INSTALLED_AGENT" $UPDATE_FLAGS
     echo ""
   done
 fi

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdlc-central/schemas/decision-record.schema.json",
+  "title": "AIDLC human decision record (one HD-NNN entry in human-decisions.md)",
+  "type": "object",
+  "required": ["id", "timestamp", "gate", "risk", "decision_string", "status", "decider", "identity_source"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^HD-[0-9]{3,}$"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "gate": {"type": "string"},
+    "risk": {"enum": ["low", "medium", "high", "security-sensitive", "release"]},
+    "decision_string": {"type": "string", "minLength": 3},
+    "status": {"enum": ["APPROVED", "APPROVED W/ RISK", "CHANGES REQUESTED", "VERIFICATION REQUESTED", "DEFERRED", "REJECTED", "BACKFILLED"]},
+    "decider": {"type": "string"},
+    "role": {"type": "string"},
+    "identity_source": {"enum": ["asserted", "sso", "backfilled"]},
+    "normalised_from": {"type": "string", "description": "Original casual text when a low-risk approval was normalised"},
+    "artifacts": {"type": "array", "items": {"type": "object", "required": ["path", "sha256"], "properties": {"path": {"type": "string"}, "sha256": {"type": "string"}}}},
+    "risk_id": {"type": "string", "pattern": "^RISK-[0-9]{3,}$"},
+    "lineage_event": {"type": "string"}
+  }
+}

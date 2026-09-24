@@ -1,13 +1,23 @@
 pipeline:
   name: "Feature Build"
-  description: "Build a feature from plan — task breakdown, wave scheduling, implementation, spec compliance, fix findings"
+  description: "Build a feature from plan — plan check, task breakdown, wave scheduling, implementation, spec compliance, fix findings"
   role: developer
   trigger: "When a plan is approved and ready for implementation"
 
 steps:
+  - id: check-plan
+    skill: plan-check
+    args: "$INPUT"
+    description: "Audit the plan before any code is written (writes PLAN_CHECK.md; the pre-write guard enforces it on tier 2-3)"
+    gate:
+      type: decision
+      pass_condition: "marker == PLAN CHECK PASSED"
+      on_fail: stop
+
   - id: break-tasks
     skill: task-gen
     args: "$INPUT"
+    depends_on: [check-plan]
     description: "Break implementation plan into atomic, implementable tasks"
 
   - id: schedule

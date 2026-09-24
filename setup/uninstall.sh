@@ -11,6 +11,8 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SDLC_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 PROJECT_DIR="$(pwd)"
 CLAUDE_DIR="$PROJECT_DIR/.claude"
 
@@ -30,7 +32,10 @@ echo "  - .claude/pipelines/      (all pipeline definitions)"
 echo "  - .claude/config/         (gate and scoring config)"
 echo "  - .claude/sdlc-central.json"
 echo ""
+echo "  - .claude/hooks/ and the aidlc hook entries in .claude/settings.json"
+echo ""
 echo "CLAUDE.md will NOT be removed (you may have customized it)."
+echo "The track root (.track/) will NOT be removed: it is your audit record."
 echo ""
 echo -n "Proceed? [y/N]: "
 read -r CONFIRM
@@ -41,6 +46,10 @@ if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "Y" ]; then
 fi
 
 echo ""
+
+# Remove AIDLC hooks first, while the tracking file still names the agent
+source "$SDLC_ROOT/adapters/_shared/hooks.sh"
+remove_hooks claude-code "$PROJECT_DIR"
 
 # Remove skills
 if [ -d "$CLAUDE_DIR/skills" ]; then

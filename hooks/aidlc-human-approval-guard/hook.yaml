@@ -1,0 +1,10 @@
+name: aidlc-human-approval-guard
+event: prompt
+tiers: [1, 2, 3]
+design_ref: "Conversion Technical Guide > Gate and approval layer"
+description: "Records structured gate decisions as HD records; rejects vague approvals above low risk"
+codes:
+  A01: vague approval
+  A02: decision names a different gate
+  A03: required text missing (risk acknowledgement, release scope, reason, workstream id)
+  A04: decision string not in exact upper case

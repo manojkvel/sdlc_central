@@ -1,0 +1,11 @@
+name: aidlc-pre-command-guard
+event: pre-command
+tiers: [1, 2, 3]
+design_ref: "Conversion Technical Guide > Guardrail layer: hooks"
+description: "Blocks destructive commands unless PLAN.md permits them with no gate open; blocks shell edits to hooks and the decision log"
+codes:
+  C00: destructive command permitted by PLAN.md (logged, allowed)
+  C01: destructive command
+  C02: destructive command while a gate is open
+  C03: command modifies the hook machinery
+  C04: command writes human-decisions.md directly

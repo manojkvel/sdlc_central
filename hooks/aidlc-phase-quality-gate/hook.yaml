@@ -1,0 +1,8 @@
+name: aidlc-phase-quality-gate
+event: invoked
+tiers: [2, 3]
+design_ref: "Conversion Technical Guide > Guardrail layer: hooks"
+description: "Wrapper run by the quality-gate skill at every transition: traceability, consistency and hygiene"
+codes:
+  Q00: phase clean
+  Q01: phase failed its quality gate (first wrapped code quoted)

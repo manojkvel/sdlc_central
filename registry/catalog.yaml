@@ -7,7 +7,7 @@ categories:
     skills: [review, security-audit, security-audit-deep, test-gen, doc-gen, design-review, review-fix, spec-fix, pr-orchestrator, design-to-code, design-token-sync]
   planning:
     description: "Specification, planning, and task breakdown"
-    skills: [spec-gen, plan-gen, task-gen, impact-analysis, plan-merge, user-story-refiner]
+    skills: [spec-gen, plan-gen, plan-check, task-gen, impact-analysis, plan-merge, user-story-refiner]
   quality:
     description: "Testing, regression, and performance"
     skills: [regression-check, perf-review, quality-gate, visual-review, bug-report]
@@ -260,6 +260,13 @@ skills:
     argument_hint: "run|resume|status [--gates minimal|standard|strict] path/to/spec"
     roles: [tech-lead]
 
+  - name: plan-check
+    description: "Audit a plan before any code is written and write PLAN_CHECK.md, the gate the pre-write guard enforces"
+    category: planning
+    command: "/plan-check"
+    argument_hint: "[.track/phases/NN-slug]"
+    roles: [architect, developer, tech-lead]
+
   - name: plan-gen
     description: "Generate implementation plan from approved spec"
     category: planning
@@ -501,10 +508,11 @@ roles:
       - sprint-demo
 
   architect:
-    skill_count: 18
+    skill_count: 19
     skills:
       - design-review
       - plan-gen
+      - plan-check
       - quality-gate
       - decision-log
       - tech-debt-audit
@@ -527,7 +535,7 @@ roles:
       - migration-planning
 
   developer:
-    skill_count: 23
+    skill_count: 24
     skills:
       - task-gen
       - wave-scheduler
@@ -546,6 +554,7 @@ roles:
       - doc-gen
       - perf-review
       - plan-gen
+      - plan-check
       - spec-gen
       - impact-analysis
       - onboarding-guide

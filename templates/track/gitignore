@@ -1,0 +1,4 @@
+# Evidence log bodies stay local; the index and machine-readable reports are committed.
+phases/*/evidence/**/*.log
+phases/*/evidence/**/*.out
+phases/*/evidence/**/*.err

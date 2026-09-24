@@ -3,7 +3,7 @@
 # SDLC Central — Non-Interactive Role Installer
 # ------------------------------------------------------------------
 # Usage:
-#   bash /path/to/sdlc_central/setup/install-role.sh <role> [--agent <agent>]
+#   bash /path/to/sdlc_central/setup/install-role.sh <role> [--agent <agent>] [--no-hooks] [--tier-default 1|2|3] [--track-root <path>]
 #
 # Roles: product-owner, architect, developer, qa, devops-sre,
 #        tech-lead, scrum-master, designer
@@ -21,6 +21,9 @@ VERSION="1.0.0"
 # --- Parse arguments ---
 ROLE=""
 AGENT="claude-code"
+NO_HOOKS=0
+TIER_DEFAULT=""
+TRACK_ROOT=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -30,6 +33,26 @@ while [ $# -gt 0 ]; do
       ;;
     --agent=*)
       AGENT="${1#*=}"
+      shift
+      ;;
+    --no-hooks)
+      NO_HOOKS=1
+      shift
+      ;;
+    --tier-default)
+      TIER_DEFAULT="$2"
+      shift 2
+      ;;
+    --tier-default=*)
+      TIER_DEFAULT="${1#*=}"
+      shift
+      ;;
+    --track-root)
+      TRACK_ROOT="$2"
+      shift 2
+      ;;
+    --track-root=*)
+      TRACK_ROOT="${1#*=}"
       shift
       ;;
     *)
@@ -42,7 +65,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$ROLE" ]; then
-  echo "Usage: install-role.sh <role> [--agent <agent>]"
+  echo "Usage: install-role.sh <role> [--agent <agent>] [--no-hooks] [--tier-default 1|2|3] [--track-root <path>]"
   echo ""
   echo "Roles: product-owner, architect, developer, qa, devops-sre, tech-lead, scrum-master, designer"
   echo "Agents: claude-code (default), cursor, copilot, windsurf, cline, aider, gemini, antigravity, agents-md"
@@ -64,11 +87,11 @@ case "$ROLE" in
     PIPELINES=(feature-intake sprint-health release-signoff stakeholder-update idea-to-spec sprint-demo)
     ;;
   architect)
-    SKILLS=(design-review plan-gen quality-gate decision-log tech-debt-audit code-ownership-mapper api-contract-analyzer report-trends migration-tracker impact-analysis plan-merge spec-gen spec-review spec-evolve feature-balance-sheet gate-briefing reverse-engineer)
+    SKILLS=(design-review plan-gen plan-check quality-gate decision-log tech-debt-audit code-ownership-mapper api-contract-analyzer report-trends migration-tracker impact-analysis plan-merge spec-gen spec-review spec-evolve feature-balance-sheet gate-briefing reverse-engineer)
     PIPELINES=(design-to-plan system-health migration-planning)
     ;;
   developer)
-    SKILLS=(task-gen wave-scheduler task-implementer spec-review review-fix pr-orchestrator review security-audit test-gen dependency-update tech-debt-audit regression-check spec-fix doc-gen perf-review plan-gen spec-gen impact-analysis onboarding-guide design-review)
+    SKILLS=(task-gen plan-check wave-scheduler task-implementer spec-review review-fix pr-orchestrator review security-audit test-gen dependency-update tech-debt-audit regression-check spec-fix doc-gen perf-review plan-gen spec-gen impact-analysis onboarding-guide design-review)
     PIPELINES=(feature-build pr-workflow maintenance)
     ;;
   qa)
@@ -81,7 +104,11 @@ case "$ROLE" in
     ;;
   tech-lead)
     # Tech lead gets everything
-    bash "$SCRIPT_DIR/install-all.sh" --agent "$AGENT"
+    EXTRA_FLAGS=""
+    [ "$NO_HOOKS" = "1" ] && EXTRA_FLAGS="$EXTRA_FLAGS --no-hooks"
+    [ -n "$TIER_DEFAULT" ] && EXTRA_FLAGS="$EXTRA_FLAGS --tier-default $TIER_DEFAULT"
+    [ -n "$TRACK_ROOT" ] && EXTRA_FLAGS="$EXTRA_FLAGS --track-root $TRACK_ROOT"
+    bash "$SCRIPT_DIR/install-all.sh" --agent "$AGENT" $EXTRA_FLAGS
     exit 0
     ;;
   scrum-master)
@@ -188,6 +215,27 @@ else
   echo "  ○ balance-sheet-config.json (preserved)"
 fi
 
+# --- AIDLC: work-type profiles (preserve existing) ---
+if [ ! -f "$CONFIG_DIR/profiles.yaml" ] && [ -f "$SDLC_ROOT/config/profiles.yaml" ]; then
+  cp "$SDLC_ROOT/config/profiles.yaml" "$CONFIG_DIR/profiles.yaml"
+  echo "  ✓ profiles.yaml"
+fi
+
+# --- AIDLC: hooks ---
+echo ""
+echo "Hooks:"
+source "$SDLC_ROOT/adapters/_shared/hooks.sh"
+HOOK_LEVEL="$(hook_support_level "$AGENT")"
+if [ "$NO_HOOKS" = "1" ]; then
+  HOOKS_INSTALLED=false
+  HOOK_LEVEL="none"
+  echo "  ○ skipped (--no-hooks)"
+else
+  emit_hooks "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
+  HOOKS_INSTALLED=true
+fi
+echo "  Hook enforcement on $AGENT: $HOOK_LEVEL. Hooks stay inert until the project has a track root (setup/init-track.sh)."
+
 # --- Write/update tracking file ---
 TRACKING_DIR="$PROJECT_DIR/.sdlc"
 mkdir -p "$TRACKING_DIR"
@@ -197,6 +245,14 @@ TRACKING_FILE="$TRACKING_DIR/sdlc-central.json"
 if [ "$AGENT" = "claude-code" ]; then
   TRACKING_FILE="$PROJECT_DIR/.claude/sdlc-central.json"
 fi
+
+# --- AIDLC settings: keep previous values unless a flag overrides them ---
+if [ -f "$TRACKING_FILE" ] && command -v jq >/dev/null 2>&1; then
+  [ -z "$TRACK_ROOT" ] && TRACK_ROOT="$(jq -r '.track_root // empty' "$TRACKING_FILE" 2>/dev/null)"
+  [ -z "$TIER_DEFAULT" ] && TIER_DEFAULT="$(jq -r '.tier_default // empty' "$TRACKING_FILE" 2>/dev/null)"
+fi
+[ -z "$TRACK_ROOT" ] && TRACK_ROOT=".track"
+[ -z "$TIER_DEFAULT" ] && TIER_DEFAULT="2"
 
 ROLES_JSON="[\"$ROLE\"]"
 if [ -f "$TRACKING_FILE" ]; then
@@ -217,7 +273,11 @@ cat > "$TRACKING_FILE" << EOF
   "agent": "$AGENT",
   "roles": $ROLES_JSON,
   "skill_count": $INSTALLED,
-  "pipelines_installed": true
+  "pipelines_installed": true,
+  "track_root": "$TRACK_ROOT",
+  "tier_default": $TIER_DEFAULT,
+  "hooks_installed": $HOOKS_INSTALLED,
+  "hook_support_level": "$HOOK_LEVEL"
 }
 EOF
 

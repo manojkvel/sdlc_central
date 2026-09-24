@@ -1,0 +1,12 @@
+name: plan-check
+version: "1.0.0"
+description: "Audit an implementation plan before any code is written — every AC and SC covered, ids resolved, scope bounded, destructive commands declared, rollback present — and write PLAN_CHECK.md, the gate the pre-write guard enforces"
+category: planning
+argument_hint: "[.track/phases/NN-slug] (defaults to the current phase)"
+roles: [architect, developer, tech-lead]
+markers:
+  success: "## PLAN CHECK PASSED"
+  block: "## AIDLC GATE BLOCKED"
+writes: [PLAN_CHECK.md, lineage.md]
+hooks: [aidlc-traceability-check]
+design_ref: "Conversion Technical Guide > Skill layer > New skills"

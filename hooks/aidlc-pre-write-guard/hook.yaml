@@ -1,0 +1,13 @@
+name: aidlc-pre-write-guard
+event: pre-write
+tiers: [1, 2, 3]
+design_ref: "Conversion Technical Guide > Guardrail layer: hooks"
+description: "Blocks source writes before the plan is checked or while a gate is open; protects secrets, hook machinery and the decision log"
+codes:
+  W01: no active phase for a source write
+  W02: plan not checked (tier 2-3) or no inline unit.md (tier 1)
+  W03: gate open
+  W04: secret target
+  W05: protected path (hooks, hook config, install record)
+  W06: stage does not permit source writes
+  W07: human-decisions.md written outside the approval guard

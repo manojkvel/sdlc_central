@@ -4,7 +4,10 @@
   "profiles": {
     "minimal": {
       "description": "Relaxed thresholds for prototyping and spikes",
-      "hitl_gates": ["approve-spec", "approve-release"],
+      "hitl_gates": [
+        "approve-spec",
+        "approve-release"
+      ],
       "thresholds": {
         "spec-to-plan": {
           "min_acceptance_criteria": 2,
@@ -32,7 +35,11 @@
     },
     "standard": {
       "description": "Default thresholds for normal development",
-      "hitl_gates": ["approve-spec", "approve-plan", "approve-release"],
+      "hitl_gates": [
+        "approve-spec",
+        "approve-plan",
+        "approve-release"
+      ],
       "thresholds": {
         "spec-to-plan": {
           "min_acceptance_criteria": 3,
@@ -60,7 +67,13 @@
     },
     "strict": {
       "description": "Strict thresholds for compliance-critical and security-sensitive work",
-      "hitl_gates": ["approve-spec", "approve-plan", "approve-tasks", "approve-impl", "approve-release"],
+      "hitl_gates": [
+        "approve-spec",
+        "approve-plan",
+        "approve-tasks",
+        "approve-impl",
+        "approve-release"
+      ],
       "thresholds": {
         "spec-to-plan": {
           "min_acceptance_criteria": 5,
@@ -90,6 +103,92 @@
           "require_api_contract_check": true
         }
       }
+    }
+  },
+  "tier_map": {
+    "1": "minimal",
+    "2": "standard",
+    "3": "strict"
+  },
+  "risk_levels": {
+    "approve-spec": {
+      "minimal": "low",
+      "standard": "medium",
+      "strict": "high"
+    },
+    "approve-tdes": {
+      "standard": "medium",
+      "strict": "high"
+    },
+    "approve-central-tdes": {
+      "strict": "high"
+    },
+    "approve-plan": {
+      "minimal": "low",
+      "standard": "medium",
+      "strict": "high"
+    },
+    "approve-tasks": {
+      "strict": "medium"
+    },
+    "approve-impl": {
+      "strict": "high"
+    },
+    "approve-workstream-split": {
+      "strict": "high"
+    },
+    "approve-contract": {
+      "strict": "high"
+    },
+    "approve-workstream-plan": {
+      "strict": "high"
+    },
+    "lift-exclusion": {
+      "strict": "high"
+    },
+    "approve-release": {
+      "minimal": "release",
+      "standard": "release",
+      "strict": "release"
+    },
+    "approve-integration-release": {
+      "strict": "release"
+    }
+  },
+  "approval_policy": {
+    "low": {
+      "casual_allowed": true,
+      "require_text": false
+    },
+    "medium": {
+      "casual_allowed": false,
+      "require_text": false
+    },
+    "high": {
+      "casual_allowed": false,
+      "require_text": true,
+      "text_meaning": "risk acknowledgement"
+    },
+    "security-sensitive": {
+      "casual_allowed": false,
+      "require_text": true,
+      "text_meaning": "risk acknowledgement",
+      "require_receipt": true
+    },
+    "release": {
+      "casual_allowed": false,
+      "require_text": true,
+      "text_meaning": "release scope",
+      "require_receipt": true
+    }
+  },
+  "security_escalation": "Any gate escalates to security-sensitive when REVIEW.md or risks.md has an open security finding.",
+  "new_transitions": {
+    "plan-check": {
+      "require_plan_check_passed": true
+    },
+    "release-scorecard": {
+      "require_all_dimensions": true
     }
   }
 }

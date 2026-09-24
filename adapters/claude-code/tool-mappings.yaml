@@ -73,3 +73,4 @@ overrides:
   demo-prep: "Read, Write, Grep, Glob, Bash(git log, git diff, git describe, git tag, ls, find, cat, date)"
   user-story-refiner: "Read, Write, Grep, Glob, Bash(git log, ls, find, tree, cat, date)"
   pipeline-orchestrator: "Read, Write, Grep, Glob, Bash(git log, git diff, git show, ls, find, cat, wc, date, jq)"
+  plan-check: "Read, Write, Grep, Glob, Bash(git log, git diff, ls, find, tree, shasum, bash, date)"

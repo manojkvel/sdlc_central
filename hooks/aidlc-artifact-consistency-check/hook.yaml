@@ -1,0 +1,12 @@
+name: aidlc-artifact-consistency-check
+event: stop
+tiers: [1, 2, 3]
+design_ref: "Conversion Technical Guide > Guardrail layer: hooks"
+description: "Contradictions across state, lineage, decisions, summary and verification"
+codes:
+  X00: consistent
+  X01: state drift
+  X02: approved artifact changed after approval
+  X03: summary contradicts verification
+  X04: decision without lineage
+  X05: unknown lineage event family

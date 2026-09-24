@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {"matcher": "Write|Edit|MultiEdit|NotebookEdit", "hooks": [{"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap.sh\" write aidlc-pre-write-guard"}]},
+      {"matcher": "Bash", "hooks": [
+        {"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap.sh\" command aidlc-pre-command-guard"},
+        {"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap.sh\" command aidlc-final-verification"}
+      ]}
+    ],
+    "PostToolUse": [
+      {"matcher": "Write|Edit|MultiEdit", "hooks": [
+        {"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap.sh\" write aidlc-artifact-hygiene"},
+        {"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap.sh\" write aidlc-traceability-check"}
+      ]}
+    ],
+    "UserPromptSubmit": [
+      {"hooks": [{"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap.sh\" prompt aidlc-human-approval-guard"}]}
+    ],
+    "Stop": [
+      {"hooks": [
+        {"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap.sh\" stop aidlc-final-verification"},
+        {"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap.sh\" stop aidlc-artifact-consistency-check"}
+      ]}
+    ]
+  }
+}

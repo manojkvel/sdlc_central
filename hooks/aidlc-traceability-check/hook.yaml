@@ -1,0 +1,11 @@
+name: aidlc-traceability-check
+event: post-write
+tiers: [2, 3]
+design_ref: "Conversion Technical Guide > Guardrail layer: hooks"
+description: "REQ, AC, SC, D, RISK and TASK ids mapped across requirements, SPEC, PLAN, TASKS and VERIFICATION"
+codes:
+  T00: traced
+  T01: orphan requirement
+  T02: unmapped acceptance or success criterion
+  T03: dangling decision or risk id
+  T04: untraced task
