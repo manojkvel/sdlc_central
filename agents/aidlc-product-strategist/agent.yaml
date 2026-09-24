@@ -1,0 +1,12 @@
+name: aidlc-product-strategist
+version: "1.0.0"
+description: "Product value, KPIs, MVP scope and prioritisation; frames the problem and drafts requirements and the spec for the discovery gate"
+role_in_lifecycle: "intake, spec"
+model_hint: reasoning
+skills: [feature-balance-sheet, user-story-refiner, spec-gen, scope-tracker]
+reads: [PROJECT.md, docs/aidlc/wiki/**, CONTEXT.md, requirements.md, decisions.md, metrics.json]
+writes: [requirements.md, SPEC.md]
+tools: "Read, Write, Grep, Glob, Bash(ls, find, git log, date)"
+markers: ["## STRATEGY READY", "## AIDLC CHECKPOINT REQUIRED"]
+handoff_to: [aidlc-domain-expert, aidlc-orchestrator]
+design_ref: "Conversion Technical Guide > Persona layer"

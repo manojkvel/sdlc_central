@@ -32,6 +32,7 @@ _copy_tools() {
   mkdir -p "$dst/_lib" "$dst/_bin"
   cp "$src/_lib/track-parse.sh" "$dst/_lib/"
   cp "$src"/_bin/*.sh "$dst/_bin/"
+  [ -f "$src/../console/console.html" ] && cp "$src/../console/console.html" "$dst/_bin/console.html"
   chmod +x "$dst"/_bin/*.sh "$dst"/_lib/*.sh
 }
 
@@ -57,6 +58,8 @@ emit_hooks() {
   adir="$project/$(agent_dir "$agent")"
   level="$(hook_support_level "$agent")"
   _copy_hook_tree "$root/hooks" "$adir/hooks"
+  [ "$agent" = "claude-code" ] && cp "$root/adapters/claude-code/hooks/wrap.sh" "$adir/hooks/wrap.sh"
+  bash "$adir/hooks/_bin/aidlc-integrity.sh" --write >/dev/null
   count=$(ls -d "$adir"/hooks/aidlc-*/ 2>/dev/null | wc -l | tr -d ' ')
 
   if [ "$agent" = "claude-code" ]; then
@@ -108,7 +111,7 @@ remove_hooks() {
   local agent="$1" project="$2" adir
   adir="$project/$(agent_dir "$agent")"
   if [ -d "$adir/hooks" ]; then
-    rm -rf "$adir"/hooks/aidlc-* "$adir/hooks/_lib" "$adir/hooks/_bin" "$adir/hooks/wrap.sh" "$adir/hooks/README.md"
+    rm -rf "$adir"/hooks/aidlc-* "$adir/hooks/_lib" "$adir/hooks/_bin" "$adir/hooks/wrap.sh" "$adir/hooks/README.md" "$adir/hooks/MANIFEST.sha256"
     rmdir "$adir/hooks" 2>/dev/null
     echo "  ✓ Removed AIDLC hook scripts"
   fi

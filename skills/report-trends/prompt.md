@@ -34,6 +34,18 @@ Group files by skill type based on filename prefix:
 
 For each file, extract the date from the filename (the `YYYY-MM-DD` portion).
 
+## AIDLC metrics (projects with a track root)
+
+When `<track root>/state.md` exists, include an **AIDLC** section built only from `docs/aidlc/metrics/metrics.json` (run `bash <agent-dir>/hooks/_bin/aidlc-metrics.sh` first if it is missing or older than the last lineage event):
+
+- **Speed:** lead time median and deployment frequency, and time by stage from `phases[].stage_days`.
+- **Quality:** evidence coverage, rework rate, scorecard first-pass rate.
+- **Reliability:** change failure rate and time to restore (null until `incidents.json` exists).
+- **Governance:** structured approval rate with its counts, vague attempts rejected, approval latency by gate, guardrail blocks by hook.
+- **Cost:** tokens, labelled best effort.
+
+Compare the squad only with its own `baseline.json`; never rank squads. Report every rate with its numerator and denominator, and print "not measured yet" for nulls.
+
 ## Step 2 — Parse YAML Front-Matter
 
 Read the first 20 lines of each report file to extract the YAML front-matter block (between `---` markers). Parse key metrics:

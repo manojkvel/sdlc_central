@@ -5,7 +5,7 @@
 # Usage:
 #   bash /path/to/sdlc_central/setup/install-role.sh <role> [--agent <agent>] [--no-hooks] [--tier-default 1|2|3] [--track-root <path>]
 #
-# Roles: product-owner, architect, developer, qa, devops-sre,
+# Roles: product-owner, architect, developer, qa, devops-sre, release-manager,
 #        tech-lead, scrum-master, designer
 #
 # Agents: claude-code (default), cursor, copilot, windsurf, cline, aider, gemini, antigravity, agents-md
@@ -67,7 +67,7 @@ done
 if [ -z "$ROLE" ]; then
   echo "Usage: install-role.sh <role> [--agent <agent>] [--no-hooks] [--tier-default 1|2|3] [--track-root <path>]"
   echo ""
-  echo "Roles: product-owner, architect, developer, qa, devops-sre, tech-lead, scrum-master, designer"
+  echo "Roles: product-owner, architect, developer, qa, devops-sre, release-manager, tech-lead, scrum-master, designer"
   echo "Agents: claude-code (default), cursor, copilot, windsurf, cline, aider, gemini, antigravity, agents-md"
   exit 1
 fi
@@ -83,11 +83,11 @@ fi
 # --- Role → Skill Mappings ---
 case "$ROLE" in
   product-owner)
-    SKILLS=(feature-balance-sheet spec-gen quality-gate gate-briefing scope-tracker board-sync report-trends risk-tracker release-readiness-checker release-notes decision-log drift-detector changelog-plain progress-summary demo-prep user-story-refiner bug-report codebase-qa)
+    SKILLS=(feature-balance-sheet spec-gen source-extract wiki-curate aidlc-metrics-extract aidlc-decision-guard quality-gate gate-briefing scope-tracker board-sync report-trends risk-tracker release-readiness-checker release-notes decision-log drift-detector changelog-plain progress-summary demo-prep user-story-refiner bug-report codebase-qa)
     PIPELINES=(feature-intake sprint-health release-signoff stakeholder-update idea-to-spec sprint-demo)
     ;;
   architect)
-    SKILLS=(design-review plan-gen plan-check quality-gate decision-log tech-debt-audit code-ownership-mapper api-contract-analyzer report-trends migration-tracker impact-analysis plan-merge spec-gen spec-review spec-evolve feature-balance-sheet gate-briefing reverse-engineer)
+    SKILLS=(design-review plan-gen plan-check source-extract wiki-curate aidlc-decision-guard quality-gate decision-log tech-debt-audit code-ownership-mapper api-contract-analyzer report-trends migration-tracker impact-analysis plan-merge spec-gen spec-review spec-evolve feature-balance-sheet gate-briefing reverse-engineer)
     PIPELINES=(design-to-plan system-health migration-planning)
     ;;
   developer)
@@ -95,7 +95,7 @@ case "$ROLE" in
     PIPELINES=(feature-build pr-workflow maintenance)
     ;;
   qa)
-    SKILLS=(spec-review aidlc-evidence-verifier test-gen regression-check perf-review report-trends release-readiness-checker quality-gate security-audit api-contract-analyzer drift-detector bug-report codebase-qa)
+    SKILLS=(spec-review aidlc-evidence-verifier governance-scorecard test-gen regression-check perf-review report-trends release-readiness-checker quality-gate security-audit api-contract-analyzer drift-detector bug-report codebase-qa)
     PIPELINES=(test-strategy regression-suite release-validation bug-to-fix)
     ;;
   devops-sre)
@@ -111,8 +111,12 @@ case "$ROLE" in
     bash "$SCRIPT_DIR/install-all.sh" --agent "$AGENT" $EXTRA_FLAGS
     exit 0
     ;;
+  release-manager)
+    SKILLS=(governance-scorecard release-readiness-checker rollback-assessor gate-briefing release-notes aidlc-evidence-verifier risk-tracker aidlc-decision-guard quality-gate changelog-plain aidlc-metrics-extract)
+    PIPELINES=(integration-release)
+    ;;
   scrum-master)
-    SKILLS=(board-sync scope-tracker risk-tracker feedback-loop report-trends pipeline-monitor auto-triage wave-scheduler gate-briefing changelog-plain progress-summary demo-prep bug-report codebase-qa)
+    SKILLS=(board-sync aidlc-metrics-extract wiki-curate aidlc-decision-guard scope-tracker risk-tracker feedback-loop report-trends pipeline-monitor auto-triage wave-scheduler gate-briefing changelog-plain progress-summary demo-prep bug-report codebase-qa)
     PIPELINES=(sprint-tracking retrospective-data impediment-tracker)
     ;;
   designer)
@@ -235,6 +239,8 @@ else
   emit_hooks "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
   HOOKS_INSTALLED=true
 fi
+source "$SDLC_ROOT/adapters/_shared/agents.sh"
+emit_agents "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
 echo "  Hook enforcement on $AGENT: $HOOK_LEVEL. Hooks stay inert until the project has a track root (setup/init-track.sh)."
 
 # --- Write/update tracking file ---

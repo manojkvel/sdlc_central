@@ -7,7 +7,7 @@ categories:
     skills: [review, security-audit, security-audit-deep, test-gen, doc-gen, design-review, review-fix, spec-fix, pr-orchestrator, design-to-code, design-token-sync]
   planning:
     description: "Specification, planning, and task breakdown"
-    skills: [spec-gen, plan-gen, plan-check, task-gen, impact-analysis, plan-merge, user-story-refiner]
+    skills: [spec-gen, plan-gen, plan-check, task-gen, impact-analysis, plan-merge, user-story-refiner, source-extract]
   quality:
     description: "Testing, regression, and performance"
     skills: [regression-check, perf-review, quality-gate, visual-review, bug-report, aidlc-evidence-verifier]
@@ -22,7 +22,7 @@ categories:
     skills: [spec-review, spec-evolve, spec-fix]
   governance:
     description: "Compliance, standards, and auditing"
-    skills: [skill-gap-analyzer, license-compliance-audit, release-readiness-checker, api-contract-analyzer, cross-repo-standards-enforcer, approval-workflow-auditor, code-ownership-mapper, component-audit]
+    skills: [governance-scorecard, aidlc-decision-guard, skill-gap-analyzer, license-compliance-audit, release-readiness-checker, api-contract-analyzer, cross-repo-standards-enforcer, approval-workflow-auditor, code-ownership-mapper, component-audit]
   production-support:
     description: "Incident detection, triage, and recovery"
     skills: [incident-detector, incident-triager, rollback-assessor, incident-postmortem-synthesizer]
@@ -31,24 +31,38 @@ categories:
     skills: [release-notes]
   reporting:
     description: "Trends, dashboards, and metrics"
-    skills: [report-trends, slo-sla-tracker, changelog-plain, progress-summary, demo-prep]
+    skills: [report-trends, slo-sla-tracker, changelog-plain, progress-summary, demo-prep, aidlc-metrics-extract]
   maintenance:
     description: "Dependency updates and tech debt"
     skills: [dependency-update, tech-debt-audit, migration-tracker]
   knowledge-transfer:
     description: "Onboarding and reverse engineering"
-    skills: [onboarding-guide, reverse-engineer, codebase-qa]
+    skills: [onboarding-guide, reverse-engineer, codebase-qa, wiki-curate]
   integration:
     description: "PM tool sync and task implementation"
     skills: [board-sync, task-implementer]
 
 skills:
+  - name: aidlc-decision-guard
+    description: "Record a gate decision through the approval guard, or audit gates passed without an accepted decision"
+    category: governance
+    command: "/aidlc-decision-guard"
+    argument_hint: "record '<decision>' | audit"
+    roles: [product-owner, architect, tech-lead, release-manager, scrum-master]
+
   - name: aidlc-evidence-verifier
     description: "Verify a phase from recorded execution evidence and generate a sealed VERIFICATION.md, UAT.md or CONTRACT_EVIDENCE.md"
     category: quality
     command: "/aidlc-evidence-verifier"
     argument_hint: "[verify|uat|contract]"
     roles: [developer, qa, tech-lead]
+
+  - name: aidlc-metrics-extract
+    description: "Compute AIDLC-native and DORA metrics from the track root into metrics.json and CSVs"
+    category: reporting
+    command: "/aidlc-metrics-extract"
+    argument_hint: "[--out docs/aidlc/metrics]"
+    roles: [scrum-master, tech-lead, product-owner, release-manager]
 
   - name: api-contract-analyzer
     description: "Detect breaking API changes by comparing the API surface of a branch against the baseline"
@@ -196,6 +210,13 @@ skills:
     command: "/gate-briefing"
     argument_hint: "[--audience engineering|executive|compliance] path/to/spec"
     roles: [product-owner, architect, scrum-master, tech-lead]
+
+  - name: governance-scorecard
+    description: "Six-dimension governance scorecard that gates APPROVE RELEASE; writes the sealed SCORECARD.md"
+    category: governance
+    command: "/governance-scorecard"
+    argument_hint: "[.track/phases/NN-slug]"
+    roles: [tech-lead, release-manager, qa]
 
   - name: impact-analysis
     description: "Analyze blast radius of proposed changes"
@@ -407,6 +428,13 @@ skills:
     argument_hint: "['full'|'summary'|service-name]"
     roles: [devops-sre, tech-lead]
 
+  - name: source-extract
+    description: "Extract trusted facts with provenance into CONTEXT.md; list gaps instead of guessing"
+    category: planning
+    command: "/source-extract"
+    argument_hint: "'<request>'"
+    roles: [product-owner, architect, tech-lead]
+
   - name: spec-evolve
     description: "Manage spec lifecycle with versioned revisions"
     category: spec-lifecycle
@@ -484,12 +512,83 @@ skills:
     argument_hint: "[--max-parallel N] path/to/tasks.md"
     roles: [developer, scrum-master, tech-lead]
 
+  - name: wiki-curate
+    description: "Maintain the cited LLM wiki in docs/aidlc/wiki and answer questions from it with sources"
+    category: knowledge-transfer
+    command: "/wiki-curate"
+    argument_hint: "ingest | answer '<question>' | review"
+    roles: [product-owner, architect, tech-lead, scrum-master]
+
+agents:
+  - name: aidlc-delivery-manager
+    description: "Cross-phase delivery health and next-gate readiness: monitors progress, blockers, waits and handoffs, keeps the roadmap and phases table current, and writes the handoff docs"
+    role_in_lifecycle: "execution, released"
+    skills: [pipeline-monitor, progress-summary, drift-detector, board-sync, wave-scheduler, aidlc-metrics-extract, doc-gen, release-notes]
+  - name: aidlc-domain-expert
+    description: "Domain rules, workflows, edge cases and trusted sources; extracts facts with provenance into CONTEXT.md and never guesses"
+    role_in_lifecycle: "source, spec"
+    skills: [source-extract, codebase-qa, spec-review, board-sync]
+  - name: aidlc-governance-reviewer
+    description: "Governance and release readiness: runs the six-dimension scorecard, audits the decision log, and prepares the release checkpoint"
+    role_in_lifecycle: "governance"
+    skills: [governance-scorecard, aidlc-decision-guard, release-readiness-checker, rollback-assessor, release-notes]
+  - name: aidlc-orchestrator
+    description: "Lifecycle routing and gate control: reads the resume block, routes each stage to the right persona or skill, publishes checkpoints, and is the only persona that changes state.md"
+    role_in_lifecycle: "routing"
+    skills: [run-pipeline, quality-gate, gate-briefing, auto-triage, aidlc-decision-guard]
+  - name: aidlc-plan-checker
+    description: "Independent pre-execution plan verification against REQ, AC, SC, D and RISK ids; writes PLAN_CHECK.md, the gate the pre-write guard enforces"
+    role_in_lifecycle: "planning"
+    skills: [plan-check, impact-analysis, risk-tracker]
+  - name: aidlc-product-strategist
+    description: "Product value, KPIs, MVP scope and prioritisation; frames the problem and drafts requirements and the spec for the discovery gate"
+    role_in_lifecycle: "intake, spec"
+    skills: [feature-balance-sheet, user-story-refiner, spec-gen, scope-tracker]
+  - name: aidlc-security-standards-reviewer
+    description: "Security-sensitive planning and review: risk pass at design, security and standards review of the change, and ownership of security findings and risks"
+    role_in_lifecycle: "design, review"
+    skills: [security-audit, security-audit-deep, design-review, license-compliance-audit, risk-tracker, review]
+  - name: aidlc-verifier
+    description: "Post-execution evidence verification: maps every AC and SC to fresh recorded runs, re-runs the suite once, and generates the sealed VERIFICATION.md, UAT.md or CONTRACT_EVIDENCE.md"
+    role_in_lifecycle: "verification"
+    skills: [aidlc-evidence-verifier, regression-check, test-gen]
+
+hooks:
+  - name: aidlc-artifact-consistency-check
+    event: stop
+    tiers: [1, 2, 3]
+  - name: aidlc-artifact-hygiene
+    event: post-write
+    tiers: [1, 2, 3]
+  - name: aidlc-final-verification
+    event: [stop, pre-command]
+    tiers: [2, 3]
+  - name: aidlc-human-approval-guard
+    event: prompt
+    tiers: [1, 2, 3]
+  - name: aidlc-phase-quality-gate
+    event: invoked
+    tiers: [2, 3]
+  - name: aidlc-pre-command-guard
+    event: pre-command
+    tiers: [1, 2, 3]
+  - name: aidlc-pre-write-guard
+    event: pre-write
+    tiers: [1, 2, 3]
+  - name: aidlc-traceability-check
+    event: post-write
+    tiers: [2, 3]
+
 roles:
   product-owner:
-    skill_count: 18
+    skill_count: 22
     skills:
+      - aidlc-metrics-extract
+      - wiki-curate
+      - source-extract
       - feature-balance-sheet
       - spec-gen
+      - aidlc-decision-guard
       - quality-gate
       - gate-briefing
       - scope-tracker
@@ -515,11 +614,14 @@ roles:
       - sprint-demo
 
   architect:
-    skill_count: 19
+    skill_count: 22
     skills:
+      - wiki-curate
+      - source-extract
       - design-review
       - plan-gen
       - plan-check
+      - aidlc-decision-guard
       - quality-gate
       - decision-log
       - tech-debt-audit
@@ -575,10 +677,11 @@ roles:
       - maintenance
 
   qa:
-    skill_count: 15
+    skill_count: 16
     skills:
       - spec-review
       - aidlc-evidence-verifier
+      - governance-scorecard
       - test-gen
       - regression-check
       - perf-review
@@ -629,9 +732,29 @@ roles:
       - team-health
       - governance
 
-  scrum-master:
-    skill_count: 14
+  release-manager:
+    skill_count: 11
     skills:
+      - aidlc-metrics-extract
+      - governance-scorecard
+      - release-readiness-checker
+      - rollback-assessor
+      - gate-briefing
+      - release-notes
+      - aidlc-evidence-verifier
+      - risk-tracker
+      - aidlc-decision-guard
+      - quality-gate
+      - changelog-plain
+    pipelines:
+      - integration-release
+
+  scrum-master:
+    skill_count: 17
+    skills:
+      - aidlc-decision-guard
+      - wiki-curate
+      - aidlc-metrics-extract
       - board-sync
       - scope-tracker
       - risk-tracker

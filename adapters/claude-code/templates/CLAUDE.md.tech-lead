@@ -54,3 +54,10 @@ Compliance audit:
 /run-pipeline tech-lead/governance
 ```
 Chain: license-compliance-audit → cross-repo-standards-enforcer → approval-workflow-auditor
+
+## AIDLC
+
+- Track root: `.track/` (see `track_root` in `.claude/sdlc-central.json`). Resume from `.track/state.md`, its `## AIDLC_RESUME` block names the next action and its owner.
+- Your gates: any gate (escalation). Reply with the exact upper-case string (the string for the open gate), `APPROVE WITH RISK: <reason>`, `REQUEST CHANGES: <reason>` or `DEFER`. Vague replies ("ok", "looks good") are rejected above low risk.
+- Evidence beats assertions: a summary, a report you wrote by hand, or a file existing is never proof. `VERIFICATION.md` and `SCORECARD.md` are generated and sealed.
+- Personas live in `.claude/agents/`; the orchestrator routes each stage to one.

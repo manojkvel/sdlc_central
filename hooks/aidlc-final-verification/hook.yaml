@@ -6,5 +6,5 @@ description: "No release-ready claim or release command without verification, re
 codes:
   F01: no verification, or FAIL rows
   F02: open CRITICAL/HIGH review findings
-  F03: scorecard missing or blocked
+  F03: scorecard missing, blocked, or not sealed by aidlc-scorecard
   F04: stale evidence

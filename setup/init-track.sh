@@ -48,6 +48,8 @@ for f in state.md human-decisions.md lineage.md requirements.md decisions.md ris
   place "$TPL/$f" "$T/$f"
 done
 place "$TPL/gitignore" "$T/.gitignore"
+place "$TPL/stakeholders.yaml" "$T/stakeholders.yaml"
+place "$TPL/baseline.json" "$T/baseline.json"
 
 if [ $HUB -eq 1 ]; then
   mkdir -p "$T/contracts"

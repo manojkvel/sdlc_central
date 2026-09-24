@@ -15,3 +15,10 @@ Advisory agents move to enforcing as their hook mechanisms are verified and wire
 bash <agent-dir>/hooks/aidlc-phase-quality-gate/aidlc-phase-quality-gate.sh
 bash <agent-dir>/hooks/aidlc-artifact-consistency-check/aidlc-artifact-consistency-check.sh --all
 ```
+
+## Personas and evidence tools
+
+Every agent also receives the eight personas (native subagents on Claude Code, rules on Cursor,
+custom agents on Copilot, markdown personas elsewhere) and the tools in `<agent-dir>/hooks/_bin/`
+(evidence recorder, verifier, scorecard, metrics, wiki lint, knowledge index, portfolio, console,
+integrity, SLA). The tools are installed even with `--no-hooks`.

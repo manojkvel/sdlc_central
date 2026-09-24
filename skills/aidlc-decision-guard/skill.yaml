@@ -1,0 +1,12 @@
+name: aidlc-decision-guard
+version: "1.0.0"
+description: "Record a human gate decision through the approval guard on agents without a prompt hook, or audit the decision log for gates that were passed without an accepted, structured decision"
+category: governance
+argument_hint: "record '<decision string>' | audit"
+roles: [product-owner, architect, tech-lead, release-manager, scrum-master]
+markers:
+  success: "## DECISION RECORDED"
+  block: "## DECISION REJECTED"
+writes: [human-decisions.md, lineage.md, state.md, risks.md]
+hooks: [aidlc-human-approval-guard]
+design_ref: "Conversion Technical Guide > Skill layer > aidlc-decision-guard; PRD FR-A1, FR-A2"

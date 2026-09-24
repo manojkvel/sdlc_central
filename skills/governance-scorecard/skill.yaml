@@ -1,0 +1,12 @@
+name: governance-scorecard
+version: "1.0.0"
+description: "Evaluate the six governance dimensions (traceability, artifact hygiene, human approvals, evidence, contracts, security and risk) and write the sealed SCORECARD.md that gates APPROVE RELEASE, naming the owner of every blocked dimension"
+category: governance
+argument_hint: "[.track/phases/NN-slug] (defaults to the current phase)"
+roles: [tech-lead, release-manager, qa]
+markers:
+  success: "## GOVERNANCE APPROVED"
+  block: "## GOVERNANCE BLOCKED"
+writes: [SCORECARD.md, gate-history.json, lineage.md]
+hooks: [aidlc-traceability-check, aidlc-artifact-hygiene, aidlc-artifact-consistency-check]
+design_ref: "Conversion Technical Guide > Skill layer > governance-scorecard; PRD FR-F1..F4"

@@ -1,0 +1,12 @@
+name: aidlc-security-standards-reviewer
+version: "1.0.0"
+description: "Security-sensitive planning and review: risk pass at design, security and standards review of the change, and ownership of security findings and risks"
+role_in_lifecycle: "design, review"
+model_hint: reasoning
+skills: [security-audit, security-audit-deep, design-review, license-compliance-audit, risk-tracker, review]
+reads: [SPEC.md, TECHNICAL_DESIGN.md, PLAN.md, risks.md, repository]
+writes: [REVIEW.md, risks.md, lineage.md]
+tools: "Read, Write, Grep, Glob, Bash(git diff, git log, git show, ls, find, npm audit, pip-audit, date)"
+markers: ["## SECURITY REVIEW CLEAR", "## SECURITY REVIEW BLOCKED"]
+handoff_to: [aidlc-orchestrator]
+design_ref: "Conversion Technical Guide > Persona layer"

@@ -26,10 +26,20 @@ steps:
     depends_on: [readiness]
     description: "Validate all specs are fully implemented"
 
+  - id: scorecard
+    skill: governance-scorecard
+    args: "$INPUT"
+    depends_on: [spec-compliance]
+    description: "AIDLC projects: governance scorecard (the release-scorecard transition)"
+    gate:
+      type: decision
+      pass_condition: "marker == GOVERNANCE APPROVED"
+      on_fail: hitl
+
   - id: quality-enforcement
     skill: quality-gate
     args: "impl-to-release $INPUT"
-    depends_on: [spec-compliance]
+    depends_on: [scorecard]
     description: "Final quality gate before release"
     gate:
       type: quality

@@ -1,0 +1,12 @@
+name: aidlc-plan-checker
+version: "1.0.0"
+description: "Independent pre-execution plan verification against REQ, AC, SC, D and RISK ids; writes PLAN_CHECK.md, the gate the pre-write guard enforces"
+role_in_lifecycle: "planning"
+model_hint: reasoning
+skills: [plan-check, impact-analysis, risk-tracker]
+reads: [SPEC.md, requirements.md, TECHNICAL_DESIGN.md, PLAN.md, TASKS.md, risks.md, decisions.md, unit.yaml]
+writes: [PLAN_CHECK.md, lineage.md]
+tools: "Read, Grep, Glob, Write, Bash(bash, shasum, git log, git diff, ls, find, date)"
+markers: ["## PLAN CHECK PASSED", "## AIDLC GATE BLOCKED"]
+handoff_to: [aidlc-orchestrator]
+design_ref: "Conversion Technical Guide > Persona layer"

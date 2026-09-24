@@ -71,6 +71,38 @@ describe('AIDLC evidence rail', { skip: !jqAvailable && 'jq not installed' }, ()
     assert.match(fs.readFileSync(path.join(dir, '.track', 'lineage.md'), 'utf8'), /\| E-001 \| evidence\.recorded: TASK-001 test exit=0/);
   });
 
+  it('touched files come from the task\'s declared files in TASKS.md when present', () => {
+    fs.writeFileSync(path.join(dir, PH, 'TASKS.md'), '## TASK-001 add\n- covers AC-1\n- Files: `src/calc.sh`\n## TASK-002 definition\n- covers AC-2\n');
+    fs.writeFileSync(path.join(dir, 'notes.docx'), 'binary-ish');
+    const r = record(dir, 'TASK-001', [], 'bash test.sh');
+    assert.match(r.stdout, /1 touched file\(s\) from TASKS\.md/);
+    const r2 = record(dir, 'TASK-002', [], 'true');
+    assert.match(r2.stdout, /from git changes/);
+    const idx = JSON.parse(fs.readFileSync(path.join(dir, PH, 'evidence', 'index.json'), 'utf8'));
+    assert.ok(!idx.entries[1].touched_files.some(f => f.path === 'notes.docx'), 'documents are not source');
+  });
+
+  it('refuses commands that mask their exit code, and the verifier ignores such entries', () => {
+    const r = record(dir, 'TASK-001', [], 'bash test.sh; exit 0');
+    assert.strictEqual(r.status, 64);
+    assert.match(r.stderr, /masks its exit code/);
+    assert.strictEqual(record(dir, 'TASK-001', [], 'false || true').status, 64);
+    const piped = record(dir, 'TASK-001', [], 'false | tail -1');
+    assert.strictEqual(piped.status, 1, 'pipefail: a failing command piped into tail must still fail');
+    // an entry that got in before the rule (older recorder) is excluded and listed
+    fs.mkdirSync(path.join(dir, PH, 'evidence'), { recursive: true });
+    record(dir, 'TASK-002', ['--ac', 'AC-2', '--suite'], 'bash test.sh');
+    const idxf = path.join(dir, PH, 'evidence', 'index.json');
+    const idx = JSON.parse(fs.readFileSync(idxf, 'utf8'));
+    idx.entries.push({ ...idx.entries[0], id: 'E-099', task: 'TASK-001', acs: ['AC-1'], command: 'npm test; exit 0', command_hash: 'masked' });
+    fs.writeFileSync(idxf, JSON.stringify(idx));
+    verify(dir);
+    const v = readV(dir);
+    assert.match(row(v, 'AC-1'), /\| FAIL \|/);
+    assert.ok(!row(v, 'AC-1').includes('E-099'), 'a masked entry must not count as coverage');
+    assert.match(v, /## Rejected evidence[\s\S]*E-099 \(TASK-001\): `npm test; exit 0`/);
+  });
+
   it('maps every AC to evidence and completes when all are fresh and passing', () => {
     recordBoth(dir);
     const r = verify(dir);
@@ -163,7 +195,9 @@ describe('AIDLC evidence rail', { skip: !jqAvailable && 'jq not installed' }, ()
     record(dir, 'TASK-001', ['--suite'], 'bash test.sh');
     verify(dir);
     fs.writeFileSync(path.join(dir, PH, 'REVIEW.md'), '| HIGH | x | fixed |\n');
-    fs.writeFileSync(path.join(dir, PH, 'SCORECARD.md'), '## GOVERNANCE APPROVED\n');
+    const body = '# Governance scorecard\n## GOVERNANCE APPROVED\n';
+    const seal = require('node:crypto').createHash('sha256').update(body).digest('hex');
+    fs.writeFileSync(path.join(dir, PH, 'SCORECARD.md'), `<!-- generated-by: aidlc-scorecard sha256:${seal} -->\n${body}`);
     const tag = () => spawnSync('bash', [path.join(HOOKS, 'aidlc-final-verification', 'aidlc-final-verification.sh')],
       { input: JSON.stringify({ tool: 'command', command: 'git tag v1.0.0' }), encoding: 'utf8', env: { ...process.env, AIDLC_PROJECT_DIR: dir } });
     let r = tag();

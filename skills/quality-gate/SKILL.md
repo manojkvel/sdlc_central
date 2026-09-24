@@ -45,6 +45,7 @@ It runs traceability (T-codes), consistency (X-codes) and hygiene (H-codes) over
 |---|---|---|
 | `plan-check` | `/plan-gen` → `/task-gen` | `<phase>/PLAN_CHECK.md` ends with `## PLAN CHECK PASSED` |
 | `impl-to-release` (AIDLC) | as above | also: `VERIFICATION.md` sealed, `## VERIFICATION COMPLETE`, no stale evidence |
+| `release-scorecard` | `/release-readiness-checker` → release decision | `bash <agent-dir>/hooks/_bin/aidlc-scorecard.sh` exits 0 (`## GOVERNANCE APPROVED`, sealed `SCORECARD.md`) |
 
 ## Phase 0 — Determine Gate Type
 

@@ -1,0 +1,12 @@
+# Who decides which gate, and how long a decision may wait.
+# The approval guard records the role; the decision bot (phase 4) checks it against SSO groups.
+# The scheduled CI job escalates a gate open longer than its SLA to the next role in `escalate_to`.
+gates:
+  approve-spec:        {decider: product-owner, sla_hours: 24, escalate_to: [tech-lead]}
+  approve-tdes:        {decider: architect,     sla_hours: 24, escalate_to: [tech-lead]}
+  approve-central-tdes: {decider: architect,    sla_hours: 48, escalate_to: [tech-lead]}
+  approve-plan:        {decider: architect,     sla_hours: 24, escalate_to: [tech-lead]}
+  approve-contract:    {decider: architect,     sla_hours: 48, escalate_to: [tech-lead]}
+  approve-release:     {decider: release-manager, sla_hours: 48, escalate_to: [tech-lead, scrum-master]}
+  approve-integration-release: {decider: release-manager, sla_hours: 72, escalate_to: [tech-lead]}
+people: {}   # role -> [names or SSO groups], e.g. product-owner: [dana@example.com]

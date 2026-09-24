@@ -1,0 +1,12 @@
+name: aidlc-domain-expert
+version: "1.0.0"
+description: "Domain rules, workflows, edge cases and trusted sources; extracts facts with provenance into CONTEXT.md and never guesses"
+role_in_lifecycle: "source, spec"
+model_hint: reasoning
+skills: [source-extract, codebase-qa, spec-review, board-sync]
+reads: [docs/aidlc/wiki/**, docs/aidlc/index.json, tickets, repository, requirements.md, SPEC.md]
+writes: [CONTEXT.md, SPEC.md, docs/aidlc/wiki/**]
+tools: "Read, Write, Grep, Glob, Bash(git log, git show, ls, find, cat, jq, date)"
+markers: ["## CONTEXT READY", "## CONTEXT GAPS"]
+handoff_to: [aidlc-product-strategist, aidlc-orchestrator]
+design_ref: "Conversion Technical Guide > Persona layer"

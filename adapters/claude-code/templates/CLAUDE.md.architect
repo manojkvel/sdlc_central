@@ -49,3 +49,10 @@ Plan a technical migration:
 /run-pipeline architect/migration-planning '<migration description>'
 ```
 Chain: migration-tracker → impact-analysis → plan-gen → plan-merge
+
+## AIDLC
+
+- Track root: `.track/` (see `track_root` in `.claude/sdlc-central.json`). Resume from `.track/state.md`, its `## AIDLC_RESUME` block names the next action and its owner.
+- Your gates: approve-plan, approve-tdes, approve-contract. Reply with the exact upper-case string (APPROVE PLAN · APPROVE TDES · APPROVE WORKSTREAM CONTRACT: WS-NNN), `APPROVE WITH RISK: <reason>`, `REQUEST CHANGES: <reason>` or `DEFER`. Vague replies ("ok", "looks good") are rejected above low risk.
+- Evidence beats assertions: a summary, a report you wrote by hand, or a file existing is never proof. `VERIFICATION.md` and `SCORECARD.md` are generated and sealed.
+- Personas live in `.claude/agents/`; the orchestrator routes each stage to one.

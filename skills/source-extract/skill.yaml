@@ -1,0 +1,11 @@
+name: source-extract
+version: "1.0.0"
+description: "Extract trusted facts for a unit of work — from the wiki, tickets, code, command output and people — into CONTEXT.md with provenance for every fact, and list the gaps instead of guessing"
+category: planning
+argument_hint: "'<request>' or path to a ticket export"
+roles: [product-owner, architect, tech-lead]
+markers:
+  success: "## CONTEXT READY"
+  block: "## CONTEXT GAPS"
+writes: [CONTEXT.md, lineage.md]
+design_ref: "Conversion Technical Guide > Lifecycle step 2 (source extraction); Design recommendations > Context"

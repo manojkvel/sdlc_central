@@ -58,9 +58,12 @@ case "$MODE" in
 esac
 
 # ---- 1. freshness and integrity of every entry --------------------------------------------
-ENTRIES='[]'
+ENTRIES='[]'; MASKED='[]'
 if [ -f "$IDX" ]; then
-  ENTRIES="$(jq -c --argjson k "$KINDS" '[.entries[] | select(.kind as $x | $k | index($x))]' "$IDX")"
+  ALL="$(jq -c --argjson k "$KINDS" '[.entries[] | select(.kind as $x | $k | index($x))]' "$IDX")"
+  # Entries whose command masks its exit code prove nothing: excluded from coverage and listed.
+  MASKED="$(printf '%s' "$ALL" | jq -c --arg re '(;\s*(exit|return)\s+0\s*$|\|\|\s*(true|:|exit\s+0)\s*$|;\s*true\s*$)' '[.[] | select(.command | test($re; "x"))]' 2>/dev/null || echo '[]')"
+  ENTRIES="$(printf '%s' "$ALL" | jq -c --arg re '(;\s*(exit|return)\s+0\s*$|\|\|\s*(true|:|exit\s+0)\s*$|;\s*true\s*$)' '[.[] | select(.command | test($re; "x") | not)]' 2>/dev/null || echo '[]')"
 fi
 STATUS_JSON='{}'
 STALE_IDS=""
@@ -151,7 +154,7 @@ if [ "$MODE" = "verify" ]; then
   else
     mkdir -p "$D/evidence/_verify"
     RLOG="$D/evidence/_verify/rerun-$(date -u +%Y%m%dT%H%M%SZ).out"
-    ( cd "$AIDLC_PROJECT" && bash -c "$RERUN" ) >"$RLOG" 2>&1
+    ( cd "$AIDLC_PROJECT" && bash -o pipefail -c "$RERUN" ) >"$RLOG" 2>&1
     FRESH=$?
     if [ "$FRESH" != "0" ]; then
       RERUN_ROW="| RERUN | \`$(printf '%s' "$RERUN" | cut -c1-50)\` | FAIL | $(aidlc_rel "$RLOG") | fresh run exited $FRESH (recorded ${RECORDED_RC:-none}) |"; RERUN_OK=0
@@ -190,6 +193,13 @@ BODY="$(mktemp)"
   printf '%s' "$ROWS"
   [ -n "$RERUN_ROW" ] && echo "$RERUN_ROW"
   echo ""
+  if [ "$(printf '%s' "$MASKED" | jq 'length')" != "0" ]; then
+    echo "## Rejected evidence"
+    echo ""
+    echo "These entries mask their own exit code, so they cannot fail and do not count:"
+    printf '%s' "$MASKED" | jq -r '.[] | "- \(.id) (\(.task)): `\(.command)`"'
+    echo ""
+  fi
   echo "## VERIFICATION $RESULT"
 } > "$BODY"
 SEAL="$(shasum -a 256 "$BODY" | cut -c1-64)"

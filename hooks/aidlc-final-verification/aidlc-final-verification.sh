@@ -46,10 +46,11 @@ if [ ! -f "$R" ]; then aidlc_block F02 "$TRIGGER without REVIEW.md" "run the rev
 if grep -Ei '(CRITICAL|HIGH)' "$R" | grep -Eiq '(\|[[:space:]]*open[[:space:]]*\||status:[[:space:]]*open)'; then
   aidlc_block F02 "$TRIGGER with open CRITICAL/HIGH review findings" "resolve them with review-fix"
 fi
-if [ ! -f "$S" ] || ! grep -q '^## GOVERNANCE APPROVED' "$S"; then
+SSEAL="$( [ -f "$S" ] && head -1 "$S" | sed -n 's/^<!-- generated-by: aidlc-scorecard sha256:\([0-9a-f]\{64\}\) -->$/\1/p')"
+if [ ! -f "$S" ] || ! grep -q '^## GOVERNANCE APPROVED' "$S" || [ -z "$SSEAL" ] || [ "$SSEAL" != "$(tail -n +2 "$S" | shasum -a 256 | cut -c1-64)" ]; then
   aidlc_block F03 "$TRIGGER without an approved governance scorecard" "run governance-scorecard and resolve the blocked dimensions"
 fi
-if [ -f "$E" ] && jq -e '[.entries[]? | select(.stale == true)] | length > 0' "$E" >/dev/null 2>&1; then
+if [ -f "$E" ] && jq -e '[.entries | group_by(.command_hash)[] | max_by(.id) | select(.stale)] | length > 0' "$E" >/dev/null 2>&1; then
   aidlc_block F04 "$TRIGGER with stale evidence" "re-run the verifier so evidence post-dates the last source change"
 fi
 exit 0

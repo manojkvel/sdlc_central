@@ -23,6 +23,10 @@ Sources: [AIDLC Framework PRD](https://claude.ai/code/artifact/616a5892-9810-42b
 | 12 | Every block code a hook emits is declared in its `hook.yaml`, and every hook carries a `design_ref`. | "declares every block code it emits" test |
 | 13 | Installing, updating and uninstalling never drops a user's own agent settings or hooks; uninstall never deletes the track root. | install wiring tests |
 | 15 | A pass needs fresh evidence: a run whose touched files changed since, whose log is missing or altered, or whose suite re-run disagrees, does not count. | `tests/aidlc-phase2.test.js` stale, missing-log, altered-log and re-execution tests |
+| 16 | Release needs a sealed, approved governance scorecard; every blocked dimension names its owner. | `tests/aidlc-phase3.test.js` scorecard tests; F03 |
+| 17 | Metrics are computed, never reported: a missing source is null, every rate carries its counts, and squads are compared only with their own baseline. | `tests/aidlc-phase3.test.js` metrics test |
+| 18 | Every wiki claim cites a raw source; the console is read-only and self-contained, and every figure names its file. | wiki lint L01-L08 tests; console test "self-contained with no network calls" |
+| 19 | Installed hooks are verifiable: a manifest written at install detects tampering and unwiring. | integrity test (I02, I03) |
 | 14 | Non-goals stay non-goals: no hosted control plane, no database, no compiled engine, no new lifecycle vocabulary. | Review; any change here needs a tech-lead decision first |
 
 ## Decisions still needed from a human

@@ -1,0 +1,54 @@
+pipeline:
+  name: "Integration Release"
+  description: "AIDLC release gate — governance scorecard, rollback readiness, release readiness, then the APPROVE RELEASE decision recorded by the approval guard"
+  role: release-manager
+  trigger: "When a phase (or a tier 3 integration of workstreams) is verified and ready for its release decision"
+
+steps:
+  - id: scorecard
+    skill: governance-scorecard
+    args: "$INPUT"
+    description: "Six-dimension scorecard; writes the sealed SCORECARD.md and names the owner of every blocked dimension"
+    gate:
+      type: decision
+      pass_condition: "marker == GOVERNANCE APPROVED"
+      on_fail: hitl
+
+  - id: rollback
+    skill: rollback-assessor
+    args: "$INPUT"
+    depends_on: [scorecard]
+    description: "Confirm the release can be rolled back: migrations, contracts with live consumers, flags"
+    gate:
+      type: decision
+      pass_condition: "recommendation != NO_GO"
+      on_fail: hitl
+
+  - id: readiness
+    skill: release-readiness-checker
+    args: "$INPUT"
+    depends_on: [rollback]
+    description: "Release readiness, including sealed, complete, fresh execution evidence as a Required check"
+    gate:
+      type: decision
+      pass_condition: "verdict != NO_GO"
+      on_fail: stop
+
+  - id: release-decision
+    skill: gate-briefing
+    args: "--audience executive --gate approve-release $INPUT"
+    depends_on: [readiness]
+    description: "Checkpoint for APPROVE RELEASE: <release scope> (release risk); the approval guard records the decision with the scorecard hash"
+    gate:
+      type: hitl
+      description: "Release manager replies APPROVE RELEASE: <scope>, DEFER RELEASE or REJECT RELEASE"
+
+  - id: notes
+    skill: release-notes
+    args: "--version $INPUT"
+    depends_on: [release-decision]
+    description: "Release notes traced to specs and decisions"
+
+output:
+  summary: "Release decided with a governance scorecard and decision receipt attached"
+  artifacts: [SCORECARD.md, rollback-assessment.md, release-readiness.md, gate-briefing.md, release-notes.md]

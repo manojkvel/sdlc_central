@@ -1,0 +1,49 @@
+{
+  "gates": [
+    {
+      "type": "release-scorecard",
+      "phase": "03-governance-knowledge",
+      "date": "2026-09-24T19:23:04Z",
+      "decision": "FAIL",
+      "dimensions": {
+        "D1": "PASS",
+        "D2": "FAIL",
+        "D3": "FAIL",
+        "D4": "FAIL",
+        "D5": "N/A",
+        "D6": "PASS"
+      },
+      "seal": "bb6be7eda86fd900d39dccb0c4546d4009075cb8b6a8da9f9c3caddd1673b660"
+    },
+    {
+      "type": "release-scorecard",
+      "phase": "03-governance-knowledge",
+      "date": "2026-09-24T19:23:28Z",
+      "decision": "FAIL",
+      "dimensions": {
+        "D1": "PASS",
+        "D2": "FAIL",
+        "D3": "FAIL",
+        "D4": "PASS",
+        "D5": "N/A",
+        "D6": "PASS"
+      },
+      "seal": "6830d0c655a6574743d205ebafd5dfb2878248cdb4d9d6c5a01ab2201667a4bd"
+    },
+    {
+      "type": "release-scorecard",
+      "phase": "03-governance-knowledge",
+      "date": "2026-09-24T19:27:56Z",
+      "decision": "FAIL",
+      "dimensions": {
+        "D1": "PASS",
+        "D2": "FAIL",
+        "D3": "FAIL",
+        "D4": "PASS",
+        "D5": "N/A",
+        "D6": "PASS"
+      },
+      "seal": "ffc807470a01332d92e4713330e6e2a18bfffdc9ef357c6e517f7c33a9d2b556"
+    }
+  ]
+}

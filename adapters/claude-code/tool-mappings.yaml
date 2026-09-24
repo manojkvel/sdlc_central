@@ -76,3 +76,8 @@ overrides:
   plan-check: "Read, Write, Grep, Glob, Bash(git log, git diff, ls, find, tree, shasum, bash, date)"
   aidlc-evidence-verifier: "Read, Grep, Glob, Bash(bash, shasum, jq, git diff, git status, ls, find, date)"
   task-implementer: "Read, Write, Edit, Glob, Grep, Bash(git diff, git log, git status, git add, git stash, ls, find, tree, npm test, npx vitest, npx jest, pytest, make, date, bash)"
+  governance-scorecard: "Read, Grep, Glob, Bash(bash, shasum, jq, ls, find, date)"
+  aidlc-decision-guard: "Read, Grep, Glob, Bash(bash, printf, jq, shasum, ls, find, date)"
+  aidlc-metrics-extract: "Read, Grep, Glob, Bash(bash, jq, bc, ls, find, date)"
+  source-extract: "Read, Write, Grep, Glob, Bash(git log, git show, ls, find, cat, jq, date)"
+  wiki-curate: "Read, Write, Edit, Grep, Glob, Bash(bash, jq, git log, ls, find, date)"

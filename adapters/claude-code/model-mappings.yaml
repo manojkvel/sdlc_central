@@ -1,0 +1,6 @@
+# model_hint (agents/<name>/agent.yaml) -> Claude Code subagent `model:` value.
+# "inherit" uses the session's model. Change a mapping here, then re-run setup/update.sh.
+reasoning: opus
+standard: sonnet
+fast: haiku
+default: inherit

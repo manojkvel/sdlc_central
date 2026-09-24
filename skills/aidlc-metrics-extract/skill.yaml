@@ -1,0 +1,10 @@
+name: aidlc-metrics-extract
+version: "1.0.0"
+description: "Compute AIDLC-native and DORA metrics from the track root — lead time by stage, rework, evidence coverage, structured approval rate, approval latency, guardrail blocks, scorecard first-pass rate — into metrics.json and CSVs, each squad against its own baseline"
+category: reporting
+argument_hint: "[--out docs/aidlc/metrics] [--squad <name>]"
+roles: [scrum-master, tech-lead, product-owner, release-manager]
+markers:
+  success: "## METRICS READY"
+writes: [docs/aidlc/metrics/metrics.json, docs/aidlc/metrics/phases.csv, docs/aidlc/metrics/decisions.csv, docs/aidlc/metrics/guardrails.csv, lineage.md]
+design_ref: "Conversion Technical Guide > Metrics layer; Design recommendations > Measurement"

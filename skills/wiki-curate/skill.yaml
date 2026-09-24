@@ -1,0 +1,12 @@
+name: wiki-curate
+version: "1.0.0"
+description: "Maintain the LLM wiki in docs/aidlc/wiki: ingest new facts from the track root, incidents, ADRs and contracts into entity pages with a citation on every claim, keep backlinks, flag conflicts, and answer questions from the wiki with sources"
+category: knowledge-transfer
+argument_hint: "ingest | answer '<question>' | review"
+roles: [product-owner, architect, tech-lead, scrum-master]
+markers:
+  success: "## WIKI UPDATED"
+  block: "## WIKI CONFLICT"
+writes: [docs/aidlc/wiki/**, docs/aidlc/index.json, lineage.md]
+hooks: [aidlc-artifact-hygiene]
+design_ref: "Conversion Technical Guide > Knowledge layer: LLM wiki and source graph"

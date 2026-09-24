@@ -88,7 +88,7 @@ SKILLS=(
   perf-review
   pipeline-monitor
   pipeline-orchestrator
-  plan-gen plan-check aidlc-evidence-verifier
+  plan-gen plan-check aidlc-evidence-verifier governance-scorecard aidlc-decision-guard aidlc-metrics-extract source-extract wiki-curate
   plan-merge
   pr-orchestrator
   quality-gate
@@ -237,6 +237,8 @@ else
   emit_hooks "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
   HOOKS_INSTALLED=true
 fi
+source "$SDLC_ROOT/adapters/_shared/agents.sh"
+emit_agents "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
 echo "  Hook enforcement on $AGENT: $HOOK_LEVEL. Hooks stay inert until the project has a track root (setup/init-track.sh)."
 
 # --- Write tracking file ---

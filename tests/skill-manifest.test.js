@@ -21,7 +21,7 @@ const VALID_CATEGORIES = [
 
 const VALID_ROLES = [
   'product-owner', 'architect', 'developer', 'qa',
-  'devops-sre', 'tech-lead', 'scrum-master', 'designer',
+  'devops-sre', 'tech-lead', 'scrum-master', 'designer', 'release-manager',
 ];
 
 const skillDirs = fs.readdirSync(SKILLS_DIR).filter(d =>

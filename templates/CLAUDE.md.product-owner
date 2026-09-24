@@ -45,3 +45,10 @@ Release go/no-go decision:
 /run-pipeline product-owner/release-signoff vX.Y.Z
 ```
 Chain: release-readiness-checker → gate-briefing → release-notes
+
+## AIDLC
+
+- Track root: `.track/` (see `track_root` in `.claude/sdlc-central.json`). Resume from `.track/state.md`, its `## AIDLC_RESUME` block names the next action and its owner.
+- Your gates: approve-spec. Reply with the exact upper-case string (APPROVE SPEC), `APPROVE WITH RISK: <reason>`, `REQUEST CHANGES: <reason>` or `DEFER`. Vague replies ("ok", "looks good") are rejected above low risk.
+- Evidence beats assertions: a summary, a report you wrote by hand, or a file existing is never proof. `VERIFICATION.md` and `SCORECARD.md` are generated and sealed.
+- Personas live in `.claude/agents/`; the orchestrator routes each stage to one.

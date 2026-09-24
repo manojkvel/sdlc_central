@@ -13,8 +13,8 @@
 #                                      output hashes, touched files and their hashes
 # and a lineage line `evidence.recorded`. Exits with the command's own exit code.
 #
-# Touched files default to the working-tree changes (git diff vs HEAD plus untracked),
-# excluding the track root. Their hashes are what make evidence go stale when source
+# Touched files: --files, else the backticked paths in the task's TASKS.md block, else the working-tree
+# changes (documents and images excluded, track root excluded). Their hashes make evidence go stale when source
 # changes after the run.
 # ------------------------------------------------------------------
 AIDLC_HOOK_NAME="aidlc-evidence"
@@ -55,6 +55,12 @@ fi
 [ -n "$TASK" ] || { echo "aidlc-evidence: --task is required" >&2; exit 64; }
 [ $# -gt 0 ] || { echo "aidlc-evidence: no command after --" >&2; exit 64; }
 CMD="$*"
+# A command that masks its own exit code cannot be evidence: its result is always "passed".
+AIDLC_MASK_RE='(;[[:space:]]*(exit|return)[[:space:]]+0[[:space:]]*$|\|\|[[:space:]]*(true|:|exit[[:space:]]+0)[[:space:]]*$|;[[:space:]]*true[[:space:]]*$)'
+if printf '%s' "$CMD" | grep -Eq "$AIDLC_MASK_RE"; then
+  echo "aidlc-evidence: refused — the command masks its exit code (ends in '; exit 0', '|| true' or similar), so it could never fail. Record the real command." >&2
+  exit 64
+fi
 
 N=$(( $(jq '.entries | length' "$IDX") + 1 ))
 ID="$(printf 'E-%03d' "$N")"
@@ -64,18 +70,33 @@ OUT="$EV/$TASK/$(printf '%03d' "$N")-$SLUG.out"
 ERR="$EV/$TASK/$(printf '%03d' "$N")-$SLUG.err"
 
 START="$(aidlc_now)"; T0="$(perl -MTime::HiRes=time -e 'printf "%d", time()*1000' 2>/dev/null || echo 0)"
-( cd "$AIDLC_PROJECT" && bash -c "$CMD" ) >"$OUT" 2>"$ERR"
+# pipefail: in `npm test | tail`, the test runner's failure must not be hidden by tail's success.
+( cd "$AIDLC_PROJECT" && bash -o pipefail -c "$CMD" ) >"$OUT" 2>"$ERR"
 RC=$?
 T1="$(perl -MTime::HiRes=time -e 'printf "%d", time()*1000' 2>/dev/null || echo 0)"
 END="$(aidlc_now)"
 
 # Touched files and their hashes.
 TRACK_REL="$(aidlc_rel "$AIDLC_TRACK")"
+# 1. --files  2. the files the task declares in TASKS.md (backticked paths in its block)
+# 3. tracked changes vs HEAD plus untracked source-like files (documents and images excluded)
+TASKS_MD="$AIDLC_PHASE_DIR/TASKS.md"
 if [ -n "$FILES" ]; then
   LIST="$(printf '%s' "$FILES" | tr ',' '\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | sed '/^$/d')"
+  TF_SOURCE="--files"
 else
-  LIST="$( (cd "$AIDLC_PROJECT" && { git diff --name-only HEAD 2>/dev/null; git ls-files --others --exclude-standard 2>/dev/null; }) \
-          | grep -v "^$TRACK_REL/" | sort -u)"
+  LIST=""
+  if [ -f "$TASKS_MD" ]; then
+    LIST="$(awk -v t="$TASK" '$0 ~ t"([^0-9]|$)" {f=1; next} f && /TASK-[0-9]+/ {exit} f' "$TASKS_MD" \
+      | grep -Eo '`[^` ]+\.[A-Za-z0-9]+`' | tr -d '`' | sort -u | while read -r p; do [ -e "$AIDLC_PROJECT/$p" ] && echo "$p"; done)"
+    TF_SOURCE="TASKS.md"
+  fi
+  if [ -z "$LIST" ]; then
+    LIST="$( (cd "$AIDLC_PROJECT" && { git diff --name-only HEAD 2>/dev/null; git ls-files --others --exclude-standard 2>/dev/null \
+            | grep -Eiv '(\.(docx?|pptx?|xlsx?|pdf|png|jpe?g|gif|svg|zip)$|(^|/)~\$)'; }) \
+            | grep -v "^$TRACK_REL/" | sort -u)"
+    TF_SOURCE="git changes"
+  fi
 fi
 TF_JSON='[]'
 OLDIFS="$IFS"; IFS='
@@ -118,5 +139,5 @@ aidlc_lineage "$ID" "evidence.recorded: $TASK $KIND exit=$RC" "$(aidlc_rel "$IDX
 # Show the agent what happened, briefly.
 tail -n 25 "$OUT"
 [ -s "$ERR" ] && { echo "--- stderr (last 15 lines)"; tail -n 15 "$ERR"; }
-echo "AIDLC EVIDENCE $ID recorded for $TASK: exit $RC, $(printf '%s' "$TF_JSON" | jq 'length') touched file(s), log $(aidlc_rel "$OUT")"
+echo "AIDLC EVIDENCE $ID recorded for $TASK: exit $RC, $(printf '%s' "$TF_JSON" | jq 'length') touched file(s) from $TF_SOURCE, log $(aidlc_rel "$OUT")"
 exit $RC

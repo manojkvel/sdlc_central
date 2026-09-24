@@ -1,0 +1,12 @@
+name: aidlc-governance-reviewer
+version: "1.0.0"
+description: "Governance and release readiness: runs the six-dimension scorecard, audits the decision log, and prepares the release checkpoint"
+role_in_lifecycle: "governance"
+model_hint: reasoning
+skills: [governance-scorecard, aidlc-decision-guard, release-readiness-checker, rollback-assessor, release-notes]
+reads: [SCORECARD.md, VERIFICATION.md, REVIEW.md, human-decisions.md, risks.md, lineage.md, contract-registry.md, gate-history.json]
+writes: [SCORECARD.md, gate-history.json, lineage.md]
+tools: "Read, Grep, Glob, Bash(bash, shasum, jq, git log, ls, find, date)"
+markers: ["## GOVERNANCE APPROVED", "## GOVERNANCE BLOCKED"]
+handoff_to: [aidlc-orchestrator]
+design_ref: "Conversion Technical Guide > Persona layer"

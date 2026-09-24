@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIDLC Console</title>
+<style>
+:root{--ink:#0f1a24;--ink2:#3a4a58;--ink3:#64757f;--ground:#eef2f6;--surface:#fff;--surface2:#f6f9fb;--rule:#d5dfe7;--rule2:#e4ebf1;
+--brand:#00539f;--brand-wash:#e4eef7;--good:#0a6e55;--good-wash:#e2f1ec;--warn:#9a5b00;--warn-wash:#f8eedf;--bad:#c8102e;--bad-wash:#fbe9ea;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root{--ink:#e6eef5;--ink2:#aebecb;--ink3:#8194a3;--ground:#0c141c;--surface:#131e28;--surface2:#18242f;--rule:#2a3a48;--rule2:#22303c;
+--brand:#5fa3e6;--brand-wash:#15283b;--good:#4cc3a2;--good-wash:#12302a;--warn:#e0a64a;--warn-wash:#3a2c14;--bad:#f0656f;--bad-wash:#3a1b20;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181}}
+*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--ink);font:14px/1.5 var(--sans);padding:0 16px 48px}
+.wrap{max-width:1180px;margin:0 auto}header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;padding:20px 0 12px;border-bottom:1px solid var(--rule)}
+h1{margin:0;font-size:24px}h2{font-size:18px;margin:0 0 8px}h3{font-size:14px;margin:0 0 8px}.muted{color:var(--ink3);font-size:12.5px}.mono{font-family:var(--mono)}
+nav{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--rule);margin:0 -16px;padding:0 16px;position:sticky;top:0;background:var(--ground);z-index:3}
+nav button{font:inherit;background:none;border:0;border-bottom:2px solid transparent;padding:10px 12px;color:var(--ink2);cursor:pointer;white-space:nowrap}
+nav button[aria-selected=true]{color:var(--brand);border-bottom-color:var(--brand);font-weight:600}
+section{display:none;padding-top:20px}section.on{display:block}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.card{background:var(--surface);border:1px solid var(--rule2);border-radius:10px;padding:14px 16px}
+.kpis{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));margin-bottom:14px}
+.kpi{background:var(--surface);border:1px solid var(--rule2);border-radius:10px;padding:10px 12px}.kpi .n{font:600 24px var(--mono)}.kpi .k{font-size:12px;color:var(--ink3)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule2);vertical-align:top}th{color:var(--ink2);font-size:12px}
+.tw{overflow-x:auto}.pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11.5px;font-weight:600;border:1px solid var(--rule)}
+.ok{color:var(--good);background:var(--good-wash);border-color:var(--good)}.warn{color:var(--warn);background:var(--warn-wash);border-color:var(--warn)}.bad{color:var(--bad);background:var(--bad-wash);border-color:var(--bad)}.none{color:var(--ink3)}
+.src{font:11px var(--mono);color:var(--ink3);margin-top:6px}.empty{color:var(--ink3);font-style:italic;padding:8px 0}
+code{font-family:var(--mono);font-size:12.5px;background:var(--surface2);padding:1px 5px;border-radius:4px}
+.cp{font:inherit;font-size:12px;border:1px solid var(--rule);background:var(--surface2);color:var(--ink);border-radius:6px;padding:3px 8px;cursor:pointer;margin:2px 4px 2px 0}
+.bar{height:10px;border-radius:3px;display:inline-block;vertical-align:middle}
+input[type=search]{font:inherit;padding:7px 10px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink);width:100%;max-width:420px;margin-bottom:12px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.flow .st{padding:3px 8px;border-radius:6px;border:1px solid var(--rule);font-size:12px}.flow .st.cur{background:var(--brand-wash);border-color:var(--brand);color:var(--brand);font-weight:600}.flow .st.done{color:var(--good)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><h1>AIDLC Console</h1><div class="muted" id="asof"></div></div>
+  <div class="muted">Read-only. Git is the source of truth; every figure names its file. Decisions are recorded by the approval guard, not here.</div>
+</header>
+<nav id="tabs" role="tablist"></nav>
+<section id="portfolio"></section>
+<section id="unit"></section>
+<section id="decisions"></section>
+<section id="governance"></section>
+<section id="metrics"></section>
+<section id="knowledge"></section>
+</div>
+<script>
+const DATA = /*__AIDLC_DATA__*/{};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pct = x => x == null ? '—' : (Math.round(x * 1000) / 10) + '%';
+const num = (x, d = 1) => x == null ? '—' : (+x).toFixed(d);
+const src = f => `<div class="src">source: ${esc(f)}</div>`;
+const pill = (v) => { const s = String(v || 'none'); const cls = /APPROVED|COMPLETE|PASS|released/i.test(s) ? 'ok' : /BLOCKED|FAILED|FAIL|REJECT/i.test(s) ? 'bad' : /none|—/.test(s) ? 'none' : 'warn'; return `<span class="pill ${cls}">${esc(s)}</span>`; };
+const STAGES = ['intake','source','spec','design','planning','execution','verification','review','governance','released'];
+const P = DATA.portfolio || {repos: []}, C = DATA.checkpoints || {items: []}, D = DATA.decisions || {items: []}, G = DATA.guardrails || {items: []}, M = DATA.metrics || null, K = DATA.index || {pages: [], phases: [], decisions: []};
+const squads = M ? (M.squads || [M]) : [];
+$('#asof').textContent = 'Data as of ' + (P.as_of || '—') + ' · ' + P.repos.length + ' repo(s)';
+
+const TABS = [['portfolio','Portfolio'],['unit','Unit of work'],['decisions','Decision console'],['governance','Governance'],['metrics','Metrics'],['knowledge','Knowledge']];
+function show(id){ document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === id)); document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === id)); try{ localStorage.setItem('aidlc.tab', id); }catch(e){} }
+TABS.forEach(([id, label]) => { const b = document.createElement('button'); b.textContent = label; b.dataset.t = id; b.setAttribute('role','tab'); b.onclick = () => show(id); $('#tabs').appendChild(b); });
+
+/* ---------- Portfolio ---------- */
+(function(){
+  const open = C.items.length, phases = P.repos.flatMap(r => r.phases.map(p => ({...p, repo: r.repo})));
+  const blocked = phases.filter(p => /BLOCKED|FAILED/.test(p.scorecard + p.verification)).length;
+  let h = `<div class="kpis">
+    <div class="kpi"><div class="n">${P.repos.length}</div><div class="k">repos</div></div>
+    <div class="kpi"><div class="n">${phases.length}</div><div class="k">units of work</div></div>
+    <div class="kpi"><div class="n">${open}</div><div class="k">open checkpoints</div></div>
+    <div class="kpi"><div class="n">${blocked}</div><div class="k">blocked by verification or scorecard</div></div></div>`;
+  h += `<div class="card"><h2>Units of work</h2><div class="tw"><table><tr><th>Repo</th><th>Phase</th><th>Stage</th><th>Tier</th><th>Risk</th><th>Verification</th><th>Scorecard</th><th>Last decision</th></tr>`;
+  phases.forEach(p => { h += `<tr><td>${esc(p.repo)}</td><td class="mono">${esc(p.phase)}</td><td>${esc(p.stage)}</td><td>${esc(p.tier)}</td><td>${esc(p.risk)}</td><td>${pill(p.verification)}</td><td>${pill(p.scorecard)}</td><td class="mono">${esc(p.last_decision)}</td></tr>`; });
+  h += `</table></div>${phases.length ? '' : '<div class="empty">No phases yet.</div>'}${src('<track root>/state.md ## Phases; phases/*/VERIFICATION.md; phases/*/SCORECARD.md')}</div>`;
+  const contracts = P.repos.flatMap(r => (r.contracts || []).map(c => ({...c, repo: r.repo})));
+  h += `<div class="card" style="margin-top:14px"><h2>Contracts</h2>`;
+  if (!contracts.length) h += `<div class="empty">No contracts registered (tier 3 hub-and-spoke arrives in phase 4).</div>`;
+  else { h += `<div class="tw"><table><tr><th>Contract</th><th>Kind</th><th>Producer</th><th>Consumers</th><th>Version</th><th>Status</th></tr>`; contracts.forEach(c => h += `<tr><td class="mono">${esc(c.id)}</td><td>${esc(c.kind)}</td><td>${esc(c.producer)}</td><td>${esc(c.consumers)}</td><td>${esc(c.version)}</td><td>${pill(c.status)}</td></tr>`); h += `</table></div>`; }
+  h += src('<track root>/contract-registry.md') + `</div>`;
+  $('#portfolio').innerHTML = h;
+})();
+
+/* ---------- Unit of work ---------- */
+(function(){
+  let h = '';
+  P.repos.forEach(r => {
+    const s = r.resume || {}, cur = STAGES.indexOf(s.stage);
+    h += `<div class="card" style="margin-bottom:14px"><h2>${esc(r.repo)} · <span class="mono">${esc(s.phase)}</span></h2>
+      <div class="flow">${STAGES.map((st, i) => `<span class="st ${i < cur ? 'done' : i === cur ? 'cur' : ''}">${st}</span>`).join('')}</div>
+      <table style="margin-top:10px"><tr><th>Blocked gate</th><td>${pill(s.blocked_gate)} ${s.gate_risk && s.gate_risk !== 'none' ? '<span class="muted">risk ' + esc(s.gate_risk) + '</span>' : ''}</td></tr>
+      <tr><th>Next action</th><td>${esc(s.next_action)}</td></tr><tr><th>Owner</th><td>${esc(s.owner)}</td></tr></table>
+      <div class="muted" style="margin-top:8px">To act, open the repo in your agent; it resumes from this block: <code>/run-pipeline --resume</code></div>
+      ${src('<track root>/state.md ## AIDLC_RESUME')}</div>`;
+  });
+  $('#unit').innerHTML = h || '<div class="empty">No repos.</div>';
+})();
+
+/* ---------- Decision console (read-only in phase 3) ---------- */
+(function(){
+  const strings = (it) => { const g = it.gate, t = g.replace(/^approve-/, '').replace(/-/g, ' ').toUpperCase(); const need = /high|security/.test(it.risk) ? ': <risk acknowledgement>' : it.risk === 'release' ? ': <release scope>' : '';
+    const base = g === 'lift-exclusion' ? 'LIFT EXCLUSION: WS-NNN' : g === 'approve-contract' ? 'APPROVE WORKSTREAM CONTRACT: WS-NNN' : 'APPROVE ' + t + need;
+    return [base, 'APPROVE WITH RISK: <risk and excluded scope>', 'REQUEST CHANGES: <reason>', 'REQUEST VERIFICATION: <missing evidence>'].concat(/release/.test(g) ? ['DEFER RELEASE','REJECT RELEASE'] : ['DEFER']); };
+  let h = `<div class="card"><h2>Open checkpoints</h2><p class="muted">Decisions are typed in the agent (or, from phase 4, submitted here through the decision bot). The approval guard rejects anything else.</p>`;
+  if (!C.items.length) h += `<div class="empty">No gate is waiting for a decision.</div>`;
+  C.items.forEach(it => {
+    const age = it.published_at ? Math.round((Date.now() - Date.parse(it.published_at)) / 36e5) : null;
+    h += `<div style="border-top:1px solid var(--rule2);padding:10px 0"><h3>${esc(it.repo)} · <span class="mono">${esc(it.phase)}</span> · ${esc(it.gate)} ${pill(it.risk)}</h3>
+      <div class="muted">Decider: ${esc(it.decider)} · waiting ${age == null ? '—' : age + 'h'} of ${esc(it.sla_hours)}h SLA ${age != null && age > it.sla_hours ? '<span class="pill bad">over SLA</span>' : ''}</div>
+      <table style="margin:6px 0">${(it.inputs || []).map(i => `<tr><td class="mono">${esc(i.path)}</td><td class="mono muted">sha256:${esc(String(i.sha256).slice(0, 16))}…</td></tr>`).join('')}</table>
+      <div>${strings(it).map(s => `<button class="cp" data-copy="${esc(s)}">${esc(s)}</button>`).join('')}</div></div>`;
+  });
+  h += src('<track root>/state.md; lineage.md decision.checkpoint_published; stakeholders.yaml') + `</div>`;
+  h += `<div class="card" style="margin-top:14px"><h2>Decision history</h2><div class="tw"><table><tr><th>ID</th><th>When</th><th>Gate</th><th>Risk</th><th>Phase</th><th>Status</th><th>Identity</th><th>Decision</th></tr>`;
+  D.items.slice().reverse().forEach(d => h += `<tr><td class="mono">${esc(d.id || '—')}</td><td class="mono">${esc(d.at)}</td><td>${esc(d.gate)}</td><td>${esc(d.risk)}</td><td class="mono">${esc(d.phase || '')}</td><td>${pill(d.status)}</td><td>${d.identity ? pill(d.identity === 'sso' ? 'sso' : 'asserted') : ''}</td><td>${esc(d.decision || '')}</td></tr>`);
+  h += `</table></div>${D.items.length ? '' : '<div class="empty">No decisions recorded yet.</div>'}${src('<track root>/human-decisions.md sections 3 and 4')}</div>`;
+  $('#decisions').innerHTML = h;
+  document.querySelectorAll('.cp').forEach(b => b.onclick = () => { navigator.clipboard && navigator.clipboard.writeText(b.dataset.copy).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = b.dataset.copy, 1200); }).catch(() => {}); });
+})();
+
+/* ---------- Governance ---------- */
+(function(){
+  const byCode = {}; G.items.forEach(g => { const k = g.hook + ' ' + g.code; byCode[k] = (byCode[k] || 0) + 1; });
+  const rows = Object.entries(byCode).sort((a, b) => b[1] - a[1]); const max = Math.max(1, ...rows.map(r => r[1]));
+  const rejected = D.items.filter(d => /REJECTED \(vague\)/.test(d.status)).length, accepted = D.items.filter(d => d.id).length;
+  const asserted = D.items.filter(d => d.id && d.identity === 'asserted' && /high|security|release/.test(d.risk)).length;
+  let h = `<div class="kpis"><div class="kpi"><div class="n">${accepted}</div><div class="k">decisions recorded</div></div>
+    <div class="kpi"><div class="n">${rejected}</div><div class="k">vague approvals rejected</div></div>
+    <div class="kpi"><div class="n">${accepted + rejected ? pct(accepted / (accepted + rejected)) : '—'}</div><div class="k">structured approval rate (${accepted} of ${accepted + rejected})</div></div>
+    <div class="kpi"><div class="n">${asserted}</div><div class="k">high/release decisions with asserted identity</div></div></div>`;
+  h += `<div class="card"><h2>Guardrail blocks by hook and code</h2>`;
+  if (!rows.length) h += `<div class="empty">No blocks logged. A flat zero on pre-write or pre-command usually means hooks are not wired.</div>`;
+  rows.forEach(([k, n]) => h += `<div style="display:flex;gap:8px;align-items:center;margin:4px 0"><span class="mono" style="width:300px;font-size:12px">${esc(k)}</span><span class="bar" style="width:${Math.round(n / max * 260)}px;background:var(--s1)"></span><span class="mono">${n}</span></div>`);
+  h += src('<track root>/guardrail-log.md') + `</div>`;
+  h += `<div class="card" style="margin-top:14px"><h2>Recent blocks</h2><div class="tw"><table><tr><th>When</th><th>Hook</th><th>Code</th><th>Phase</th><th>Detail</th></tr>`;
+  G.items.slice(-20).reverse().forEach(g => h += `<tr><td class="mono">${esc(g.at)}</td><td>${esc(g.hook)}</td><td class="mono">${esc(g.code)}</td><td class="mono">${esc(g.phase)}</td><td>${esc(g.detail)}</td></tr>`);
+  h += `</table></div>${src('<track root>/guardrail-log.md')}</div>`;
+  $('#governance').innerHTML = h;
+})();
+
+/* ---------- Metrics ---------- */
+(function(){
+  if (!squads.length) { $('#metrics').innerHTML = '<div class="card empty">No metrics.json yet. Run aidlc-metrics.sh (the CI job does this on every pull request).</div>'; return; }
+  let h = '';
+  squads.forEach((m, i) => {
+    const b = m.baseline || {}, q = m.quality || {}, g = m.governance || {}, d = m.dora || {};
+    const vs = (x, base, lowerBetter = true) => (x == null || base == null) ? '<span class="muted">no baseline</span>' : ((lowerBetter ? x <= base : x >= base) ? '<span class="pill ok">better than own baseline</span>' : '<span class="pill warn">worse than own baseline</span>');
+    h += `<div class="card" style="margin-bottom:14px"><h2>${esc(m.squad)}</h2><p class="muted">Compared only with this squad's own baseline; squads are never ranked against each other.</p>
+      <table><tr><th>Dimension</th><th>Metric</th><th>Value</th><th>Against baseline</th></tr>
+      <tr><td>Speed</td><td>Lead time, median (days)</td><td class="mono">${num(d.lead_time_days_median)}</td><td>${vs(d.lead_time_days_median, b.lead_time_days)}</td></tr>
+      <tr><td>Speed</td><td>Releases per 30 days</td><td class="mono">${num(d.deployment_frequency_per_30d)}</td><td>${vs(d.deployment_frequency_per_30d, b.deployment_frequency_per_30d, false)}</td></tr>
+      <tr><td>Quality</td><td>Evidence coverage</td><td class="mono">${pct(q.evidence_coverage)}</td><td>—</td></tr>
+      <tr><td>Quality</td><td>Rework rate</td><td class="mono">${pct(q.rework_rate)}</td><td>${vs(q.rework_rate, b.rework_rate)}</td></tr>
+      <tr><td>Reliability</td><td>Change failure rate</td><td class="mono">${pct(d.change_failure_rate)}</td><td>${vs(d.change_failure_rate, b.change_failure_rate)}</td></tr>
+      <tr><td>Reliability</td><td>Time to restore, median (h)</td><td class="mono">${num(d.time_to_restore_hours_median)}</td><td>—</td></tr>
+      <tr><td>Governance</td><td>Structured approval rate</td><td class="mono">${pct(g.structured_approval_rate)} <span class="muted">(${g.decisions_accepted ?? 0} of ${(g.decisions_accepted ?? 0) + (g.vague_attempts_rejected ?? 0)})</span></td><td>—</td></tr>
+      <tr><td>Governance</td><td>Scorecard first-pass rate</td><td class="mono">${pct(q.scorecard_first_pass_rate)}</td><td>—</td></tr>
+      <tr><td>Cost</td><td>Tokens (best effort)</td><td class="mono">${m.cost && m.cost.tokens_total != null ? m.cost.tokens_total.toLocaleString() : '—'}</td><td>—</td></tr></table>`;
+    const ph = (m.phases || []).filter(p => Object.keys(p.stage_days || {}).length);
+    if (ph.length) {
+      const colors = {intake:'--s1',source:'--s2',spec:'--s3',design:'--s4',planning:'--s5',execution:'--s1',verification:'--s3',review:'--s4',governance:'--s2'};
+      h += `<h3 style="margin-top:12px">Time by stage (days)</h3>`;
+      const mx = Math.max(...ph.map(p => Object.values(p.stage_days).reduce((a, b) => a + b, 0)), 0.01);
+      ph.forEach(p => { h += `<div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span class="mono" style="width:190px;font-size:12px">${esc(p.phase)}</span><span style="display:flex;gap:2px">${Object.entries(p.stage_days).map(([s, v]) => `<span class="bar" title="${esc(s)}: ${num(v, 2)} d" style="width:${Math.max(2, Math.round(v / mx * 420))}px;background:var(${colors[s] || '--s1'})"></span>`).join('')}</span></div>`; });
+    }
+    h += src('docs/aidlc/metrics/metrics.json (aidlc-metrics.sh from lineage.md, human-decisions.md, VERIFICATION.md, gate-history.json, incidents.json, baseline.json)') + `</div>`;
+  });
+  $('#metrics').innerHTML = h;
+})();
+
+/* ---------- Knowledge ---------- */
+(function(){
+  let h = `<input type="search" id="kq" placeholder="Search the wiki, phases and decisions" aria-label="Search knowledge"><div id="kres"></div>`;
+  $('#knowledge').innerHTML = h;
+  const render = q => {
+    q = (q || '').toLowerCase();
+    const match = o => !q || JSON.stringify(o).toLowerCase().includes(q);
+    const pages = K.pages.filter(match), phases = K.phases.filter(match), dec = K.decisions.filter(match);
+    let r = `<div class="grid">`;
+    pages.forEach(p => r += `<div class="card"><h3>${esc(p.title)} <span class="pill none">${esc(p.kind)}</span></h3><div>${esc(p.summary)}</div>
+      <div class="muted" style="margin-top:6px">Owner ${esc(p.owner)} · review by ${esc(p.review_by)}</div>
+      <div class="muted">Sources: ${(p.sources || []).map(s => '<code>' + esc(s) + '</code>').join(' ')}</div>
+      <div class="muted">Links: ${(p.links || []).map(l => esc(l)).join(', ') || '—'}</div>${src(p.path)}</div>`);
+    r += `</div>`;
+    if (phases.length) r += `<div class="card" style="margin-top:14px"><h3>Phases</h3><table><tr><th>Phase</th><th>Title</th><th>Criteria</th><th>Requirements</th></tr>${phases.map(p => `<tr><td class="mono">${esc(p.phase)}</td><td>${esc(p.title)}</td><td>${esc(p.criteria)}</td><td>${esc((p.requirements || []).join(', '))}</td></tr>`).join('')}</table></div>`;
+    if (dec.length) r += `<div class="card" style="margin-top:14px"><h3>Decisions</h3><table>${dec.map(d => `<tr><td class="mono">${esc(d.id)}</td><td>${esc(d.decision)}</td><td>${esc(d.gate)}</td><td>${pill(d.status)}</td></tr>`).join('')}</table></div>`;
+    if (!pages.length && !phases.length && !dec.length) r += `<div class="empty">Nothing matches.</div>`;
+    $('#kres').innerHTML = r + src('docs/aidlc/index.json (aidlc-knowledge-index.sh)');
+  };
+  $('#kq').oninput = e => render(e.target.value); render('');
+})();
+
+let first = 'portfolio'; try { first = localStorage.getItem('aidlc.tab') || first; } catch(e){}
+show(TABS.some(t => t[0] === first) ? first : 'portfolio');
+</script>
+</body>
+</html>

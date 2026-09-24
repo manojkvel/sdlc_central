@@ -5,9 +5,19 @@ pipeline:
   trigger: "Before a release to make go/no-go decision"
 
 steps:
+  - id: scorecard
+    skill: governance-scorecard
+    args: "$INPUT"
+    description: "AIDLC projects: six-dimension governance scorecard before the release decision"
+    gate:
+      type: decision
+      pass_condition: "marker == GOVERNANCE APPROVED"
+      on_fail: hitl
+
   - id: readiness
     skill: release-readiness-checker
     args: "$INPUT"
+    depends_on: [scorecard]
     description: "Aggregate signals from pipelines, tests, audits, and docs"
     gate:
       type: decision
@@ -31,4 +41,4 @@ steps:
 
 output:
   summary: "Release approved — release notes generated"
-  artifacts: [release-readiness.md, gate-briefing.md, release-notes.md]
+  artifacts: [SCORECARD.md, release-readiness.md, gate-briefing.md, release-notes.md]

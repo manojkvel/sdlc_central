@@ -52,3 +52,10 @@ Codebase upkeep:
 /run-pipeline developer/maintenance
 ```
 Chain: dependency-update → tech-debt-audit → regression-check
+
+## AIDLC
+
+- Track root: `.track/` (see `track_root` in `.claude/sdlc-central.json`). Resume from `.track/state.md`, its `## AIDLC_RESUME` block names the next action and its owner.
+- You do not own a gate; you produce what the gates check. Record every test, build and lint run with `.claude/hooks/_bin/aidlc-evidence.sh run --task TASK-NNN -- <command>`.
+- Evidence beats assertions: a summary, a report you wrote by hand, or a file existing is never proof. `VERIFICATION.md` and `SCORECARD.md` are generated and sealed.
+- Personas live in `.claude/agents/`; the orchestrator routes each stage to one.

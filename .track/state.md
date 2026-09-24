@@ -5,15 +5,15 @@ edits BLOCKED_GATE, GATE_RISK and NEXT_ACTION* when a decision is recorded.
 Agents never edit this block by hand. Schema: config/schemas/state-resume.schema.json.
 
 ## AIDLC_RESUME
-CURRENT_PHASE: 02-evidence-rail
+CURRENT_PHASE: 03-governance-knowledge
 CURRENT_STAGE: review
 BLOCKED_GATE: none
 GATE_RISK: none
-NEXT_ACTION: Review phases 1 and 2 on branch aidlc_framework; phase 1 is committed (81b4949), phase 2 is uncommitted; decide the open items in docs/aidlc/design-invariants.md
+NEXT_ACTION: Human decisions needed: APPROVE SPEC and APPROVE PLAN for phases 01-03 (or record them as BACKFILLED with the approval guard), and the open items in docs/aidlc/design-invariants.md. Phases 1-2 are committed; phase 3 is verified 9/9 and uncommitted.
 NEXT_ACTION_OWNER: human:tech-lead
-NEXT_ACTION_INPUTS: .track/phases/02-evidence-rail/VERIFICATION.md, docs/aidlc/evidence.md, docs/aidlc/design-invariants.md
+NEXT_ACTION_INPUTS: .track/phases/03-governance-knowledge/VERIFICATION.md, .track/phases/03-governance-knowledge/SCORECARD.md, .track/phases/03-governance-knowledge/REVIEW.md
 DONE: phase 1 (committed), phase 2 recorder, verifier, W08/C05/H05, skills, pipelines, tests
-EVIDENCE: .track/phases/02-evidence-rail/evidence/index.json
+EVIDENCE: .track/phases/03-governance-knowledge/evidence/index.json
 OPEN_RISKS: none
 
 ## Phases
@@ -21,3 +21,4 @@ OPEN_RISKS: none
 | --- | --- | --- | --- | --- | --- |
 | 01-control-audit-rails | review | 2 | feature | medium | none |
 | 02-evidence-rail | review | 2 | feature | medium | none |
+| 03-governance-knowledge | review | 2 | feature | medium | none |

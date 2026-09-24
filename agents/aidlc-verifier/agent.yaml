@@ -1,0 +1,12 @@
+name: aidlc-verifier
+version: "1.0.0"
+description: "Post-execution evidence verification: maps every AC and SC to fresh recorded runs, re-runs the suite once, and generates the sealed VERIFICATION.md, UAT.md or CONTRACT_EVIDENCE.md"
+role_in_lifecycle: "verification"
+model_hint: standard
+skills: [aidlc-evidence-verifier, regression-check, test-gen]
+reads: [SPEC.md, TASKS.md, evidence/index.json, SUMMARY.md, unit.yaml]
+writes: [VERIFICATION.md, UAT.md, CONTRACT_EVIDENCE.md, evidence/index.json, lineage.md]
+tools: "Read, Grep, Glob, Bash(bash, shasum, jq, git diff, git status, ls, find, date)"
+markers: ["## VERIFICATION COMPLETE", "## VERIFICATION FAILED"]
+handoff_to: [aidlc-orchestrator]
+design_ref: "Conversion Technical Guide > Persona layer"

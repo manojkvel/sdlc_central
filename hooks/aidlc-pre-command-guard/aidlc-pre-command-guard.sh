@@ -31,10 +31,10 @@ fi
 # C05: shell writes into generated evidence (the recorder and verifier are the only writers).
 # The recorder's own arguments may name evidence paths; the command it wraps may not write there.
 EV_TEXT="$CMD"
-if printf '%s' "$CMD" | grep -Eq '(^|[;&|[:space:]/])aidlc-(evidence|verify)\.sh'; then
+if printf '%s' "$CMD" | grep -Eq '(^|[;&|[:space:]/])aidlc-(evidence|verify|scorecard)\.sh'; then
   case "$CMD" in *" -- "*) EV_TEXT="${CMD#* -- }" ;; *) EV_TEXT="" ;; esac
 fi
-if printf '%s' "$EV_TEXT" | grep -Eq '(evidence/|VERIFICATION\.md|UAT\.md|CONTRACT_EVIDENCE\.md)' \
+if printf '%s' "$EV_TEXT" | grep -Eq '(evidence/|VERIFICATION\.md|UAT\.md|CONTRACT_EVIDENCE\.md|SCORECARD\.md)' \
    && printf '%s' "$EV_TEXT" | grep -Eq "$WRITE_OPS"; then
   aidlc_block C05 "command writes generated evidence directly" "use aidlc-evidence.sh to record runs and aidlc-verify.sh to report"
 fi
