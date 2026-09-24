@@ -149,7 +149,11 @@ describe('AIDLC install wiring', { skip: !jqAvailable && 'jq not installed' }, (
 
   it('--no-hooks installs no hooks and records the choice', () => {
     const dir = install('claude-code', ['--no-hooks', '--track-root', '.planning', '--tier-default', '1']);
-    assert.ok(!fs.existsSync(path.join(dir, '.claude', 'hooks')));
+    const hooksDir = path.join(dir, '.claude', 'hooks');
+    const installed = fs.existsSync(hooksDir) ? fs.readdirSync(hooksDir).filter(d => d.startsWith('aidlc-')) : [];
+    assert.deepStrictEqual(installed, [], 'no hook scripts under --no-hooks (evidence tools in _bin are expected)');
+    const settings = path.join(dir, '.claude', 'settings.json');
+    assert.ok(!fs.existsSync(settings) || !fs.readFileSync(settings, 'utf8').includes('wrap.sh'), 'no hooks wired');
     const t = JSON.parse(fs.readFileSync(path.join(dir, '.claude', 'sdlc-central.json'), 'utf8'));
     assert.strictEqual(t.hooks_installed, false);
     assert.strictEqual(t.track_root, '.planning');

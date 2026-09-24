@@ -10,7 +10,7 @@ categories:
     skills: [spec-gen, plan-gen, plan-check, task-gen, impact-analysis, plan-merge, user-story-refiner]
   quality:
     description: "Testing, regression, and performance"
-    skills: [regression-check, perf-review, quality-gate, visual-review, bug-report]
+    skills: [regression-check, perf-review, quality-gate, visual-review, bug-report, aidlc-evidence-verifier]
   pipeline-automation:
     description: "Pipeline orchestration and monitoring"
     skills: [pipeline-orchestrator, wave-scheduler, auto-triage, pipeline-monitor, feedback-loop, drift-detector]
@@ -43,6 +43,13 @@ categories:
     skills: [board-sync, task-implementer]
 
 skills:
+  - name: aidlc-evidence-verifier
+    description: "Verify a phase from recorded execution evidence and generate a sealed VERIFICATION.md, UAT.md or CONTRACT_EVIDENCE.md"
+    category: quality
+    command: "/aidlc-evidence-verifier"
+    argument_hint: "[verify|uat|contract]"
+    roles: [developer, qa, tech-lead]
+
   - name: api-contract-analyzer
     description: "Detect breaking API changes by comparing the API surface of a branch against the baseline"
     category: governance
@@ -535,12 +542,13 @@ roles:
       - migration-planning
 
   developer:
-    skill_count: 24
+    skill_count: 25
     skills:
       - task-gen
       - wave-scheduler
       - task-implementer
       - spec-review
+      - aidlc-evidence-verifier
       - review-fix
       - pr-orchestrator
       - review
@@ -567,9 +575,10 @@ roles:
       - maintenance
 
   qa:
-    skill_count: 14
+    skill_count: 15
     skills:
       - spec-review
+      - aidlc-evidence-verifier
       - test-gen
       - regression-check
       - perf-review

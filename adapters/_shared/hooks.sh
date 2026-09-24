@@ -26,10 +26,24 @@ hook_support_level() {
   esac
 }
 
+# Evidence tools (recorder, verifier) and their library: installed even with --no-hooks.
+_copy_tools() {
+  local src="$1" dst="$2"
+  mkdir -p "$dst/_lib" "$dst/_bin"
+  cp "$src/_lib/track-parse.sh" "$dst/_lib/"
+  cp "$src"/_bin/*.sh "$dst/_bin/"
+  chmod +x "$dst"/_bin/*.sh "$dst"/_lib/*.sh
+}
+
+emit_tools() {
+  local agent="$1" root="$2" project="$3"
+  _copy_tools "$root/hooks" "$project/$(agent_dir "$agent")/hooks"
+  echo "  ✓ evidence tools: $(agent_dir "$agent")/hooks/_bin/aidlc-evidence.sh, aidlc-verify.sh"
+}
+
 _copy_hook_tree() {
   local src="$1" dst="$2" d
-  mkdir -p "$dst/_lib"
-  cp "$src/_lib/track-parse.sh" "$dst/_lib/"
+  _copy_tools "$src" "$dst"
   for d in "$src"/aidlc-*/; do
     d="${d%/}"
     mkdir -p "$dst/$(basename "$d")"
@@ -94,7 +108,7 @@ remove_hooks() {
   local agent="$1" project="$2" adir
   adir="$project/$(agent_dir "$agent")"
   if [ -d "$adir/hooks" ]; then
-    rm -rf "$adir"/hooks/aidlc-* "$adir/hooks/_lib" "$adir/hooks/wrap.sh" "$adir/hooks/README.md"
+    rm -rf "$adir"/hooks/aidlc-* "$adir/hooks/_lib" "$adir/hooks/_bin" "$adir/hooks/wrap.sh" "$adir/hooks/README.md"
     rmdir "$adir/hooks" 2>/dev/null
     echo "  ✓ Removed AIDLC hook scripts"
   fi

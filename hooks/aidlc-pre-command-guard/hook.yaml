@@ -9,3 +9,4 @@ codes:
   C02: destructive command while a gate is open
   C03: command modifies the hook machinery
   C04: command writes human-decisions.md directly
+  C05: shell write into generated evidence

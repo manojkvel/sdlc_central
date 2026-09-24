@@ -1,0 +1,2307 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "E-001",
+      "task": "TASK-003",
+      "acs": [
+        "AC-6"
+      ],
+      "kind": "test",
+      "suite": false,
+      "command": "bash hooks/_test/run.sh",
+      "command_hash": "6986d971b82eeed0",
+      "cwd": "/Users/kvel/Documents/manoj_ws/sdlc_central",
+      "started_at": "2026-09-24T18:54:23Z",
+      "finished_at": "2026-09-24T18:54:30Z",
+      "duration_ms": 6597,
+      "exit_code": 0,
+      "stdout_path": "evidence/TASK-003/001-bash-hooks-test-run-sh.out",
+      "stdout_sha256": "2437dd92ddc4d97084a71c89736bab4aacb14ee1420a177c3613f4a9a10eaca0",
+      "stderr_path": "evidence/TASK-003/001-bash-hooks-test-run-sh.err",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "report_path": null,
+      "report_sha256": null,
+      "touched_files": [
+        {
+          "path": ".claude/config/balance-sheet-config.json",
+          "sha256": "1411e1e382c1e1d8aa16a4edae4e4d9691a1e5204d5892c6729cf226949f33b2"
+        },
+        {
+          "path": ".claude/config/gate-config.json",
+          "sha256": "4ae8d1b2e77688304bcbe377547f96e759ed2f3f4e86da29676d0eaa2aff1f1d"
+        },
+        {
+          "path": ".claude/pipelines/_engine/PIPELINE-RUNNER.md",
+          "sha256": "2661309d76883a54d8125094dda29428b92f999eca0f004bb163505c4a9edb8c"
+        },
+        {
+          "path": ".claude/pipelines/_engine/PROGRESS-TEMPLATE.md",
+          "sha256": "038dd0b0aa292454eadac3129fe522cfbe24c23475df0f233d177a487ff52027"
+        },
+        {
+          "path": ".claude/pipelines/architect/decision-log.md",
+          "sha256": "fdb7829ab485d354f283a1e5a16da1ab5ad2707fc5d344b72e6edc4b545e93fd"
+        },
+        {
+          "path": ".claude/pipelines/architect/design-to-plan.pipeline.yaml",
+          "sha256": "4447a0704dee623549f41b39fa3f2c9e0d6d604c8d441c9d16f481177f928ddc"
+        },
+        {
+          "path": ".claude/pipelines/architect/migration-planning.pipeline.yaml",
+          "sha256": "2a608d572d6c832e32a30a8ecb037b136922b9cea0964ffaeb02bf1fd17718bf"
+        },
+        {
+          "path": ".claude/pipelines/architect/plan.md",
+          "sha256": "1078b8958eb35acc67dd3591816cfdacee4a70eb50118762f309324293c94059"
+        },
+        {
+          "path": ".claude/pipelines/architect/system-health.pipeline.yaml",
+          "sha256": "c9186e06c590a8145f8b526f72a773ebda59d29050c1cbeda09ec2ae9f278f82"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-handoff.pipeline.yaml",
+          "sha256": "805027a706eb94625cba58341b972f9e7bd24d1bfed5f22c7737eeabb1a59365"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-implementation.pipeline.yaml",
+          "sha256": "f7d38c7cca607f66feb6acf3a479f57f7b381d0ceb826a34c2873e4982dc1182"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-system-sync.pipeline.yaml",
+          "sha256": "e0ace9f7b30160d41ea88cbe9343ef7a48f446116e2faa79d6cbb5880b6848a3"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-validation.pipeline.yaml",
+          "sha256": "0f4827593832804f4d1681df959807340fd37a88377d2042b5f915949e48d601"
+        },
+        {
+          "path": ".claude/pipelines/designer/spec-collaboration.pipeline.yaml",
+          "sha256": "927d2b80835b72bb560eda3bf5e14ea3c7f24a91152d42112aba39f3e1ecbaa4"
+        },
+        {
+          "path": ".claude/pipelines/developer/feature-build.pipeline.yaml",
+          "sha256": "8c577a35d6bbe50f0c88841d2935985ade5f2e902b5e6e798b60ce3bf909c348"
+        },
+        {
+          "path": ".claude/pipelines/developer/maintenance.pipeline.yaml",
+          "sha256": "c3ddf798794bea74df0f9476ccc0cce6eb0dca1a76f4e64fd005a0181dc509c6"
+        },
+        {
+          "path": ".claude/pipelines/developer/pr-workflow.pipeline.yaml",
+          "sha256": "7b370244be7b94ae3982ccba4edbace9c790365c3cc238e775dfbfd0cce4734e"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/deploy-verify.pipeline.yaml",
+          "sha256": "d9d99b8fc78835e6f101887b01e6d6c912d73149fa015a067e90d2375a8f58b4"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/incident-response.pipeline.yaml",
+          "sha256": "2454d986ca91a29a2cc3ff1b69de1b5c4e036c8a814a3d23f69fe3def68b1d16"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/platform-health.pipeline.yaml",
+          "sha256": "f567ca62756ae5bb3b18811b9bed0d7426a34952b1f959b1f4bd6caf5e44ce84"
+        },
+        {
+          "path": ".claude/pipelines/pipeline-state-design-to-plan.json",
+          "sha256": "9ac92ad894cfbb4a153d68274f51d1434b722c5a7345b20b7695e9319dcfea24"
+        },
+        {
+          "path": ".claude/pipelines/pipeline-state-feature-intake.json",
+          "sha256": "1d386e25e261ab6015b8ec21e8cb2f6d0e7f31f4f2c154b9243c75d843651cb8"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-balance-sheet-deep.md",
+          "sha256": "17dfa65ade8992cb2bb64033729dab2e54a6421c033b11dfc67faf467b3a91f4"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-balance-sheet.md",
+          "sha256": "d40d1f189b5f831e8a5c19aa2466cd7c5e1402f0b5a9f4153e992571787d2cf7"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-intake.pipeline.yaml",
+          "sha256": "59e98d5c68501e62d4ff63a15f947df2f9f248924ec9b4ac03e4cc5f177c5941"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/gate-briefing.md",
+          "sha256": "db018d97a13b28f6098a3573064d987b9e900ef405cbeeed13899906235e0e9d"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/idea-to-spec.pipeline.yaml",
+          "sha256": "70614b6d1b1ce6a24c1698b2ba91a0303fffe194b3b054567eaae66c5c2fe806"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/release-signoff.pipeline.yaml",
+          "sha256": "a4a6f737bab3789771cdfde940ae9d43fe0a28d10b37fab235d130b708caeb1e"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/spec.md",
+          "sha256": "71f076f4d5e83f42067196a470b923ab59d5782bf6cfecc9c8da6746533890ce"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/sprint-demo.pipeline.yaml",
+          "sha256": "4a216fe946aa79903af186c84cced63d807df29599877b138de3548f72938c22"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/sprint-health.pipeline.yaml",
+          "sha256": "baab55a1f9c88ca1ea897b97170ae89690d60c47297d2384faea1f626ac86db1"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/stakeholder-update.pipeline.yaml",
+          "sha256": "d98581fa2e4045dcdd67d5f4fd128ddac80876392f38ad1e9146a9929cc17753"
+        },
+        {
+          "path": ".claude/pipelines/qa/bug-to-fix.pipeline.yaml",
+          "sha256": "62be679eb44e95a7ed93335c0962c3270e5ef79fa9a54294610720bfabfa7ee4"
+        },
+        {
+          "path": ".claude/pipelines/qa/regression-suite.pipeline.yaml",
+          "sha256": "e802c25dabf8e69a051e99d95c6d8b9ba029b8727924ba54dd43343f54a76df9"
+        },
+        {
+          "path": ".claude/pipelines/qa/release-validation.pipeline.yaml",
+          "sha256": "2f290f9267ca5ffb21780bcbe84f3a6b4f98595f8e57c5986e347cd7da3a7838"
+        },
+        {
+          "path": ".claude/pipelines/qa/test-strategy.pipeline.yaml",
+          "sha256": "df7a64ab31e6ffda6b5952bd403eebdaa2304e8cb96828fba0e5af7b3b273b57"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/impediment-tracker.pipeline.yaml",
+          "sha256": "98240f7626847164ce1b2e35b0c74f48d3021337ab3bb2e0b731cc2c83a68b35"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/retrospective-data.pipeline.yaml",
+          "sha256": "67c6ce97af7c24d8c7ea3922baa8ae526913c1a621582d2a92c03ffa795efef7"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/sprint-tracking.pipeline.yaml",
+          "sha256": "00274a63c242b799b6bd66c4f416db53ab697a3bd1fe627c0d9dec0ddd9af896"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/full-pipeline.pipeline.yaml",
+          "sha256": "c622fb314d40957916c24cdfbac753e0eddb515f240c3e9d868b4103a659767d"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/governance.pipeline.yaml",
+          "sha256": "e3efda66b26636a844c220e0f56c25ead5969dfd34a42b8a1e8ff7b3756669b7"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/team-health.pipeline.yaml",
+          "sha256": "86f5e09b18c93368344485ec67ab72d32e3c28b0f40f960d6a52e23c06ba12dd"
+        },
+        {
+          "path": ".claude/sdlc-central.json",
+          "sha256": "d93f4c323a6b79b8071ecf38fbff03a7465e147d392e782abdbef47168fa358c"
+        },
+        {
+          "path": ".claude/skills/api-contract-analyzer/SKILL.md",
+          "sha256": "5e993d4abaff4511985b08a840fdb52681cc4fc17012617e7bb8aa736bffef4d"
+        },
+        {
+          "path": ".claude/skills/approval-workflow-auditor/SKILL.md",
+          "sha256": "00b5a2b730d3f49ee3ebc73615c0abe7276805586e6228525d2149cd5c3681bf"
+        },
+        {
+          "path": ".claude/skills/auto-triage/SKILL.md",
+          "sha256": "886c94ac4b653243c250b03604e08c0b1ceaba9bfcc135c167d0101ec2458d53"
+        },
+        {
+          "path": ".claude/skills/board-sync/SKILL.md",
+          "sha256": "bc23fef8ab2b69e48d032cb8b63281ce8bb29fe11e1055eeeb5a806bc52d0b36"
+        },
+        {
+          "path": ".claude/skills/code-ownership-mapper/SKILL.md",
+          "sha256": "1df6d4c412e13de4b92bf59a1b408b9ed7ecb1bdf2ad15d865ad7e2a0d055f4c"
+        },
+        {
+          "path": ".claude/skills/cross-repo-standards-enforcer/SKILL.md",
+          "sha256": "16267b56e86dd3581ade62f7e09e182173944ca48927c7df0053c17776894304"
+        },
+        {
+          "path": ".claude/skills/decision-log/SKILL.md",
+          "sha256": "2bde07393a1346fe45a2ed2c2a5ca21ea4e382b6267bbf62fdab2c8e9016b0e0"
+        },
+        {
+          "path": ".claude/skills/dependency-update/SKILL.md",
+          "sha256": "a900e00c3dc90e63c20976ba2792739672debe57eaf87247c9e521efd49325b6"
+        },
+        {
+          "path": ".claude/skills/design-review/SKILL.md",
+          "sha256": "c5c835026d41ad79a94d7595881432b47376e0ee94372495ac49406964ce2e1d"
+        },
+        {
+          "path": ".claude/skills/doc-gen/SKILL.md",
+          "sha256": "4cc3675e52ce69a67454c80ef94e23d018aab32fdf4358b197452007cf6de2b6"
+        },
+        {
+          "path": ".claude/skills/drift-detector/SKILL.md",
+          "sha256": "289dd7d0d4590df0cef08b6c72b6d8571b7fb751529c89c8174d8e860532db7b"
+        },
+        {
+          "path": ".claude/skills/feature-balance-sheet/SKILL.md",
+          "sha256": "5e68ec95e1ff4ce5ca0f228ccabcac4cea96de0ada21af9d0dc7b85d07a612a8"
+        },
+        {
+          "path": ".claude/skills/feedback-loop/SKILL.md",
+          "sha256": "04888bfe482c1e3065ed21fa6a9b10c49dddbc680d739e3c58004a06f810c297"
+        },
+        {
+          "path": ".claude/skills/gate-briefing/SKILL.md",
+          "sha256": "5748a8fd0b46d6043cccdfe8390fc782e10ad73914b172fbbd10509365ef1f76"
+        },
+        {
+          "path": ".claude/skills/impact-analysis/SKILL.md",
+          "sha256": "50b8fdabb2fd3b4badeeadfd1d3de9dcea828ad6682074e36cabb905c11977b3"
+        },
+        {
+          "path": ".claude/skills/incident-detector/SKILL.md",
+          "sha256": "8ca3bbe19b55bc570aaa7a1373e46a57b0c65f20e60291721c3505281bce34d4"
+        },
+        {
+          "path": ".claude/skills/incident-postmortem-synthesizer/SKILL.md",
+          "sha256": "e8deffcf997e07b18b491127ca4e79a0fac2188425ea2ec83a7206cbdfe272ee"
+        },
+        {
+          "path": ".claude/skills/incident-triager/SKILL.md",
+          "sha256": "00478563da8eaa10f6378ee43c28c2ea655323971daabb3dc0ad7d88a571156e"
+        },
+        {
+          "path": ".claude/skills/license-compliance-audit/SKILL.md",
+          "sha256": "9c597bb2dadbae3a4d0dae7300be5f51d6c6cd88d822968e686817a7a58ebb05"
+        },
+        {
+          "path": ".claude/skills/migration-tracker/SKILL.md",
+          "sha256": "dc4aebf05ff326827c82bb5c8a4f1a035fbc454af8744a5454401ed649f40b76"
+        },
+        {
+          "path": ".claude/skills/onboarding-guide/SKILL.md",
+          "sha256": "818f3137ffd3b31e389f9654444f66df700940613ffd985966bf5ff372638f4a"
+        },
+        {
+          "path": ".claude/skills/perf-review/SKILL.md",
+          "sha256": "3542702b4bdecc1fbeebfba3bd7d1fc6f9b1d6f8454e35a1ba9764c4eebda8a8"
+        },
+        {
+          "path": ".claude/skills/pipeline-monitor/SKILL.md",
+          "sha256": "25bb2c135feeb99d7da0a223d2aa72ec3756a3b04700924312a6140dcfdd68c2"
+        },
+        {
+          "path": ".claude/skills/pipeline-orchestrator/SKILL.md",
+          "sha256": "4f0b07bac6d219d8d3ae2b852233a6f34a6993bc2ff3158d8f52d6a4ae14038b"
+        },
+        {
+          "path": ".claude/skills/plan-gen/SKILL.md",
+          "sha256": "40a4741ba0d41254d2546a17d3524efa70a66a718d13897e5dd9a1581087e832"
+        },
+        {
+          "path": ".claude/skills/plan-merge/SKILL.md",
+          "sha256": "b2248fcb972d92764f47f77f9bcb64d8f66892f6fa903290d92d9d163806c9b1"
+        },
+        {
+          "path": ".claude/skills/pr-orchestrator/SKILL.md",
+          "sha256": "e9e94a881db2b8316542e1db6e937082adf78de64cb177ad356d9061c5531273"
+        },
+        {
+          "path": ".claude/skills/quality-gate/SKILL.md",
+          "sha256": "aa47dff3508fd793e85e4dea54dd03f66d34703cbd0e0bbffbd69cf3007a764f"
+        },
+        {
+          "path": ".claude/skills/regression-check/SKILL.md",
+          "sha256": "8f4dca6e5214f63c88548badbedcb0b6dc5fb525f772198ddffb7c902f24e7dd"
+        },
+        {
+          "path": ".claude/skills/release-notes/SKILL.md",
+          "sha256": "9003325710a9b7e91000381cd6a81f4db7368e83182d673311cc70b21eabcbf9"
+        },
+        {
+          "path": ".claude/skills/release-readiness-checker/SKILL.md",
+          "sha256": "ad8856efd1400132f87452672806bdc7a63f35d27dca9549391452f91fbf5f94"
+        },
+        {
+          "path": ".claude/skills/report-trends/SKILL.md",
+          "sha256": "376357924040f9a15df757cf5ef97691e1165b3a7b9e48d5a441b34e2d8ef34c"
+        },
+        {
+          "path": ".claude/skills/reverse-engineer/SKILL.md",
+          "sha256": "af3547ceb51d93426b94e3b3f1e704c273f26d2c130bee99cecf3fd2367f3183"
+        },
+        {
+          "path": ".claude/skills/review-fix/SKILL.md",
+          "sha256": "ab7bc0837fdaceca958257dbcc2e163b43b232301fc56b65fb75baf4d6e21427"
+        },
+        {
+          "path": ".claude/skills/review/SKILL.md",
+          "sha256": "49162ca4b6909caaab8d06d1a6b312de14e257975e0ad4ce3461ffdd51e79884"
+        },
+        {
+          "path": ".claude/skills/risk-tracker/SKILL.md",
+          "sha256": "dbdc7c7a18d2f3b5a46d3df3b28aca4952c12ad17196940e0807aef950c29686"
+        },
+        {
+          "path": ".claude/skills/rollback-assessor/SKILL.md",
+          "sha256": "7a744e66ea174d313c03f50f9fd889a25d2a02521ca842682ea1fd946f898f2c"
+        },
+        {
+          "path": ".claude/skills/run-pipeline/SKILL.md",
+          "sha256": "2661309d76883a54d8125094dda29428b92f999eca0f004bb163505c4a9edb8c"
+        },
+        {
+          "path": ".claude/skills/scope-tracker/SKILL.md",
+          "sha256": "b2595e8aadd4ccb8cf63cc9aab439b3514c08143a6531995b0bf885cd4e2050b"
+        },
+        {
+          "path": ".claude/skills/security-audit/SKILL.md",
+          "sha256": "c59b50546bc5896359753caa42eb3b672cd43e9b2469a9aadd2607301c1b12dd"
+        },
+        {
+          "path": ".claude/skills/skill-gap-analyzer/SKILL.md",
+          "sha256": "362deff58970e1411288131e66e66f3548bc6676d88196524e8db4d71295b7dd"
+        },
+        {
+          "path": ".claude/skills/slo-sla-tracker/SKILL.md",
+          "sha256": "fec044b2c06249d387e48629b4add98db7bfd69980fdde93f155c384f488250b"
+        },
+        {
+          "path": ".claude/skills/spec-evolve/SKILL.md",
+          "sha256": "fe94679b9314684ddb7111d9e16001fdd90fb8b013e02b450fb19efe593c648f"
+        },
+        {
+          "path": ".claude/skills/spec-fix/SKILL.md",
+          "sha256": "585ce102d0b723df827c0b793bfbf1e8fae3a125a6886dcf900bfdaf101217a9"
+        },
+        {
+          "path": ".claude/skills/spec-gen/SKILL.md",
+          "sha256": "34054bcc63d435e6a854f4b1b04abea1e5a8cf377dc2d4e13fea90fe65ba84b4"
+        },
+        {
+          "path": ".claude/skills/spec-review/SKILL.md",
+          "sha256": "e5d596bcb9bd87261def4d29790f599b49b4044a00f8edf44e22fdf3ba09bcce"
+        },
+        {
+          "path": ".claude/skills/task-gen/SKILL.md",
+          "sha256": "5eb9e3f505894eccf6ba2c64719d0e30add7cd29e51017fc368edd65ca3e4085"
+        },
+        {
+          "path": ".claude/skills/task-implementer/SKILL.md",
+          "sha256": "72e81b1793c47c4d6e591da686156f7478ea4d595f0493e4fe2cc818f7f1f1fb"
+        },
+        {
+          "path": ".claude/skills/tech-debt-audit/SKILL.md",
+          "sha256": "b6599c3f23a9fa796639cd86ae1bccec81fc859219af894ced62fc3779b7b8d9"
+        },
+        {
+          "path": ".claude/skills/test-gen/SKILL.md",
+          "sha256": "5f2a8264467b5c6a96fea5eff90a7835f2ba31288d0aa1c48f7974dc9aadf3b9"
+        },
+        {
+          "path": ".claude/skills/wave-scheduler/SKILL.md",
+          "sha256": "8f21f46d1e517cc19cadadd58e36839bdfc78f67c8d934b1222bd112d3d82be2"
+        },
+        {
+          "path": ".claude/update_owasp_guide.py",
+          "sha256": "2be0f2d9c6dc5eb1869eaedd7739acd27b9af2e4e6967c56dfb8988334e1b1e2"
+        },
+        {
+          "path": "AIDLC_Genesis_Report.docx",
+          "sha256": "a88be977df1bef76239eebda000748b3a90cefe919b3fec00159da398e4c8af4"
+        },
+        {
+          "path": "AIDLC_Mind_Map.png",
+          "sha256": "b8aa3c04d8b60d0d7be8b00f788e0d1a78d635f847af1f6a49275aa502b01565"
+        },
+        {
+          "path": "AIDLC_Mind_Map.svg",
+          "sha256": "7ffe20df55402ae70bd8d571cba8d54bf6162b4ebe0dd4f6dbfb540d6ffe0958"
+        },
+        {
+          "path": "AIDLC_Session_Walkthrough.md",
+          "sha256": "54f46520a07f55e36a8d2b12e8d68cb03c6ba8a99a405026bf4d0d0a6fd8c575"
+        },
+        {
+          "path": "AIDLC_Tech_Talk.pptx",
+          "sha256": "32d521a401afb66781dc7810f6e62ec09da1fda21589e3d15cf8d2e395960c5b"
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha256": "4074b93d16b759b2f0af9ecddcea2b96047a8929b21066dc38dc4459c04e8ae9"
+        },
+        {
+          "path": "adapters/_shared/hooks.sh",
+          "sha256": "56fa23492f9374e3e13c09ca5f27b32113a9df10f26268c9666fe75ab482539a"
+        },
+        {
+          "path": "adapters/claude-code/tool-mappings.yaml",
+          "sha256": "a45c3eb286a3916ade6efe97779039c15a094d347bd02eeefa5b44828a253834"
+        },
+        {
+          "path": "docs/aidlc/design-invariants.md",
+          "sha256": "6c0c9002d6a1401e39183e601736dc6a4b0f10eb97f5622541d253eb6cba8329"
+        },
+        {
+          "path": "docs/aidlc/evidence.md",
+          "sha256": "276cd06ae56b9569f266c496515b88a7bd7f35c70feb3a4dc9931a985483ad47"
+        },
+        {
+          "path": "docs/aidlc/hooks.md",
+          "sha256": "7401ec2dafeed75dd3fa55a9e0c899ef0b6964dd31a39bf31bc04bd511276b89"
+        },
+        {
+          "path": "docs/workshop/2026-04-17-nutrition-app/specs/001-nutrition-app/parallel-kanban.md",
+          "sha256": "25c0689c88c32ddfda0d14e81f4e2b0886211905f75133b8294c984c963497be"
+        },
+        {
+          "path": "docs/workshop/2026-04-17-nutrition-app/specs/001-nutrition-app/traceability-matrix.md",
+          "sha256": "7b7fc59d219b2ba9d7ca8308c512f398f599fd3a47ff4dd741f62d174350eff9"
+        },
+        {
+          "path": "hooks/_bin/aidlc-evidence.sh",
+          "sha256": "76ba0446f9bba0d4fe66aa8489a3f7427a05dd4a04aca81c0675b119c2785cc0"
+        },
+        {
+          "path": "hooks/_bin/aidlc-verify.sh",
+          "sha256": "9476962be76993b7e05204c3686e0f52e96beb6e4b0e70bedb3af25f625984e3"
+        },
+        {
+          "path": "hooks/_test/run.sh",
+          "sha256": "447abeff291a1c5b34ca17caf8f2a12730aafb16d81a896357c00d7fd36f0fd7"
+        },
+        {
+          "path": "hooks/aidlc-artifact-hygiene/aidlc-artifact-hygiene.sh",
+          "sha256": "7fb95461048fc9c45615d274f21e1bda343cacd776baeb2ef508a120b8fec286"
+        },
+        {
+          "path": "hooks/aidlc-artifact-hygiene/hook.yaml",
+          "sha256": "465969bbd7f69511916b46e0f7f2cdd89033be94e2ab3a6404ac34cad1aa2c41"
+        },
+        {
+          "path": "hooks/aidlc-pre-command-guard/aidlc-pre-command-guard.sh",
+          "sha256": "6bed2fd51be99699e32b3d4fd156d2a5480e0150536b439bb9022fc3fdb22fb7"
+        },
+        {
+          "path": "hooks/aidlc-pre-command-guard/hook.yaml",
+          "sha256": "a70f02326fa54702aa8e45ca01c21953f81c85cd8f26598f00b0da26079a5bb5"
+        },
+        {
+          "path": "hooks/aidlc-pre-write-guard/aidlc-pre-write-guard.sh",
+          "sha256": "21e07239152eca5bcb6744829d8db0388d99e8449644146ffd55f0084f3947bb"
+        },
+        {
+          "path": "hooks/aidlc-pre-write-guard/hook.yaml",
+          "sha256": "7c624d42ad00ebc95ba1f3aced2cb2f6d611c5d469ff39099c662adb27e3ac43"
+        },
+        {
+          "path": "pipelines/developer/feature-build.pipeline.yaml",
+          "sha256": "dc18fa6e03a2b3c8c21e3929021ed218b83e3291026c42e12d4a0ce5761c3bd1"
+        },
+        {
+          "path": "pipelines/qa/release-validation.pipeline.yaml",
+          "sha256": "9977eb5f995228533a4c4222b22c51e9087e6341d5e612e158c7c71a68e1d517"
+        },
+        {
+          "path": "registry/catalog.yaml",
+          "sha256": "acb2ad954cdc383edc18a29a47492deb87a094eb1ae0b5289913ef696cbac132"
+        },
+        {
+          "path": "setup/install-all.sh",
+          "sha256": "3ed9c899fe11304b7b06ccd75fed5c8e105dbe507243acb844b91421bd85ee24"
+        },
+        {
+          "path": "setup/install-role.sh",
+          "sha256": "5e60e46930fc10536cb35bafcf3c665fffb3029660e4f09330fd01b177ca50e6"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/SKILL.md",
+          "sha256": "eb49535676e3d5cde80b19825bce280bdc31660c88ca3f1bf9891b9c526be9a9"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/prompt.md",
+          "sha256": "f9e8164b40f24a743cf3c20ff08f2e68ba665c18e4ecd160d0461297cbcf46d2"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/skill.yaml",
+          "sha256": "5531d80e4125c3af7baab9b81dc26abfd02d1befba9773f9c4cb71912fd12426"
+        },
+        {
+          "path": "skills/quality-gate/SKILL.md",
+          "sha256": "e2da83c6987b1beb9b13d4e0f9cbcca1da1cd269970921340c79d0e55f16c77c"
+        },
+        {
+          "path": "skills/quality-gate/SKILL.md.orig",
+          "sha256": "8e5eac02736447e4bdff4a3b2f9f1211eecfb5d57fc2167a227ed4d27153775e"
+        },
+        {
+          "path": "skills/quality-gate/prompt.md",
+          "sha256": "9ddd25a976025b10d3719b38ee69f160f2582a6717d7adb5d309f306885e38ff"
+        },
+        {
+          "path": "skills/release-readiness-checker/SKILL.md",
+          "sha256": "06d21f6914f6b78bcde5f89895f9d7146d6bd2adb1e841147e621769a237b585"
+        },
+        {
+          "path": "skills/release-readiness-checker/SKILL.md.orig",
+          "sha256": "ad8856efd1400132f87452672806bdc7a63f35d27dca9549391452f91fbf5f94"
+        },
+        {
+          "path": "skills/release-readiness-checker/prompt.md",
+          "sha256": "66311f73d1ca488ed331db2313da4dc4034a3fb5f4e132cd774b3edd551b9487"
+        },
+        {
+          "path": "skills/task-implementer/SKILL.md",
+          "sha256": "53fa72de83713647f42b3f7af4cd4311ff01bfcbe80d03586af590dbc9fe2a38"
+        },
+        {
+          "path": "skills/task-implementer/SKILL.md.orig",
+          "sha256": "b78a92bc27c38b09ee9942d26cdfa4782540a667436f461b0dbfc81300cfe984"
+        },
+        {
+          "path": "skills/task-implementer/prompt.md",
+          "sha256": "66ac2a7c89fefdc2ea21d09433aed8380f02e783440d560f888ecafe3fe89d50"
+        },
+        {
+          "path": "tests/aidlc-phase1.test.js",
+          "sha256": "471c2dcceeed2d176ca7a68dca332e7b4bc1f1642dcf5832be88d3834b2b8c6c"
+        },
+        {
+          "path": "tests/aidlc-phase2.test.js",
+          "sha256": "3708e27cbcf1587f6f4289f43f84481f10312c666a2349d0bc0b01fa2c8f30f2"
+        },
+        {
+          "path": "~$LC-Central-Technical-User-Guide.docx",
+          "sha256": "223c17c093ee52c6f55e56eb4c3418b7144c7ecba93cfd226a3a93d81ec9f3f4"
+        }
+      ],
+      "touched_hash": "d132b2dbda04e6c589a0a1dfb8ecbd708de2deb7f368cd4e6842e68911a0c982",
+      "stale": false,
+      "model": "unknown",
+      "sdlc": "2.0.0-alpha"
+    },
+    {
+      "id": "E-002",
+      "task": "TASK-004",
+      "acs": [
+        "AC-7"
+      ],
+      "kind": "test",
+      "suite": false,
+      "command": "node --test tests/aidlc-phase1.test.js tests/pipeline-schema.test.js",
+      "command_hash": "a9c0880c5af745e7",
+      "cwd": "/Users/kvel/Documents/manoj_ws/sdlc_central",
+      "started_at": "2026-09-24T18:54:31Z",
+      "finished_at": "2026-09-24T18:54:41Z",
+      "duration_ms": 9378,
+      "exit_code": 0,
+      "stdout_path": "evidence/TASK-004/002-node-test-tests-aidlc-phase1-test-js-tes.out",
+      "stdout_sha256": "90536880f856617a392803bce60df7b359e6339ae830dd3881300f9cbc4aa0f0",
+      "stderr_path": "evidence/TASK-004/002-node-test-tests-aidlc-phase1-test-js-tes.err",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "report_path": null,
+      "report_sha256": null,
+      "touched_files": [
+        {
+          "path": ".claude/config/balance-sheet-config.json",
+          "sha256": "1411e1e382c1e1d8aa16a4edae4e4d9691a1e5204d5892c6729cf226949f33b2"
+        },
+        {
+          "path": ".claude/config/gate-config.json",
+          "sha256": "4ae8d1b2e77688304bcbe377547f96e759ed2f3f4e86da29676d0eaa2aff1f1d"
+        },
+        {
+          "path": ".claude/pipelines/_engine/PIPELINE-RUNNER.md",
+          "sha256": "2661309d76883a54d8125094dda29428b92f999eca0f004bb163505c4a9edb8c"
+        },
+        {
+          "path": ".claude/pipelines/_engine/PROGRESS-TEMPLATE.md",
+          "sha256": "038dd0b0aa292454eadac3129fe522cfbe24c23475df0f233d177a487ff52027"
+        },
+        {
+          "path": ".claude/pipelines/architect/decision-log.md",
+          "sha256": "fdb7829ab485d354f283a1e5a16da1ab5ad2707fc5d344b72e6edc4b545e93fd"
+        },
+        {
+          "path": ".claude/pipelines/architect/design-to-plan.pipeline.yaml",
+          "sha256": "4447a0704dee623549f41b39fa3f2c9e0d6d604c8d441c9d16f481177f928ddc"
+        },
+        {
+          "path": ".claude/pipelines/architect/migration-planning.pipeline.yaml",
+          "sha256": "2a608d572d6c832e32a30a8ecb037b136922b9cea0964ffaeb02bf1fd17718bf"
+        },
+        {
+          "path": ".claude/pipelines/architect/plan.md",
+          "sha256": "1078b8958eb35acc67dd3591816cfdacee4a70eb50118762f309324293c94059"
+        },
+        {
+          "path": ".claude/pipelines/architect/system-health.pipeline.yaml",
+          "sha256": "c9186e06c590a8145f8b526f72a773ebda59d29050c1cbeda09ec2ae9f278f82"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-handoff.pipeline.yaml",
+          "sha256": "805027a706eb94625cba58341b972f9e7bd24d1bfed5f22c7737eeabb1a59365"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-implementation.pipeline.yaml",
+          "sha256": "f7d38c7cca607f66feb6acf3a479f57f7b381d0ceb826a34c2873e4982dc1182"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-system-sync.pipeline.yaml",
+          "sha256": "e0ace9f7b30160d41ea88cbe9343ef7a48f446116e2faa79d6cbb5880b6848a3"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-validation.pipeline.yaml",
+          "sha256": "0f4827593832804f4d1681df959807340fd37a88377d2042b5f915949e48d601"
+        },
+        {
+          "path": ".claude/pipelines/designer/spec-collaboration.pipeline.yaml",
+          "sha256": "927d2b80835b72bb560eda3bf5e14ea3c7f24a91152d42112aba39f3e1ecbaa4"
+        },
+        {
+          "path": ".claude/pipelines/developer/feature-build.pipeline.yaml",
+          "sha256": "8c577a35d6bbe50f0c88841d2935985ade5f2e902b5e6e798b60ce3bf909c348"
+        },
+        {
+          "path": ".claude/pipelines/developer/maintenance.pipeline.yaml",
+          "sha256": "c3ddf798794bea74df0f9476ccc0cce6eb0dca1a76f4e64fd005a0181dc509c6"
+        },
+        {
+          "path": ".claude/pipelines/developer/pr-workflow.pipeline.yaml",
+          "sha256": "7b370244be7b94ae3982ccba4edbace9c790365c3cc238e775dfbfd0cce4734e"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/deploy-verify.pipeline.yaml",
+          "sha256": "d9d99b8fc78835e6f101887b01e6d6c912d73149fa015a067e90d2375a8f58b4"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/incident-response.pipeline.yaml",
+          "sha256": "2454d986ca91a29a2cc3ff1b69de1b5c4e036c8a814a3d23f69fe3def68b1d16"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/platform-health.pipeline.yaml",
+          "sha256": "f567ca62756ae5bb3b18811b9bed0d7426a34952b1f959b1f4bd6caf5e44ce84"
+        },
+        {
+          "path": ".claude/pipelines/pipeline-state-design-to-plan.json",
+          "sha256": "9ac92ad894cfbb4a153d68274f51d1434b722c5a7345b20b7695e9319dcfea24"
+        },
+        {
+          "path": ".claude/pipelines/pipeline-state-feature-intake.json",
+          "sha256": "1d386e25e261ab6015b8ec21e8cb2f6d0e7f31f4f2c154b9243c75d843651cb8"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-balance-sheet-deep.md",
+          "sha256": "17dfa65ade8992cb2bb64033729dab2e54a6421c033b11dfc67faf467b3a91f4"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-balance-sheet.md",
+          "sha256": "d40d1f189b5f831e8a5c19aa2466cd7c5e1402f0b5a9f4153e992571787d2cf7"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-intake.pipeline.yaml",
+          "sha256": "59e98d5c68501e62d4ff63a15f947df2f9f248924ec9b4ac03e4cc5f177c5941"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/gate-briefing.md",
+          "sha256": "db018d97a13b28f6098a3573064d987b9e900ef405cbeeed13899906235e0e9d"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/idea-to-spec.pipeline.yaml",
+          "sha256": "70614b6d1b1ce6a24c1698b2ba91a0303fffe194b3b054567eaae66c5c2fe806"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/release-signoff.pipeline.yaml",
+          "sha256": "a4a6f737bab3789771cdfde940ae9d43fe0a28d10b37fab235d130b708caeb1e"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/spec.md",
+          "sha256": "71f076f4d5e83f42067196a470b923ab59d5782bf6cfecc9c8da6746533890ce"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/sprint-demo.pipeline.yaml",
+          "sha256": "4a216fe946aa79903af186c84cced63d807df29599877b138de3548f72938c22"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/sprint-health.pipeline.yaml",
+          "sha256": "baab55a1f9c88ca1ea897b97170ae89690d60c47297d2384faea1f626ac86db1"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/stakeholder-update.pipeline.yaml",
+          "sha256": "d98581fa2e4045dcdd67d5f4fd128ddac80876392f38ad1e9146a9929cc17753"
+        },
+        {
+          "path": ".claude/pipelines/qa/bug-to-fix.pipeline.yaml",
+          "sha256": "62be679eb44e95a7ed93335c0962c3270e5ef79fa9a54294610720bfabfa7ee4"
+        },
+        {
+          "path": ".claude/pipelines/qa/regression-suite.pipeline.yaml",
+          "sha256": "e802c25dabf8e69a051e99d95c6d8b9ba029b8727924ba54dd43343f54a76df9"
+        },
+        {
+          "path": ".claude/pipelines/qa/release-validation.pipeline.yaml",
+          "sha256": "2f290f9267ca5ffb21780bcbe84f3a6b4f98595f8e57c5986e347cd7da3a7838"
+        },
+        {
+          "path": ".claude/pipelines/qa/test-strategy.pipeline.yaml",
+          "sha256": "df7a64ab31e6ffda6b5952bd403eebdaa2304e8cb96828fba0e5af7b3b273b57"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/impediment-tracker.pipeline.yaml",
+          "sha256": "98240f7626847164ce1b2e35b0c74f48d3021337ab3bb2e0b731cc2c83a68b35"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/retrospective-data.pipeline.yaml",
+          "sha256": "67c6ce97af7c24d8c7ea3922baa8ae526913c1a621582d2a92c03ffa795efef7"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/sprint-tracking.pipeline.yaml",
+          "sha256": "00274a63c242b799b6bd66c4f416db53ab697a3bd1fe627c0d9dec0ddd9af896"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/full-pipeline.pipeline.yaml",
+          "sha256": "c622fb314d40957916c24cdfbac753e0eddb515f240c3e9d868b4103a659767d"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/governance.pipeline.yaml",
+          "sha256": "e3efda66b26636a844c220e0f56c25ead5969dfd34a42b8a1e8ff7b3756669b7"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/team-health.pipeline.yaml",
+          "sha256": "86f5e09b18c93368344485ec67ab72d32e3c28b0f40f960d6a52e23c06ba12dd"
+        },
+        {
+          "path": ".claude/sdlc-central.json",
+          "sha256": "d93f4c323a6b79b8071ecf38fbff03a7465e147d392e782abdbef47168fa358c"
+        },
+        {
+          "path": ".claude/skills/api-contract-analyzer/SKILL.md",
+          "sha256": "5e993d4abaff4511985b08a840fdb52681cc4fc17012617e7bb8aa736bffef4d"
+        },
+        {
+          "path": ".claude/skills/approval-workflow-auditor/SKILL.md",
+          "sha256": "00b5a2b730d3f49ee3ebc73615c0abe7276805586e6228525d2149cd5c3681bf"
+        },
+        {
+          "path": ".claude/skills/auto-triage/SKILL.md",
+          "sha256": "886c94ac4b653243c250b03604e08c0b1ceaba9bfcc135c167d0101ec2458d53"
+        },
+        {
+          "path": ".claude/skills/board-sync/SKILL.md",
+          "sha256": "bc23fef8ab2b69e48d032cb8b63281ce8bb29fe11e1055eeeb5a806bc52d0b36"
+        },
+        {
+          "path": ".claude/skills/code-ownership-mapper/SKILL.md",
+          "sha256": "1df6d4c412e13de4b92bf59a1b408b9ed7ecb1bdf2ad15d865ad7e2a0d055f4c"
+        },
+        {
+          "path": ".claude/skills/cross-repo-standards-enforcer/SKILL.md",
+          "sha256": "16267b56e86dd3581ade62f7e09e182173944ca48927c7df0053c17776894304"
+        },
+        {
+          "path": ".claude/skills/decision-log/SKILL.md",
+          "sha256": "2bde07393a1346fe45a2ed2c2a5ca21ea4e382b6267bbf62fdab2c8e9016b0e0"
+        },
+        {
+          "path": ".claude/skills/dependency-update/SKILL.md",
+          "sha256": "a900e00c3dc90e63c20976ba2792739672debe57eaf87247c9e521efd49325b6"
+        },
+        {
+          "path": ".claude/skills/design-review/SKILL.md",
+          "sha256": "c5c835026d41ad79a94d7595881432b47376e0ee94372495ac49406964ce2e1d"
+        },
+        {
+          "path": ".claude/skills/doc-gen/SKILL.md",
+          "sha256": "4cc3675e52ce69a67454c80ef94e23d018aab32fdf4358b197452007cf6de2b6"
+        },
+        {
+          "path": ".claude/skills/drift-detector/SKILL.md",
+          "sha256": "289dd7d0d4590df0cef08b6c72b6d8571b7fb751529c89c8174d8e860532db7b"
+        },
+        {
+          "path": ".claude/skills/feature-balance-sheet/SKILL.md",
+          "sha256": "5e68ec95e1ff4ce5ca0f228ccabcac4cea96de0ada21af9d0dc7b85d07a612a8"
+        },
+        {
+          "path": ".claude/skills/feedback-loop/SKILL.md",
+          "sha256": "04888bfe482c1e3065ed21fa6a9b10c49dddbc680d739e3c58004a06f810c297"
+        },
+        {
+          "path": ".claude/skills/gate-briefing/SKILL.md",
+          "sha256": "5748a8fd0b46d6043cccdfe8390fc782e10ad73914b172fbbd10509365ef1f76"
+        },
+        {
+          "path": ".claude/skills/impact-analysis/SKILL.md",
+          "sha256": "50b8fdabb2fd3b4badeeadfd1d3de9dcea828ad6682074e36cabb905c11977b3"
+        },
+        {
+          "path": ".claude/skills/incident-detector/SKILL.md",
+          "sha256": "8ca3bbe19b55bc570aaa7a1373e46a57b0c65f20e60291721c3505281bce34d4"
+        },
+        {
+          "path": ".claude/skills/incident-postmortem-synthesizer/SKILL.md",
+          "sha256": "e8deffcf997e07b18b491127ca4e79a0fac2188425ea2ec83a7206cbdfe272ee"
+        },
+        {
+          "path": ".claude/skills/incident-triager/SKILL.md",
+          "sha256": "00478563da8eaa10f6378ee43c28c2ea655323971daabb3dc0ad7d88a571156e"
+        },
+        {
+          "path": ".claude/skills/license-compliance-audit/SKILL.md",
+          "sha256": "9c597bb2dadbae3a4d0dae7300be5f51d6c6cd88d822968e686817a7a58ebb05"
+        },
+        {
+          "path": ".claude/skills/migration-tracker/SKILL.md",
+          "sha256": "dc4aebf05ff326827c82bb5c8a4f1a035fbc454af8744a5454401ed649f40b76"
+        },
+        {
+          "path": ".claude/skills/onboarding-guide/SKILL.md",
+          "sha256": "818f3137ffd3b31e389f9654444f66df700940613ffd985966bf5ff372638f4a"
+        },
+        {
+          "path": ".claude/skills/perf-review/SKILL.md",
+          "sha256": "3542702b4bdecc1fbeebfba3bd7d1fc6f9b1d6f8454e35a1ba9764c4eebda8a8"
+        },
+        {
+          "path": ".claude/skills/pipeline-monitor/SKILL.md",
+          "sha256": "25bb2c135feeb99d7da0a223d2aa72ec3756a3b04700924312a6140dcfdd68c2"
+        },
+        {
+          "path": ".claude/skills/pipeline-orchestrator/SKILL.md",
+          "sha256": "4f0b07bac6d219d8d3ae2b852233a6f34a6993bc2ff3158d8f52d6a4ae14038b"
+        },
+        {
+          "path": ".claude/skills/plan-gen/SKILL.md",
+          "sha256": "40a4741ba0d41254d2546a17d3524efa70a66a718d13897e5dd9a1581087e832"
+        },
+        {
+          "path": ".claude/skills/plan-merge/SKILL.md",
+          "sha256": "b2248fcb972d92764f47f77f9bcb64d8f66892f6fa903290d92d9d163806c9b1"
+        },
+        {
+          "path": ".claude/skills/pr-orchestrator/SKILL.md",
+          "sha256": "e9e94a881db2b8316542e1db6e937082adf78de64cb177ad356d9061c5531273"
+        },
+        {
+          "path": ".claude/skills/quality-gate/SKILL.md",
+          "sha256": "aa47dff3508fd793e85e4dea54dd03f66d34703cbd0e0bbffbd69cf3007a764f"
+        },
+        {
+          "path": ".claude/skills/regression-check/SKILL.md",
+          "sha256": "8f4dca6e5214f63c88548badbedcb0b6dc5fb525f772198ddffb7c902f24e7dd"
+        },
+        {
+          "path": ".claude/skills/release-notes/SKILL.md",
+          "sha256": "9003325710a9b7e91000381cd6a81f4db7368e83182d673311cc70b21eabcbf9"
+        },
+        {
+          "path": ".claude/skills/release-readiness-checker/SKILL.md",
+          "sha256": "ad8856efd1400132f87452672806bdc7a63f35d27dca9549391452f91fbf5f94"
+        },
+        {
+          "path": ".claude/skills/report-trends/SKILL.md",
+          "sha256": "376357924040f9a15df757cf5ef97691e1165b3a7b9e48d5a441b34e2d8ef34c"
+        },
+        {
+          "path": ".claude/skills/reverse-engineer/SKILL.md",
+          "sha256": "af3547ceb51d93426b94e3b3f1e704c273f26d2c130bee99cecf3fd2367f3183"
+        },
+        {
+          "path": ".claude/skills/review-fix/SKILL.md",
+          "sha256": "ab7bc0837fdaceca958257dbcc2e163b43b232301fc56b65fb75baf4d6e21427"
+        },
+        {
+          "path": ".claude/skills/review/SKILL.md",
+          "sha256": "49162ca4b6909caaab8d06d1a6b312de14e257975e0ad4ce3461ffdd51e79884"
+        },
+        {
+          "path": ".claude/skills/risk-tracker/SKILL.md",
+          "sha256": "dbdc7c7a18d2f3b5a46d3df3b28aca4952c12ad17196940e0807aef950c29686"
+        },
+        {
+          "path": ".claude/skills/rollback-assessor/SKILL.md",
+          "sha256": "7a744e66ea174d313c03f50f9fd889a25d2a02521ca842682ea1fd946f898f2c"
+        },
+        {
+          "path": ".claude/skills/run-pipeline/SKILL.md",
+          "sha256": "2661309d76883a54d8125094dda29428b92f999eca0f004bb163505c4a9edb8c"
+        },
+        {
+          "path": ".claude/skills/scope-tracker/SKILL.md",
+          "sha256": "b2595e8aadd4ccb8cf63cc9aab439b3514c08143a6531995b0bf885cd4e2050b"
+        },
+        {
+          "path": ".claude/skills/security-audit/SKILL.md",
+          "sha256": "c59b50546bc5896359753caa42eb3b672cd43e9b2469a9aadd2607301c1b12dd"
+        },
+        {
+          "path": ".claude/skills/skill-gap-analyzer/SKILL.md",
+          "sha256": "362deff58970e1411288131e66e66f3548bc6676d88196524e8db4d71295b7dd"
+        },
+        {
+          "path": ".claude/skills/slo-sla-tracker/SKILL.md",
+          "sha256": "fec044b2c06249d387e48629b4add98db7bfd69980fdde93f155c384f488250b"
+        },
+        {
+          "path": ".claude/skills/spec-evolve/SKILL.md",
+          "sha256": "fe94679b9314684ddb7111d9e16001fdd90fb8b013e02b450fb19efe593c648f"
+        },
+        {
+          "path": ".claude/skills/spec-fix/SKILL.md",
+          "sha256": "585ce102d0b723df827c0b793bfbf1e8fae3a125a6886dcf900bfdaf101217a9"
+        },
+        {
+          "path": ".claude/skills/spec-gen/SKILL.md",
+          "sha256": "34054bcc63d435e6a854f4b1b04abea1e5a8cf377dc2d4e13fea90fe65ba84b4"
+        },
+        {
+          "path": ".claude/skills/spec-review/SKILL.md",
+          "sha256": "e5d596bcb9bd87261def4d29790f599b49b4044a00f8edf44e22fdf3ba09bcce"
+        },
+        {
+          "path": ".claude/skills/task-gen/SKILL.md",
+          "sha256": "5eb9e3f505894eccf6ba2c64719d0e30add7cd29e51017fc368edd65ca3e4085"
+        },
+        {
+          "path": ".claude/skills/task-implementer/SKILL.md",
+          "sha256": "72e81b1793c47c4d6e591da686156f7478ea4d595f0493e4fe2cc818f7f1f1fb"
+        },
+        {
+          "path": ".claude/skills/tech-debt-audit/SKILL.md",
+          "sha256": "b6599c3f23a9fa796639cd86ae1bccec81fc859219af894ced62fc3779b7b8d9"
+        },
+        {
+          "path": ".claude/skills/test-gen/SKILL.md",
+          "sha256": "5f2a8264467b5c6a96fea5eff90a7835f2ba31288d0aa1c48f7974dc9aadf3b9"
+        },
+        {
+          "path": ".claude/skills/wave-scheduler/SKILL.md",
+          "sha256": "8f21f46d1e517cc19cadadd58e36839bdfc78f67c8d934b1222bd112d3d82be2"
+        },
+        {
+          "path": ".claude/update_owasp_guide.py",
+          "sha256": "2be0f2d9c6dc5eb1869eaedd7739acd27b9af2e4e6967c56dfb8988334e1b1e2"
+        },
+        {
+          "path": "AIDLC_Genesis_Report.docx",
+          "sha256": "a88be977df1bef76239eebda000748b3a90cefe919b3fec00159da398e4c8af4"
+        },
+        {
+          "path": "AIDLC_Mind_Map.png",
+          "sha256": "b8aa3c04d8b60d0d7be8b00f788e0d1a78d635f847af1f6a49275aa502b01565"
+        },
+        {
+          "path": "AIDLC_Mind_Map.svg",
+          "sha256": "7ffe20df55402ae70bd8d571cba8d54bf6162b4ebe0dd4f6dbfb540d6ffe0958"
+        },
+        {
+          "path": "AIDLC_Session_Walkthrough.md",
+          "sha256": "54f46520a07f55e36a8d2b12e8d68cb03c6ba8a99a405026bf4d0d0a6fd8c575"
+        },
+        {
+          "path": "AIDLC_Tech_Talk.pptx",
+          "sha256": "32d521a401afb66781dc7810f6e62ec09da1fda21589e3d15cf8d2e395960c5b"
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha256": "4074b93d16b759b2f0af9ecddcea2b96047a8929b21066dc38dc4459c04e8ae9"
+        },
+        {
+          "path": "adapters/_shared/hooks.sh",
+          "sha256": "56fa23492f9374e3e13c09ca5f27b32113a9df10f26268c9666fe75ab482539a"
+        },
+        {
+          "path": "adapters/claude-code/tool-mappings.yaml",
+          "sha256": "a45c3eb286a3916ade6efe97779039c15a094d347bd02eeefa5b44828a253834"
+        },
+        {
+          "path": "docs/aidlc/design-invariants.md",
+          "sha256": "6c0c9002d6a1401e39183e601736dc6a4b0f10eb97f5622541d253eb6cba8329"
+        },
+        {
+          "path": "docs/aidlc/evidence.md",
+          "sha256": "276cd06ae56b9569f266c496515b88a7bd7f35c70feb3a4dc9931a985483ad47"
+        },
+        {
+          "path": "docs/aidlc/hooks.md",
+          "sha256": "7401ec2dafeed75dd3fa55a9e0c899ef0b6964dd31a39bf31bc04bd511276b89"
+        },
+        {
+          "path": "docs/workshop/2026-04-17-nutrition-app/specs/001-nutrition-app/parallel-kanban.md",
+          "sha256": "25c0689c88c32ddfda0d14e81f4e2b0886211905f75133b8294c984c963497be"
+        },
+        {
+          "path": "docs/workshop/2026-04-17-nutrition-app/specs/001-nutrition-app/traceability-matrix.md",
+          "sha256": "7b7fc59d219b2ba9d7ca8308c512f398f599fd3a47ff4dd741f62d174350eff9"
+        },
+        {
+          "path": "hooks/_bin/aidlc-evidence.sh",
+          "sha256": "76ba0446f9bba0d4fe66aa8489a3f7427a05dd4a04aca81c0675b119c2785cc0"
+        },
+        {
+          "path": "hooks/_bin/aidlc-verify.sh",
+          "sha256": "9476962be76993b7e05204c3686e0f52e96beb6e4b0e70bedb3af25f625984e3"
+        },
+        {
+          "path": "hooks/_test/run.sh",
+          "sha256": "447abeff291a1c5b34ca17caf8f2a12730aafb16d81a896357c00d7fd36f0fd7"
+        },
+        {
+          "path": "hooks/aidlc-artifact-hygiene/aidlc-artifact-hygiene.sh",
+          "sha256": "7fb95461048fc9c45615d274f21e1bda343cacd776baeb2ef508a120b8fec286"
+        },
+        {
+          "path": "hooks/aidlc-artifact-hygiene/hook.yaml",
+          "sha256": "465969bbd7f69511916b46e0f7f2cdd89033be94e2ab3a6404ac34cad1aa2c41"
+        },
+        {
+          "path": "hooks/aidlc-pre-command-guard/aidlc-pre-command-guard.sh",
+          "sha256": "6bed2fd51be99699e32b3d4fd156d2a5480e0150536b439bb9022fc3fdb22fb7"
+        },
+        {
+          "path": "hooks/aidlc-pre-command-guard/hook.yaml",
+          "sha256": "a70f02326fa54702aa8e45ca01c21953f81c85cd8f26598f00b0da26079a5bb5"
+        },
+        {
+          "path": "hooks/aidlc-pre-write-guard/aidlc-pre-write-guard.sh",
+          "sha256": "21e07239152eca5bcb6744829d8db0388d99e8449644146ffd55f0084f3947bb"
+        },
+        {
+          "path": "hooks/aidlc-pre-write-guard/hook.yaml",
+          "sha256": "7c624d42ad00ebc95ba1f3aced2cb2f6d611c5d469ff39099c662adb27e3ac43"
+        },
+        {
+          "path": "pipelines/developer/feature-build.pipeline.yaml",
+          "sha256": "dc18fa6e03a2b3c8c21e3929021ed218b83e3291026c42e12d4a0ce5761c3bd1"
+        },
+        {
+          "path": "pipelines/qa/release-validation.pipeline.yaml",
+          "sha256": "9977eb5f995228533a4c4222b22c51e9087e6341d5e612e158c7c71a68e1d517"
+        },
+        {
+          "path": "registry/catalog.yaml",
+          "sha256": "acb2ad954cdc383edc18a29a47492deb87a094eb1ae0b5289913ef696cbac132"
+        },
+        {
+          "path": "setup/install-all.sh",
+          "sha256": "3ed9c899fe11304b7b06ccd75fed5c8e105dbe507243acb844b91421bd85ee24"
+        },
+        {
+          "path": "setup/install-role.sh",
+          "sha256": "5e60e46930fc10536cb35bafcf3c665fffb3029660e4f09330fd01b177ca50e6"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/SKILL.md",
+          "sha256": "eb49535676e3d5cde80b19825bce280bdc31660c88ca3f1bf9891b9c526be9a9"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/prompt.md",
+          "sha256": "f9e8164b40f24a743cf3c20ff08f2e68ba665c18e4ecd160d0461297cbcf46d2"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/skill.yaml",
+          "sha256": "5531d80e4125c3af7baab9b81dc26abfd02d1befba9773f9c4cb71912fd12426"
+        },
+        {
+          "path": "skills/quality-gate/SKILL.md",
+          "sha256": "e2da83c6987b1beb9b13d4e0f9cbcca1da1cd269970921340c79d0e55f16c77c"
+        },
+        {
+          "path": "skills/quality-gate/SKILL.md.orig",
+          "sha256": "8e5eac02736447e4bdff4a3b2f9f1211eecfb5d57fc2167a227ed4d27153775e"
+        },
+        {
+          "path": "skills/quality-gate/prompt.md",
+          "sha256": "9ddd25a976025b10d3719b38ee69f160f2582a6717d7adb5d309f306885e38ff"
+        },
+        {
+          "path": "skills/release-readiness-checker/SKILL.md",
+          "sha256": "06d21f6914f6b78bcde5f89895f9d7146d6bd2adb1e841147e621769a237b585"
+        },
+        {
+          "path": "skills/release-readiness-checker/SKILL.md.orig",
+          "sha256": "ad8856efd1400132f87452672806bdc7a63f35d27dca9549391452f91fbf5f94"
+        },
+        {
+          "path": "skills/release-readiness-checker/prompt.md",
+          "sha256": "66311f73d1ca488ed331db2313da4dc4034a3fb5f4e132cd774b3edd551b9487"
+        },
+        {
+          "path": "skills/task-implementer/SKILL.md",
+          "sha256": "53fa72de83713647f42b3f7af4cd4311ff01bfcbe80d03586af590dbc9fe2a38"
+        },
+        {
+          "path": "skills/task-implementer/SKILL.md.orig",
+          "sha256": "b78a92bc27c38b09ee9942d26cdfa4782540a667436f461b0dbfc81300cfe984"
+        },
+        {
+          "path": "skills/task-implementer/prompt.md",
+          "sha256": "66ac2a7c89fefdc2ea21d09433aed8380f02e783440d560f888ecafe3fe89d50"
+        },
+        {
+          "path": "tests/aidlc-phase1.test.js",
+          "sha256": "471c2dcceeed2d176ca7a68dca332e7b4bc1f1642dcf5832be88d3834b2b8c6c"
+        },
+        {
+          "path": "tests/aidlc-phase2.test.js",
+          "sha256": "3708e27cbcf1587f6f4289f43f84481f10312c666a2349d0bc0b01fa2c8f30f2"
+        },
+        {
+          "path": "~$LC-Central-Technical-User-Guide.docx",
+          "sha256": "223c17c093ee52c6f55e56eb4c3418b7144c7ecba93cfd226a3a93d81ec9f3f4"
+        }
+      ],
+      "touched_hash": "d132b2dbda04e6c589a0a1dfb8ecbd708de2deb7f368cd4e6842e68911a0c982",
+      "stale": false,
+      "model": "unknown",
+      "sdlc": "2.0.0-alpha"
+    },
+    {
+      "id": "E-003",
+      "task": "TASK-002",
+      "acs": [],
+      "kind": "test",
+      "suite": true,
+      "command": "node --test tests/aidlc-phase2.test.js",
+      "command_hash": "d38a5f897e3a8d0f",
+      "cwd": "/Users/kvel/Documents/manoj_ws/sdlc_central",
+      "started_at": "2026-09-24T18:54:43Z",
+      "finished_at": "2026-09-24T18:54:52Z",
+      "duration_ms": 9061,
+      "exit_code": 0,
+      "stdout_path": "evidence/TASK-002/003-node-test-tests-aidlc-phase2-test-js.out",
+      "stdout_sha256": "f072b8873f3758f73dcb81fc9f9eb77ba722bfe616191b264ab032c6283a83df",
+      "stderr_path": "evidence/TASK-002/003-node-test-tests-aidlc-phase2-test-js.err",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "report_path": null,
+      "report_sha256": null,
+      "touched_files": [
+        {
+          "path": ".claude/config/balance-sheet-config.json",
+          "sha256": "1411e1e382c1e1d8aa16a4edae4e4d9691a1e5204d5892c6729cf226949f33b2"
+        },
+        {
+          "path": ".claude/config/gate-config.json",
+          "sha256": "4ae8d1b2e77688304bcbe377547f96e759ed2f3f4e86da29676d0eaa2aff1f1d"
+        },
+        {
+          "path": ".claude/pipelines/_engine/PIPELINE-RUNNER.md",
+          "sha256": "2661309d76883a54d8125094dda29428b92f999eca0f004bb163505c4a9edb8c"
+        },
+        {
+          "path": ".claude/pipelines/_engine/PROGRESS-TEMPLATE.md",
+          "sha256": "038dd0b0aa292454eadac3129fe522cfbe24c23475df0f233d177a487ff52027"
+        },
+        {
+          "path": ".claude/pipelines/architect/decision-log.md",
+          "sha256": "fdb7829ab485d354f283a1e5a16da1ab5ad2707fc5d344b72e6edc4b545e93fd"
+        },
+        {
+          "path": ".claude/pipelines/architect/design-to-plan.pipeline.yaml",
+          "sha256": "4447a0704dee623549f41b39fa3f2c9e0d6d604c8d441c9d16f481177f928ddc"
+        },
+        {
+          "path": ".claude/pipelines/architect/migration-planning.pipeline.yaml",
+          "sha256": "2a608d572d6c832e32a30a8ecb037b136922b9cea0964ffaeb02bf1fd17718bf"
+        },
+        {
+          "path": ".claude/pipelines/architect/plan.md",
+          "sha256": "1078b8958eb35acc67dd3591816cfdacee4a70eb50118762f309324293c94059"
+        },
+        {
+          "path": ".claude/pipelines/architect/system-health.pipeline.yaml",
+          "sha256": "c9186e06c590a8145f8b526f72a773ebda59d29050c1cbeda09ec2ae9f278f82"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-handoff.pipeline.yaml",
+          "sha256": "805027a706eb94625cba58341b972f9e7bd24d1bfed5f22c7737eeabb1a59365"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-implementation.pipeline.yaml",
+          "sha256": "f7d38c7cca607f66feb6acf3a479f57f7b381d0ceb826a34c2873e4982dc1182"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-system-sync.pipeline.yaml",
+          "sha256": "e0ace9f7b30160d41ea88cbe9343ef7a48f446116e2faa79d6cbb5880b6848a3"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-validation.pipeline.yaml",
+          "sha256": "0f4827593832804f4d1681df959807340fd37a88377d2042b5f915949e48d601"
+        },
+        {
+          "path": ".claude/pipelines/designer/spec-collaboration.pipeline.yaml",
+          "sha256": "927d2b80835b72bb560eda3bf5e14ea3c7f24a91152d42112aba39f3e1ecbaa4"
+        },
+        {
+          "path": ".claude/pipelines/developer/feature-build.pipeline.yaml",
+          "sha256": "8c577a35d6bbe50f0c88841d2935985ade5f2e902b5e6e798b60ce3bf909c348"
+        },
+        {
+          "path": ".claude/pipelines/developer/maintenance.pipeline.yaml",
+          "sha256": "c3ddf798794bea74df0f9476ccc0cce6eb0dca1a76f4e64fd005a0181dc509c6"
+        },
+        {
+          "path": ".claude/pipelines/developer/pr-workflow.pipeline.yaml",
+          "sha256": "7b370244be7b94ae3982ccba4edbace9c790365c3cc238e775dfbfd0cce4734e"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/deploy-verify.pipeline.yaml",
+          "sha256": "d9d99b8fc78835e6f101887b01e6d6c912d73149fa015a067e90d2375a8f58b4"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/incident-response.pipeline.yaml",
+          "sha256": "2454d986ca91a29a2cc3ff1b69de1b5c4e036c8a814a3d23f69fe3def68b1d16"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/platform-health.pipeline.yaml",
+          "sha256": "f567ca62756ae5bb3b18811b9bed0d7426a34952b1f959b1f4bd6caf5e44ce84"
+        },
+        {
+          "path": ".claude/pipelines/pipeline-state-design-to-plan.json",
+          "sha256": "9ac92ad894cfbb4a153d68274f51d1434b722c5a7345b20b7695e9319dcfea24"
+        },
+        {
+          "path": ".claude/pipelines/pipeline-state-feature-intake.json",
+          "sha256": "1d386e25e261ab6015b8ec21e8cb2f6d0e7f31f4f2c154b9243c75d843651cb8"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-balance-sheet-deep.md",
+          "sha256": "17dfa65ade8992cb2bb64033729dab2e54a6421c033b11dfc67faf467b3a91f4"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-balance-sheet.md",
+          "sha256": "d40d1f189b5f831e8a5c19aa2466cd7c5e1402f0b5a9f4153e992571787d2cf7"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-intake.pipeline.yaml",
+          "sha256": "59e98d5c68501e62d4ff63a15f947df2f9f248924ec9b4ac03e4cc5f177c5941"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/gate-briefing.md",
+          "sha256": "db018d97a13b28f6098a3573064d987b9e900ef405cbeeed13899906235e0e9d"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/idea-to-spec.pipeline.yaml",
+          "sha256": "70614b6d1b1ce6a24c1698b2ba91a0303fffe194b3b054567eaae66c5c2fe806"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/release-signoff.pipeline.yaml",
+          "sha256": "a4a6f737bab3789771cdfde940ae9d43fe0a28d10b37fab235d130b708caeb1e"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/spec.md",
+          "sha256": "71f076f4d5e83f42067196a470b923ab59d5782bf6cfecc9c8da6746533890ce"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/sprint-demo.pipeline.yaml",
+          "sha256": "4a216fe946aa79903af186c84cced63d807df29599877b138de3548f72938c22"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/sprint-health.pipeline.yaml",
+          "sha256": "baab55a1f9c88ca1ea897b97170ae89690d60c47297d2384faea1f626ac86db1"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/stakeholder-update.pipeline.yaml",
+          "sha256": "d98581fa2e4045dcdd67d5f4fd128ddac80876392f38ad1e9146a9929cc17753"
+        },
+        {
+          "path": ".claude/pipelines/qa/bug-to-fix.pipeline.yaml",
+          "sha256": "62be679eb44e95a7ed93335c0962c3270e5ef79fa9a54294610720bfabfa7ee4"
+        },
+        {
+          "path": ".claude/pipelines/qa/regression-suite.pipeline.yaml",
+          "sha256": "e802c25dabf8e69a051e99d95c6d8b9ba029b8727924ba54dd43343f54a76df9"
+        },
+        {
+          "path": ".claude/pipelines/qa/release-validation.pipeline.yaml",
+          "sha256": "2f290f9267ca5ffb21780bcbe84f3a6b4f98595f8e57c5986e347cd7da3a7838"
+        },
+        {
+          "path": ".claude/pipelines/qa/test-strategy.pipeline.yaml",
+          "sha256": "df7a64ab31e6ffda6b5952bd403eebdaa2304e8cb96828fba0e5af7b3b273b57"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/impediment-tracker.pipeline.yaml",
+          "sha256": "98240f7626847164ce1b2e35b0c74f48d3021337ab3bb2e0b731cc2c83a68b35"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/retrospective-data.pipeline.yaml",
+          "sha256": "67c6ce97af7c24d8c7ea3922baa8ae526913c1a621582d2a92c03ffa795efef7"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/sprint-tracking.pipeline.yaml",
+          "sha256": "00274a63c242b799b6bd66c4f416db53ab697a3bd1fe627c0d9dec0ddd9af896"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/full-pipeline.pipeline.yaml",
+          "sha256": "c622fb314d40957916c24cdfbac753e0eddb515f240c3e9d868b4103a659767d"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/governance.pipeline.yaml",
+          "sha256": "e3efda66b26636a844c220e0f56c25ead5969dfd34a42b8a1e8ff7b3756669b7"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/team-health.pipeline.yaml",
+          "sha256": "86f5e09b18c93368344485ec67ab72d32e3c28b0f40f960d6a52e23c06ba12dd"
+        },
+        {
+          "path": ".claude/sdlc-central.json",
+          "sha256": "d93f4c323a6b79b8071ecf38fbff03a7465e147d392e782abdbef47168fa358c"
+        },
+        {
+          "path": ".claude/skills/api-contract-analyzer/SKILL.md",
+          "sha256": "5e993d4abaff4511985b08a840fdb52681cc4fc17012617e7bb8aa736bffef4d"
+        },
+        {
+          "path": ".claude/skills/approval-workflow-auditor/SKILL.md",
+          "sha256": "00b5a2b730d3f49ee3ebc73615c0abe7276805586e6228525d2149cd5c3681bf"
+        },
+        {
+          "path": ".claude/skills/auto-triage/SKILL.md",
+          "sha256": "886c94ac4b653243c250b03604e08c0b1ceaba9bfcc135c167d0101ec2458d53"
+        },
+        {
+          "path": ".claude/skills/board-sync/SKILL.md",
+          "sha256": "bc23fef8ab2b69e48d032cb8b63281ce8bb29fe11e1055eeeb5a806bc52d0b36"
+        },
+        {
+          "path": ".claude/skills/code-ownership-mapper/SKILL.md",
+          "sha256": "1df6d4c412e13de4b92bf59a1b408b9ed7ecb1bdf2ad15d865ad7e2a0d055f4c"
+        },
+        {
+          "path": ".claude/skills/cross-repo-standards-enforcer/SKILL.md",
+          "sha256": "16267b56e86dd3581ade62f7e09e182173944ca48927c7df0053c17776894304"
+        },
+        {
+          "path": ".claude/skills/decision-log/SKILL.md",
+          "sha256": "2bde07393a1346fe45a2ed2c2a5ca21ea4e382b6267bbf62fdab2c8e9016b0e0"
+        },
+        {
+          "path": ".claude/skills/dependency-update/SKILL.md",
+          "sha256": "a900e00c3dc90e63c20976ba2792739672debe57eaf87247c9e521efd49325b6"
+        },
+        {
+          "path": ".claude/skills/design-review/SKILL.md",
+          "sha256": "c5c835026d41ad79a94d7595881432b47376e0ee94372495ac49406964ce2e1d"
+        },
+        {
+          "path": ".claude/skills/doc-gen/SKILL.md",
+          "sha256": "4cc3675e52ce69a67454c80ef94e23d018aab32fdf4358b197452007cf6de2b6"
+        },
+        {
+          "path": ".claude/skills/drift-detector/SKILL.md",
+          "sha256": "289dd7d0d4590df0cef08b6c72b6d8571b7fb751529c89c8174d8e860532db7b"
+        },
+        {
+          "path": ".claude/skills/feature-balance-sheet/SKILL.md",
+          "sha256": "5e68ec95e1ff4ce5ca0f228ccabcac4cea96de0ada21af9d0dc7b85d07a612a8"
+        },
+        {
+          "path": ".claude/skills/feedback-loop/SKILL.md",
+          "sha256": "04888bfe482c1e3065ed21fa6a9b10c49dddbc680d739e3c58004a06f810c297"
+        },
+        {
+          "path": ".claude/skills/gate-briefing/SKILL.md",
+          "sha256": "5748a8fd0b46d6043cccdfe8390fc782e10ad73914b172fbbd10509365ef1f76"
+        },
+        {
+          "path": ".claude/skills/impact-analysis/SKILL.md",
+          "sha256": "50b8fdabb2fd3b4badeeadfd1d3de9dcea828ad6682074e36cabb905c11977b3"
+        },
+        {
+          "path": ".claude/skills/incident-detector/SKILL.md",
+          "sha256": "8ca3bbe19b55bc570aaa7a1373e46a57b0c65f20e60291721c3505281bce34d4"
+        },
+        {
+          "path": ".claude/skills/incident-postmortem-synthesizer/SKILL.md",
+          "sha256": "e8deffcf997e07b18b491127ca4e79a0fac2188425ea2ec83a7206cbdfe272ee"
+        },
+        {
+          "path": ".claude/skills/incident-triager/SKILL.md",
+          "sha256": "00478563da8eaa10f6378ee43c28c2ea655323971daabb3dc0ad7d88a571156e"
+        },
+        {
+          "path": ".claude/skills/license-compliance-audit/SKILL.md",
+          "sha256": "9c597bb2dadbae3a4d0dae7300be5f51d6c6cd88d822968e686817a7a58ebb05"
+        },
+        {
+          "path": ".claude/skills/migration-tracker/SKILL.md",
+          "sha256": "dc4aebf05ff326827c82bb5c8a4f1a035fbc454af8744a5454401ed649f40b76"
+        },
+        {
+          "path": ".claude/skills/onboarding-guide/SKILL.md",
+          "sha256": "818f3137ffd3b31e389f9654444f66df700940613ffd985966bf5ff372638f4a"
+        },
+        {
+          "path": ".claude/skills/perf-review/SKILL.md",
+          "sha256": "3542702b4bdecc1fbeebfba3bd7d1fc6f9b1d6f8454e35a1ba9764c4eebda8a8"
+        },
+        {
+          "path": ".claude/skills/pipeline-monitor/SKILL.md",
+          "sha256": "25bb2c135feeb99d7da0a223d2aa72ec3756a3b04700924312a6140dcfdd68c2"
+        },
+        {
+          "path": ".claude/skills/pipeline-orchestrator/SKILL.md",
+          "sha256": "4f0b07bac6d219d8d3ae2b852233a6f34a6993bc2ff3158d8f52d6a4ae14038b"
+        },
+        {
+          "path": ".claude/skills/plan-gen/SKILL.md",
+          "sha256": "40a4741ba0d41254d2546a17d3524efa70a66a718d13897e5dd9a1581087e832"
+        },
+        {
+          "path": ".claude/skills/plan-merge/SKILL.md",
+          "sha256": "b2248fcb972d92764f47f77f9bcb64d8f66892f6fa903290d92d9d163806c9b1"
+        },
+        {
+          "path": ".claude/skills/pr-orchestrator/SKILL.md",
+          "sha256": "e9e94a881db2b8316542e1db6e937082adf78de64cb177ad356d9061c5531273"
+        },
+        {
+          "path": ".claude/skills/quality-gate/SKILL.md",
+          "sha256": "aa47dff3508fd793e85e4dea54dd03f66d34703cbd0e0bbffbd69cf3007a764f"
+        },
+        {
+          "path": ".claude/skills/regression-check/SKILL.md",
+          "sha256": "8f4dca6e5214f63c88548badbedcb0b6dc5fb525f772198ddffb7c902f24e7dd"
+        },
+        {
+          "path": ".claude/skills/release-notes/SKILL.md",
+          "sha256": "9003325710a9b7e91000381cd6a81f4db7368e83182d673311cc70b21eabcbf9"
+        },
+        {
+          "path": ".claude/skills/release-readiness-checker/SKILL.md",
+          "sha256": "ad8856efd1400132f87452672806bdc7a63f35d27dca9549391452f91fbf5f94"
+        },
+        {
+          "path": ".claude/skills/report-trends/SKILL.md",
+          "sha256": "376357924040f9a15df757cf5ef97691e1165b3a7b9e48d5a441b34e2d8ef34c"
+        },
+        {
+          "path": ".claude/skills/reverse-engineer/SKILL.md",
+          "sha256": "af3547ceb51d93426b94e3b3f1e704c273f26d2c130bee99cecf3fd2367f3183"
+        },
+        {
+          "path": ".claude/skills/review-fix/SKILL.md",
+          "sha256": "ab7bc0837fdaceca958257dbcc2e163b43b232301fc56b65fb75baf4d6e21427"
+        },
+        {
+          "path": ".claude/skills/review/SKILL.md",
+          "sha256": "49162ca4b6909caaab8d06d1a6b312de14e257975e0ad4ce3461ffdd51e79884"
+        },
+        {
+          "path": ".claude/skills/risk-tracker/SKILL.md",
+          "sha256": "dbdc7c7a18d2f3b5a46d3df3b28aca4952c12ad17196940e0807aef950c29686"
+        },
+        {
+          "path": ".claude/skills/rollback-assessor/SKILL.md",
+          "sha256": "7a744e66ea174d313c03f50f9fd889a25d2a02521ca842682ea1fd946f898f2c"
+        },
+        {
+          "path": ".claude/skills/run-pipeline/SKILL.md",
+          "sha256": "2661309d76883a54d8125094dda29428b92f999eca0f004bb163505c4a9edb8c"
+        },
+        {
+          "path": ".claude/skills/scope-tracker/SKILL.md",
+          "sha256": "b2595e8aadd4ccb8cf63cc9aab439b3514c08143a6531995b0bf885cd4e2050b"
+        },
+        {
+          "path": ".claude/skills/security-audit/SKILL.md",
+          "sha256": "c59b50546bc5896359753caa42eb3b672cd43e9b2469a9aadd2607301c1b12dd"
+        },
+        {
+          "path": ".claude/skills/skill-gap-analyzer/SKILL.md",
+          "sha256": "362deff58970e1411288131e66e66f3548bc6676d88196524e8db4d71295b7dd"
+        },
+        {
+          "path": ".claude/skills/slo-sla-tracker/SKILL.md",
+          "sha256": "fec044b2c06249d387e48629b4add98db7bfd69980fdde93f155c384f488250b"
+        },
+        {
+          "path": ".claude/skills/spec-evolve/SKILL.md",
+          "sha256": "fe94679b9314684ddb7111d9e16001fdd90fb8b013e02b450fb19efe593c648f"
+        },
+        {
+          "path": ".claude/skills/spec-fix/SKILL.md",
+          "sha256": "585ce102d0b723df827c0b793bfbf1e8fae3a125a6886dcf900bfdaf101217a9"
+        },
+        {
+          "path": ".claude/skills/spec-gen/SKILL.md",
+          "sha256": "34054bcc63d435e6a854f4b1b04abea1e5a8cf377dc2d4e13fea90fe65ba84b4"
+        },
+        {
+          "path": ".claude/skills/spec-review/SKILL.md",
+          "sha256": "e5d596bcb9bd87261def4d29790f599b49b4044a00f8edf44e22fdf3ba09bcce"
+        },
+        {
+          "path": ".claude/skills/task-gen/SKILL.md",
+          "sha256": "5eb9e3f505894eccf6ba2c64719d0e30add7cd29e51017fc368edd65ca3e4085"
+        },
+        {
+          "path": ".claude/skills/task-implementer/SKILL.md",
+          "sha256": "72e81b1793c47c4d6e591da686156f7478ea4d595f0493e4fe2cc818f7f1f1fb"
+        },
+        {
+          "path": ".claude/skills/tech-debt-audit/SKILL.md",
+          "sha256": "b6599c3f23a9fa796639cd86ae1bccec81fc859219af894ced62fc3779b7b8d9"
+        },
+        {
+          "path": ".claude/skills/test-gen/SKILL.md",
+          "sha256": "5f2a8264467b5c6a96fea5eff90a7835f2ba31288d0aa1c48f7974dc9aadf3b9"
+        },
+        {
+          "path": ".claude/skills/wave-scheduler/SKILL.md",
+          "sha256": "8f21f46d1e517cc19cadadd58e36839bdfc78f67c8d934b1222bd112d3d82be2"
+        },
+        {
+          "path": ".claude/update_owasp_guide.py",
+          "sha256": "2be0f2d9c6dc5eb1869eaedd7739acd27b9af2e4e6967c56dfb8988334e1b1e2"
+        },
+        {
+          "path": "AIDLC_Genesis_Report.docx",
+          "sha256": "a88be977df1bef76239eebda000748b3a90cefe919b3fec00159da398e4c8af4"
+        },
+        {
+          "path": "AIDLC_Mind_Map.png",
+          "sha256": "b8aa3c04d8b60d0d7be8b00f788e0d1a78d635f847af1f6a49275aa502b01565"
+        },
+        {
+          "path": "AIDLC_Mind_Map.svg",
+          "sha256": "7ffe20df55402ae70bd8d571cba8d54bf6162b4ebe0dd4f6dbfb540d6ffe0958"
+        },
+        {
+          "path": "AIDLC_Session_Walkthrough.md",
+          "sha256": "54f46520a07f55e36a8d2b12e8d68cb03c6ba8a99a405026bf4d0d0a6fd8c575"
+        },
+        {
+          "path": "AIDLC_Tech_Talk.pptx",
+          "sha256": "32d521a401afb66781dc7810f6e62ec09da1fda21589e3d15cf8d2e395960c5b"
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha256": "4074b93d16b759b2f0af9ecddcea2b96047a8929b21066dc38dc4459c04e8ae9"
+        },
+        {
+          "path": "adapters/_shared/hooks.sh",
+          "sha256": "56fa23492f9374e3e13c09ca5f27b32113a9df10f26268c9666fe75ab482539a"
+        },
+        {
+          "path": "adapters/claude-code/tool-mappings.yaml",
+          "sha256": "a45c3eb286a3916ade6efe97779039c15a094d347bd02eeefa5b44828a253834"
+        },
+        {
+          "path": "docs/aidlc/design-invariants.md",
+          "sha256": "6c0c9002d6a1401e39183e601736dc6a4b0f10eb97f5622541d253eb6cba8329"
+        },
+        {
+          "path": "docs/aidlc/evidence.md",
+          "sha256": "276cd06ae56b9569f266c496515b88a7bd7f35c70feb3a4dc9931a985483ad47"
+        },
+        {
+          "path": "docs/aidlc/hooks.md",
+          "sha256": "7401ec2dafeed75dd3fa55a9e0c899ef0b6964dd31a39bf31bc04bd511276b89"
+        },
+        {
+          "path": "docs/workshop/2026-04-17-nutrition-app/specs/001-nutrition-app/parallel-kanban.md",
+          "sha256": "25c0689c88c32ddfda0d14e81f4e2b0886211905f75133b8294c984c963497be"
+        },
+        {
+          "path": "docs/workshop/2026-04-17-nutrition-app/specs/001-nutrition-app/traceability-matrix.md",
+          "sha256": "7b7fc59d219b2ba9d7ca8308c512f398f599fd3a47ff4dd741f62d174350eff9"
+        },
+        {
+          "path": "hooks/_bin/aidlc-evidence.sh",
+          "sha256": "76ba0446f9bba0d4fe66aa8489a3f7427a05dd4a04aca81c0675b119c2785cc0"
+        },
+        {
+          "path": "hooks/_bin/aidlc-verify.sh",
+          "sha256": "9476962be76993b7e05204c3686e0f52e96beb6e4b0e70bedb3af25f625984e3"
+        },
+        {
+          "path": "hooks/_test/run.sh",
+          "sha256": "447abeff291a1c5b34ca17caf8f2a12730aafb16d81a896357c00d7fd36f0fd7"
+        },
+        {
+          "path": "hooks/aidlc-artifact-hygiene/aidlc-artifact-hygiene.sh",
+          "sha256": "7fb95461048fc9c45615d274f21e1bda343cacd776baeb2ef508a120b8fec286"
+        },
+        {
+          "path": "hooks/aidlc-artifact-hygiene/hook.yaml",
+          "sha256": "465969bbd7f69511916b46e0f7f2cdd89033be94e2ab3a6404ac34cad1aa2c41"
+        },
+        {
+          "path": "hooks/aidlc-pre-command-guard/aidlc-pre-command-guard.sh",
+          "sha256": "6bed2fd51be99699e32b3d4fd156d2a5480e0150536b439bb9022fc3fdb22fb7"
+        },
+        {
+          "path": "hooks/aidlc-pre-command-guard/hook.yaml",
+          "sha256": "a70f02326fa54702aa8e45ca01c21953f81c85cd8f26598f00b0da26079a5bb5"
+        },
+        {
+          "path": "hooks/aidlc-pre-write-guard/aidlc-pre-write-guard.sh",
+          "sha256": "21e07239152eca5bcb6744829d8db0388d99e8449644146ffd55f0084f3947bb"
+        },
+        {
+          "path": "hooks/aidlc-pre-write-guard/hook.yaml",
+          "sha256": "7c624d42ad00ebc95ba1f3aced2cb2f6d611c5d469ff39099c662adb27e3ac43"
+        },
+        {
+          "path": "pipelines/developer/feature-build.pipeline.yaml",
+          "sha256": "dc18fa6e03a2b3c8c21e3929021ed218b83e3291026c42e12d4a0ce5761c3bd1"
+        },
+        {
+          "path": "pipelines/qa/release-validation.pipeline.yaml",
+          "sha256": "9977eb5f995228533a4c4222b22c51e9087e6341d5e612e158c7c71a68e1d517"
+        },
+        {
+          "path": "registry/catalog.yaml",
+          "sha256": "acb2ad954cdc383edc18a29a47492deb87a094eb1ae0b5289913ef696cbac132"
+        },
+        {
+          "path": "setup/install-all.sh",
+          "sha256": "3ed9c899fe11304b7b06ccd75fed5c8e105dbe507243acb844b91421bd85ee24"
+        },
+        {
+          "path": "setup/install-role.sh",
+          "sha256": "5e60e46930fc10536cb35bafcf3c665fffb3029660e4f09330fd01b177ca50e6"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/SKILL.md",
+          "sha256": "eb49535676e3d5cde80b19825bce280bdc31660c88ca3f1bf9891b9c526be9a9"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/prompt.md",
+          "sha256": "f9e8164b40f24a743cf3c20ff08f2e68ba665c18e4ecd160d0461297cbcf46d2"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/skill.yaml",
+          "sha256": "5531d80e4125c3af7baab9b81dc26abfd02d1befba9773f9c4cb71912fd12426"
+        },
+        {
+          "path": "skills/quality-gate/SKILL.md",
+          "sha256": "e2da83c6987b1beb9b13d4e0f9cbcca1da1cd269970921340c79d0e55f16c77c"
+        },
+        {
+          "path": "skills/quality-gate/SKILL.md.orig",
+          "sha256": "8e5eac02736447e4bdff4a3b2f9f1211eecfb5d57fc2167a227ed4d27153775e"
+        },
+        {
+          "path": "skills/quality-gate/prompt.md",
+          "sha256": "9ddd25a976025b10d3719b38ee69f160f2582a6717d7adb5d309f306885e38ff"
+        },
+        {
+          "path": "skills/release-readiness-checker/SKILL.md",
+          "sha256": "06d21f6914f6b78bcde5f89895f9d7146d6bd2adb1e841147e621769a237b585"
+        },
+        {
+          "path": "skills/release-readiness-checker/SKILL.md.orig",
+          "sha256": "ad8856efd1400132f87452672806bdc7a63f35d27dca9549391452f91fbf5f94"
+        },
+        {
+          "path": "skills/release-readiness-checker/prompt.md",
+          "sha256": "66311f73d1ca488ed331db2313da4dc4034a3fb5f4e132cd774b3edd551b9487"
+        },
+        {
+          "path": "skills/task-implementer/SKILL.md",
+          "sha256": "53fa72de83713647f42b3f7af4cd4311ff01bfcbe80d03586af590dbc9fe2a38"
+        },
+        {
+          "path": "skills/task-implementer/SKILL.md.orig",
+          "sha256": "b78a92bc27c38b09ee9942d26cdfa4782540a667436f461b0dbfc81300cfe984"
+        },
+        {
+          "path": "skills/task-implementer/prompt.md",
+          "sha256": "66ac2a7c89fefdc2ea21d09433aed8380f02e783440d560f888ecafe3fe89d50"
+        },
+        {
+          "path": "tests/aidlc-phase1.test.js",
+          "sha256": "471c2dcceeed2d176ca7a68dca332e7b4bc1f1642dcf5832be88d3834b2b8c6c"
+        },
+        {
+          "path": "tests/aidlc-phase2.test.js",
+          "sha256": "3708e27cbcf1587f6f4289f43f84481f10312c666a2349d0bc0b01fa2c8f30f2"
+        },
+        {
+          "path": "~$LC-Central-Technical-User-Guide.docx",
+          "sha256": "223c17c093ee52c6f55e56eb4c3418b7144c7ecba93cfd226a3a93d81ec9f3f4"
+        }
+      ],
+      "touched_hash": "d132b2dbda04e6c589a0a1dfb8ecbd708de2deb7f368cd4e6842e68911a0c982",
+      "stale": false,
+      "model": "unknown",
+      "sdlc": "2.0.0-alpha"
+    },
+    {
+      "id": "E-004",
+      "task": "TASK-001",
+      "acs": [
+        "AC-1"
+      ],
+      "kind": "test",
+      "suite": false,
+      "command": "node --test --test-name-pattern=\"recorder captures\" tests/aidlc-phase2.test.js",
+      "command_hash": "4ec686fd4290a8ea",
+      "cwd": "/Users/kvel/Documents/manoj_ws/sdlc_central",
+      "started_at": "2026-09-24T18:54:54Z",
+      "finished_at": "2026-09-24T18:54:54Z",
+      "duration_ms": 467,
+      "exit_code": 0,
+      "stdout_path": "evidence/TASK-001/004-node-test-test-name-pattern-recorder-cap.out",
+      "stdout_sha256": "9b908c5e5006675afbc21e36e8a2811644bdc9c38133c5f032ce1524446a9a52",
+      "stderr_path": "evidence/TASK-001/004-node-test-test-name-pattern-recorder-cap.err",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "report_path": null,
+      "report_sha256": null,
+      "touched_files": [
+        {
+          "path": ".claude/config/balance-sheet-config.json",
+          "sha256": "1411e1e382c1e1d8aa16a4edae4e4d9691a1e5204d5892c6729cf226949f33b2"
+        },
+        {
+          "path": ".claude/config/gate-config.json",
+          "sha256": "4ae8d1b2e77688304bcbe377547f96e759ed2f3f4e86da29676d0eaa2aff1f1d"
+        },
+        {
+          "path": ".claude/pipelines/_engine/PIPELINE-RUNNER.md",
+          "sha256": "2661309d76883a54d8125094dda29428b92f999eca0f004bb163505c4a9edb8c"
+        },
+        {
+          "path": ".claude/pipelines/_engine/PROGRESS-TEMPLATE.md",
+          "sha256": "038dd0b0aa292454eadac3129fe522cfbe24c23475df0f233d177a487ff52027"
+        },
+        {
+          "path": ".claude/pipelines/architect/decision-log.md",
+          "sha256": "fdb7829ab485d354f283a1e5a16da1ab5ad2707fc5d344b72e6edc4b545e93fd"
+        },
+        {
+          "path": ".claude/pipelines/architect/design-to-plan.pipeline.yaml",
+          "sha256": "4447a0704dee623549f41b39fa3f2c9e0d6d604c8d441c9d16f481177f928ddc"
+        },
+        {
+          "path": ".claude/pipelines/architect/migration-planning.pipeline.yaml",
+          "sha256": "2a608d572d6c832e32a30a8ecb037b136922b9cea0964ffaeb02bf1fd17718bf"
+        },
+        {
+          "path": ".claude/pipelines/architect/plan.md",
+          "sha256": "1078b8958eb35acc67dd3591816cfdacee4a70eb50118762f309324293c94059"
+        },
+        {
+          "path": ".claude/pipelines/architect/system-health.pipeline.yaml",
+          "sha256": "c9186e06c590a8145f8b526f72a773ebda59d29050c1cbeda09ec2ae9f278f82"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-handoff.pipeline.yaml",
+          "sha256": "805027a706eb94625cba58341b972f9e7bd24d1bfed5f22c7737eeabb1a59365"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-implementation.pipeline.yaml",
+          "sha256": "f7d38c7cca607f66feb6acf3a479f57f7b381d0ceb826a34c2873e4982dc1182"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-system-sync.pipeline.yaml",
+          "sha256": "e0ace9f7b30160d41ea88cbe9343ef7a48f446116e2faa79d6cbb5880b6848a3"
+        },
+        {
+          "path": ".claude/pipelines/designer/design-validation.pipeline.yaml",
+          "sha256": "0f4827593832804f4d1681df959807340fd37a88377d2042b5f915949e48d601"
+        },
+        {
+          "path": ".claude/pipelines/designer/spec-collaboration.pipeline.yaml",
+          "sha256": "927d2b80835b72bb560eda3bf5e14ea3c7f24a91152d42112aba39f3e1ecbaa4"
+        },
+        {
+          "path": ".claude/pipelines/developer/feature-build.pipeline.yaml",
+          "sha256": "8c577a35d6bbe50f0c88841d2935985ade5f2e902b5e6e798b60ce3bf909c348"
+        },
+        {
+          "path": ".claude/pipelines/developer/maintenance.pipeline.yaml",
+          "sha256": "c3ddf798794bea74df0f9476ccc0cce6eb0dca1a76f4e64fd005a0181dc509c6"
+        },
+        {
+          "path": ".claude/pipelines/developer/pr-workflow.pipeline.yaml",
+          "sha256": "7b370244be7b94ae3982ccba4edbace9c790365c3cc238e775dfbfd0cce4734e"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/deploy-verify.pipeline.yaml",
+          "sha256": "d9d99b8fc78835e6f101887b01e6d6c912d73149fa015a067e90d2375a8f58b4"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/incident-response.pipeline.yaml",
+          "sha256": "2454d986ca91a29a2cc3ff1b69de1b5c4e036c8a814a3d23f69fe3def68b1d16"
+        },
+        {
+          "path": ".claude/pipelines/devops-sre/platform-health.pipeline.yaml",
+          "sha256": "f567ca62756ae5bb3b18811b9bed0d7426a34952b1f959b1f4bd6caf5e44ce84"
+        },
+        {
+          "path": ".claude/pipelines/pipeline-state-design-to-plan.json",
+          "sha256": "9ac92ad894cfbb4a153d68274f51d1434b722c5a7345b20b7695e9319dcfea24"
+        },
+        {
+          "path": ".claude/pipelines/pipeline-state-feature-intake.json",
+          "sha256": "1d386e25e261ab6015b8ec21e8cb2f6d0e7f31f4f2c154b9243c75d843651cb8"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-balance-sheet-deep.md",
+          "sha256": "17dfa65ade8992cb2bb64033729dab2e54a6421c033b11dfc67faf467b3a91f4"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-balance-sheet.md",
+          "sha256": "d40d1f189b5f831e8a5c19aa2466cd7c5e1402f0b5a9f4153e992571787d2cf7"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/feature-intake.pipeline.yaml",
+          "sha256": "59e98d5c68501e62d4ff63a15f947df2f9f248924ec9b4ac03e4cc5f177c5941"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/gate-briefing.md",
+          "sha256": "db018d97a13b28f6098a3573064d987b9e900ef405cbeeed13899906235e0e9d"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/idea-to-spec.pipeline.yaml",
+          "sha256": "70614b6d1b1ce6a24c1698b2ba91a0303fffe194b3b054567eaae66c5c2fe806"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/release-signoff.pipeline.yaml",
+          "sha256": "a4a6f737bab3789771cdfde940ae9d43fe0a28d10b37fab235d130b708caeb1e"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/spec.md",
+          "sha256": "71f076f4d5e83f42067196a470b923ab59d5782bf6cfecc9c8da6746533890ce"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/sprint-demo.pipeline.yaml",
+          "sha256": "4a216fe946aa79903af186c84cced63d807df29599877b138de3548f72938c22"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/sprint-health.pipeline.yaml",
+          "sha256": "baab55a1f9c88ca1ea897b97170ae89690d60c47297d2384faea1f626ac86db1"
+        },
+        {
+          "path": ".claude/pipelines/product-owner/stakeholder-update.pipeline.yaml",
+          "sha256": "d98581fa2e4045dcdd67d5f4fd128ddac80876392f38ad1e9146a9929cc17753"
+        },
+        {
+          "path": ".claude/pipelines/qa/bug-to-fix.pipeline.yaml",
+          "sha256": "62be679eb44e95a7ed93335c0962c3270e5ef79fa9a54294610720bfabfa7ee4"
+        },
+        {
+          "path": ".claude/pipelines/qa/regression-suite.pipeline.yaml",
+          "sha256": "e802c25dabf8e69a051e99d95c6d8b9ba029b8727924ba54dd43343f54a76df9"
+        },
+        {
+          "path": ".claude/pipelines/qa/release-validation.pipeline.yaml",
+          "sha256": "2f290f9267ca5ffb21780bcbe84f3a6b4f98595f8e57c5986e347cd7da3a7838"
+        },
+        {
+          "path": ".claude/pipelines/qa/test-strategy.pipeline.yaml",
+          "sha256": "df7a64ab31e6ffda6b5952bd403eebdaa2304e8cb96828fba0e5af7b3b273b57"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/impediment-tracker.pipeline.yaml",
+          "sha256": "98240f7626847164ce1b2e35b0c74f48d3021337ab3bb2e0b731cc2c83a68b35"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/retrospective-data.pipeline.yaml",
+          "sha256": "67c6ce97af7c24d8c7ea3922baa8ae526913c1a621582d2a92c03ffa795efef7"
+        },
+        {
+          "path": ".claude/pipelines/scrum-master/sprint-tracking.pipeline.yaml",
+          "sha256": "00274a63c242b799b6bd66c4f416db53ab697a3bd1fe627c0d9dec0ddd9af896"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/full-pipeline.pipeline.yaml",
+          "sha256": "c622fb314d40957916c24cdfbac753e0eddb515f240c3e9d868b4103a659767d"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/governance.pipeline.yaml",
+          "sha256": "e3efda66b26636a844c220e0f56c25ead5969dfd34a42b8a1e8ff7b3756669b7"
+        },
+        {
+          "path": ".claude/pipelines/tech-lead/team-health.pipeline.yaml",
+          "sha256": "86f5e09b18c93368344485ec67ab72d32e3c28b0f40f960d6a52e23c06ba12dd"
+        },
+        {
+          "path": ".claude/sdlc-central.json",
+          "sha256": "d93f4c323a6b79b8071ecf38fbff03a7465e147d392e782abdbef47168fa358c"
+        },
+        {
+          "path": ".claude/skills/api-contract-analyzer/SKILL.md",
+          "sha256": "5e993d4abaff4511985b08a840fdb52681cc4fc17012617e7bb8aa736bffef4d"
+        },
+        {
+          "path": ".claude/skills/approval-workflow-auditor/SKILL.md",
+          "sha256": "00b5a2b730d3f49ee3ebc73615c0abe7276805586e6228525d2149cd5c3681bf"
+        },
+        {
+          "path": ".claude/skills/auto-triage/SKILL.md",
+          "sha256": "886c94ac4b653243c250b03604e08c0b1ceaba9bfcc135c167d0101ec2458d53"
+        },
+        {
+          "path": ".claude/skills/board-sync/SKILL.md",
+          "sha256": "bc23fef8ab2b69e48d032cb8b63281ce8bb29fe11e1055eeeb5a806bc52d0b36"
+        },
+        {
+          "path": ".claude/skills/code-ownership-mapper/SKILL.md",
+          "sha256": "1df6d4c412e13de4b92bf59a1b408b9ed7ecb1bdf2ad15d865ad7e2a0d055f4c"
+        },
+        {
+          "path": ".claude/skills/cross-repo-standards-enforcer/SKILL.md",
+          "sha256": "16267b56e86dd3581ade62f7e09e182173944ca48927c7df0053c17776894304"
+        },
+        {
+          "path": ".claude/skills/decision-log/SKILL.md",
+          "sha256": "2bde07393a1346fe45a2ed2c2a5ca21ea4e382b6267bbf62fdab2c8e9016b0e0"
+        },
+        {
+          "path": ".claude/skills/dependency-update/SKILL.md",
+          "sha256": "a900e00c3dc90e63c20976ba2792739672debe57eaf87247c9e521efd49325b6"
+        },
+        {
+          "path": ".claude/skills/design-review/SKILL.md",
+          "sha256": "c5c835026d41ad79a94d7595881432b47376e0ee94372495ac49406964ce2e1d"
+        },
+        {
+          "path": ".claude/skills/doc-gen/SKILL.md",
+          "sha256": "4cc3675e52ce69a67454c80ef94e23d018aab32fdf4358b197452007cf6de2b6"
+        },
+        {
+          "path": ".claude/skills/drift-detector/SKILL.md",
+          "sha256": "289dd7d0d4590df0cef08b6c72b6d8571b7fb751529c89c8174d8e860532db7b"
+        },
+        {
+          "path": ".claude/skills/feature-balance-sheet/SKILL.md",
+          "sha256": "5e68ec95e1ff4ce5ca0f228ccabcac4cea96de0ada21af9d0dc7b85d07a612a8"
+        },
+        {
+          "path": ".claude/skills/feedback-loop/SKILL.md",
+          "sha256": "04888bfe482c1e3065ed21fa6a9b10c49dddbc680d739e3c58004a06f810c297"
+        },
+        {
+          "path": ".claude/skills/gate-briefing/SKILL.md",
+          "sha256": "5748a8fd0b46d6043cccdfe8390fc782e10ad73914b172fbbd10509365ef1f76"
+        },
+        {
+          "path": ".claude/skills/impact-analysis/SKILL.md",
+          "sha256": "50b8fdabb2fd3b4badeeadfd1d3de9dcea828ad6682074e36cabb905c11977b3"
+        },
+        {
+          "path": ".claude/skills/incident-detector/SKILL.md",
+          "sha256": "8ca3bbe19b55bc570aaa7a1373e46a57b0c65f20e60291721c3505281bce34d4"
+        },
+        {
+          "path": ".claude/skills/incident-postmortem-synthesizer/SKILL.md",
+          "sha256": "e8deffcf997e07b18b491127ca4e79a0fac2188425ea2ec83a7206cbdfe272ee"
+        },
+        {
+          "path": ".claude/skills/incident-triager/SKILL.md",
+          "sha256": "00478563da8eaa10f6378ee43c28c2ea655323971daabb3dc0ad7d88a571156e"
+        },
+        {
+          "path": ".claude/skills/license-compliance-audit/SKILL.md",
+          "sha256": "9c597bb2dadbae3a4d0dae7300be5f51d6c6cd88d822968e686817a7a58ebb05"
+        },
+        {
+          "path": ".claude/skills/migration-tracker/SKILL.md",
+          "sha256": "dc4aebf05ff326827c82bb5c8a4f1a035fbc454af8744a5454401ed649f40b76"
+        },
+        {
+          "path": ".claude/skills/onboarding-guide/SKILL.md",
+          "sha256": "818f3137ffd3b31e389f9654444f66df700940613ffd985966bf5ff372638f4a"
+        },
+        {
+          "path": ".claude/skills/perf-review/SKILL.md",
+          "sha256": "3542702b4bdecc1fbeebfba3bd7d1fc6f9b1d6f8454e35a1ba9764c4eebda8a8"
+        },
+        {
+          "path": ".claude/skills/pipeline-monitor/SKILL.md",
+          "sha256": "25bb2c135feeb99d7da0a223d2aa72ec3756a3b04700924312a6140dcfdd68c2"
+        },
+        {
+          "path": ".claude/skills/pipeline-orchestrator/SKILL.md",
+          "sha256": "4f0b07bac6d219d8d3ae2b852233a6f34a6993bc2ff3158d8f52d6a4ae14038b"
+        },
+        {
+          "path": ".claude/skills/plan-gen/SKILL.md",
+          "sha256": "40a4741ba0d41254d2546a17d3524efa70a66a718d13897e5dd9a1581087e832"
+        },
+        {
+          "path": ".claude/skills/plan-merge/SKILL.md",
+          "sha256": "b2248fcb972d92764f47f77f9bcb64d8f66892f6fa903290d92d9d163806c9b1"
+        },
+        {
+          "path": ".claude/skills/pr-orchestrator/SKILL.md",
+          "sha256": "e9e94a881db2b8316542e1db6e937082adf78de64cb177ad356d9061c5531273"
+        },
+        {
+          "path": ".claude/skills/quality-gate/SKILL.md",
+          "sha256": "aa47dff3508fd793e85e4dea54dd03f66d34703cbd0e0bbffbd69cf3007a764f"
+        },
+        {
+          "path": ".claude/skills/regression-check/SKILL.md",
+          "sha256": "8f4dca6e5214f63c88548badbedcb0b6dc5fb525f772198ddffb7c902f24e7dd"
+        },
+        {
+          "path": ".claude/skills/release-notes/SKILL.md",
+          "sha256": "9003325710a9b7e91000381cd6a81f4db7368e83182d673311cc70b21eabcbf9"
+        },
+        {
+          "path": ".claude/skills/release-readiness-checker/SKILL.md",
+          "sha256": "ad8856efd1400132f87452672806bdc7a63f35d27dca9549391452f91fbf5f94"
+        },
+        {
+          "path": ".claude/skills/report-trends/SKILL.md",
+          "sha256": "376357924040f9a15df757cf5ef97691e1165b3a7b9e48d5a441b34e2d8ef34c"
+        },
+        {
+          "path": ".claude/skills/reverse-engineer/SKILL.md",
+          "sha256": "af3547ceb51d93426b94e3b3f1e704c273f26d2c130bee99cecf3fd2367f3183"
+        },
+        {
+          "path": ".claude/skills/review-fix/SKILL.md",
+          "sha256": "ab7bc0837fdaceca958257dbcc2e163b43b232301fc56b65fb75baf4d6e21427"
+        },
+        {
+          "path": ".claude/skills/review/SKILL.md",
+          "sha256": "49162ca4b6909caaab8d06d1a6b312de14e257975e0ad4ce3461ffdd51e79884"
+        },
+        {
+          "path": ".claude/skills/risk-tracker/SKILL.md",
+          "sha256": "dbdc7c7a18d2f3b5a46d3df3b28aca4952c12ad17196940e0807aef950c29686"
+        },
+        {
+          "path": ".claude/skills/rollback-assessor/SKILL.md",
+          "sha256": "7a744e66ea174d313c03f50f9fd889a25d2a02521ca842682ea1fd946f898f2c"
+        },
+        {
+          "path": ".claude/skills/run-pipeline/SKILL.md",
+          "sha256": "2661309d76883a54d8125094dda29428b92f999eca0f004bb163505c4a9edb8c"
+        },
+        {
+          "path": ".claude/skills/scope-tracker/SKILL.md",
+          "sha256": "b2595e8aadd4ccb8cf63cc9aab439b3514c08143a6531995b0bf885cd4e2050b"
+        },
+        {
+          "path": ".claude/skills/security-audit/SKILL.md",
+          "sha256": "c59b50546bc5896359753caa42eb3b672cd43e9b2469a9aadd2607301c1b12dd"
+        },
+        {
+          "path": ".claude/skills/skill-gap-analyzer/SKILL.md",
+          "sha256": "362deff58970e1411288131e66e66f3548bc6676d88196524e8db4d71295b7dd"
+        },
+        {
+          "path": ".claude/skills/slo-sla-tracker/SKILL.md",
+          "sha256": "fec044b2c06249d387e48629b4add98db7bfd69980fdde93f155c384f488250b"
+        },
+        {
+          "path": ".claude/skills/spec-evolve/SKILL.md",
+          "sha256": "fe94679b9314684ddb7111d9e16001fdd90fb8b013e02b450fb19efe593c648f"
+        },
+        {
+          "path": ".claude/skills/spec-fix/SKILL.md",
+          "sha256": "585ce102d0b723df827c0b793bfbf1e8fae3a125a6886dcf900bfdaf101217a9"
+        },
+        {
+          "path": ".claude/skills/spec-gen/SKILL.md",
+          "sha256": "34054bcc63d435e6a854f4b1b04abea1e5a8cf377dc2d4e13fea90fe65ba84b4"
+        },
+        {
+          "path": ".claude/skills/spec-review/SKILL.md",
+          "sha256": "e5d596bcb9bd87261def4d29790f599b49b4044a00f8edf44e22fdf3ba09bcce"
+        },
+        {
+          "path": ".claude/skills/task-gen/SKILL.md",
+          "sha256": "5eb9e3f505894eccf6ba2c64719d0e30add7cd29e51017fc368edd65ca3e4085"
+        },
+        {
+          "path": ".claude/skills/task-implementer/SKILL.md",
+          "sha256": "72e81b1793c47c4d6e591da686156f7478ea4d595f0493e4fe2cc818f7f1f1fb"
+        },
+        {
+          "path": ".claude/skills/tech-debt-audit/SKILL.md",
+          "sha256": "b6599c3f23a9fa796639cd86ae1bccec81fc859219af894ced62fc3779b7b8d9"
+        },
+        {
+          "path": ".claude/skills/test-gen/SKILL.md",
+          "sha256": "5f2a8264467b5c6a96fea5eff90a7835f2ba31288d0aa1c48f7974dc9aadf3b9"
+        },
+        {
+          "path": ".claude/skills/wave-scheduler/SKILL.md",
+          "sha256": "8f21f46d1e517cc19cadadd58e36839bdfc78f67c8d934b1222bd112d3d82be2"
+        },
+        {
+          "path": ".claude/update_owasp_guide.py",
+          "sha256": "2be0f2d9c6dc5eb1869eaedd7739acd27b9af2e4e6967c56dfb8988334e1b1e2"
+        },
+        {
+          "path": "AIDLC_Genesis_Report.docx",
+          "sha256": "a88be977df1bef76239eebda000748b3a90cefe919b3fec00159da398e4c8af4"
+        },
+        {
+          "path": "AIDLC_Mind_Map.png",
+          "sha256": "b8aa3c04d8b60d0d7be8b00f788e0d1a78d635f847af1f6a49275aa502b01565"
+        },
+        {
+          "path": "AIDLC_Mind_Map.svg",
+          "sha256": "7ffe20df55402ae70bd8d571cba8d54bf6162b4ebe0dd4f6dbfb540d6ffe0958"
+        },
+        {
+          "path": "AIDLC_Session_Walkthrough.md",
+          "sha256": "54f46520a07f55e36a8d2b12e8d68cb03c6ba8a99a405026bf4d0d0a6fd8c575"
+        },
+        {
+          "path": "AIDLC_Tech_Talk.pptx",
+          "sha256": "32d521a401afb66781dc7810f6e62ec09da1fda21589e3d15cf8d2e395960c5b"
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha256": "4074b93d16b759b2f0af9ecddcea2b96047a8929b21066dc38dc4459c04e8ae9"
+        },
+        {
+          "path": "adapters/_shared/hooks.sh",
+          "sha256": "56fa23492f9374e3e13c09ca5f27b32113a9df10f26268c9666fe75ab482539a"
+        },
+        {
+          "path": "adapters/claude-code/tool-mappings.yaml",
+          "sha256": "a45c3eb286a3916ade6efe97779039c15a094d347bd02eeefa5b44828a253834"
+        },
+        {
+          "path": "docs/aidlc/design-invariants.md",
+          "sha256": "6c0c9002d6a1401e39183e601736dc6a4b0f10eb97f5622541d253eb6cba8329"
+        },
+        {
+          "path": "docs/aidlc/evidence.md",
+          "sha256": "276cd06ae56b9569f266c496515b88a7bd7f35c70feb3a4dc9931a985483ad47"
+        },
+        {
+          "path": "docs/aidlc/hooks.md",
+          "sha256": "7401ec2dafeed75dd3fa55a9e0c899ef0b6964dd31a39bf31bc04bd511276b89"
+        },
+        {
+          "path": "docs/workshop/2026-04-17-nutrition-app/specs/001-nutrition-app/parallel-kanban.md",
+          "sha256": "25c0689c88c32ddfda0d14e81f4e2b0886211905f75133b8294c984c963497be"
+        },
+        {
+          "path": "docs/workshop/2026-04-17-nutrition-app/specs/001-nutrition-app/traceability-matrix.md",
+          "sha256": "7b7fc59d219b2ba9d7ca8308c512f398f599fd3a47ff4dd741f62d174350eff9"
+        },
+        {
+          "path": "hooks/_bin/aidlc-evidence.sh",
+          "sha256": "76ba0446f9bba0d4fe66aa8489a3f7427a05dd4a04aca81c0675b119c2785cc0"
+        },
+        {
+          "path": "hooks/_bin/aidlc-verify.sh",
+          "sha256": "9476962be76993b7e05204c3686e0f52e96beb6e4b0e70bedb3af25f625984e3"
+        },
+        {
+          "path": "hooks/_test/run.sh",
+          "sha256": "447abeff291a1c5b34ca17caf8f2a12730aafb16d81a896357c00d7fd36f0fd7"
+        },
+        {
+          "path": "hooks/aidlc-artifact-hygiene/aidlc-artifact-hygiene.sh",
+          "sha256": "7fb95461048fc9c45615d274f21e1bda343cacd776baeb2ef508a120b8fec286"
+        },
+        {
+          "path": "hooks/aidlc-artifact-hygiene/hook.yaml",
+          "sha256": "465969bbd7f69511916b46e0f7f2cdd89033be94e2ab3a6404ac34cad1aa2c41"
+        },
+        {
+          "path": "hooks/aidlc-pre-command-guard/aidlc-pre-command-guard.sh",
+          "sha256": "6bed2fd51be99699e32b3d4fd156d2a5480e0150536b439bb9022fc3fdb22fb7"
+        },
+        {
+          "path": "hooks/aidlc-pre-command-guard/hook.yaml",
+          "sha256": "a70f02326fa54702aa8e45ca01c21953f81c85cd8f26598f00b0da26079a5bb5"
+        },
+        {
+          "path": "hooks/aidlc-pre-write-guard/aidlc-pre-write-guard.sh",
+          "sha256": "21e07239152eca5bcb6744829d8db0388d99e8449644146ffd55f0084f3947bb"
+        },
+        {
+          "path": "hooks/aidlc-pre-write-guard/hook.yaml",
+          "sha256": "7c624d42ad00ebc95ba1f3aced2cb2f6d611c5d469ff39099c662adb27e3ac43"
+        },
+        {
+          "path": "pipelines/developer/feature-build.pipeline.yaml",
+          "sha256": "dc18fa6e03a2b3c8c21e3929021ed218b83e3291026c42e12d4a0ce5761c3bd1"
+        },
+        {
+          "path": "pipelines/qa/release-validation.pipeline.yaml",
+          "sha256": "9977eb5f995228533a4c4222b22c51e9087e6341d5e612e158c7c71a68e1d517"
+        },
+        {
+          "path": "registry/catalog.yaml",
+          "sha256": "acb2ad954cdc383edc18a29a47492deb87a094eb1ae0b5289913ef696cbac132"
+        },
+        {
+          "path": "setup/install-all.sh",
+          "sha256": "3ed9c899fe11304b7b06ccd75fed5c8e105dbe507243acb844b91421bd85ee24"
+        },
+        {
+          "path": "setup/install-role.sh",
+          "sha256": "5e60e46930fc10536cb35bafcf3c665fffb3029660e4f09330fd01b177ca50e6"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/SKILL.md",
+          "sha256": "eb49535676e3d5cde80b19825bce280bdc31660c88ca3f1bf9891b9c526be9a9"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/prompt.md",
+          "sha256": "f9e8164b40f24a743cf3c20ff08f2e68ba665c18e4ecd160d0461297cbcf46d2"
+        },
+        {
+          "path": "skills/aidlc-evidence-verifier/skill.yaml",
+          "sha256": "5531d80e4125c3af7baab9b81dc26abfd02d1befba9773f9c4cb71912fd12426"
+        },
+        {
+          "path": "skills/quality-gate/SKILL.md",
+          "sha256": "e2da83c6987b1beb9b13d4e0f9cbcca1da1cd269970921340c79d0e55f16c77c"
+        },
+        {
+          "path": "skills/quality-gate/SKILL.md.orig",
+          "sha256": "8e5eac02736447e4bdff4a3b2f9f1211eecfb5d57fc2167a227ed4d27153775e"
+        },
+        {
+          "path": "skills/quality-gate/prompt.md",
+          "sha256": "9ddd25a976025b10d3719b38ee69f160f2582a6717d7adb5d309f306885e38ff"
+        },
+        {
+          "path": "skills/release-readiness-checker/SKILL.md",
+          "sha256": "06d21f6914f6b78bcde5f89895f9d7146d6bd2adb1e841147e621769a237b585"
+        },
+        {
+          "path": "skills/release-readiness-checker/SKILL.md.orig",
+          "sha256": "ad8856efd1400132f87452672806bdc7a63f35d27dca9549391452f91fbf5f94"
+        },
+        {
+          "path": "skills/release-readiness-checker/prompt.md",
+          "sha256": "66311f73d1ca488ed331db2313da4dc4034a3fb5f4e132cd774b3edd551b9487"
+        },
+        {
+          "path": "skills/task-implementer/SKILL.md",
+          "sha256": "53fa72de83713647f42b3f7af4cd4311ff01bfcbe80d03586af590dbc9fe2a38"
+        },
+        {
+          "path": "skills/task-implementer/SKILL.md.orig",
+          "sha256": "b78a92bc27c38b09ee9942d26cdfa4782540a667436f461b0dbfc81300cfe984"
+        },
+        {
+          "path": "skills/task-implementer/prompt.md",
+          "sha256": "66ac2a7c89fefdc2ea21d09433aed8380f02e783440d560f888ecafe3fe89d50"
+        },
+        {
+          "path": "tests/aidlc-phase1.test.js",
+          "sha256": "471c2dcceeed2d176ca7a68dca332e7b4bc1f1642dcf5832be88d3834b2b8c6c"
+        },
+        {
+          "path": "tests/aidlc-phase2.test.js",
+          "sha256": "3708e27cbcf1587f6f4289f43f84481f10312c666a2349d0bc0b01fa2c8f30f2"
+        },
+        {
+          "path": "~$LC-Central-Technical-User-Guide.docx",
+          "sha256": "223c17c093ee52c6f55e56eb4c3418b7144c7ecba93cfd226a3a93d81ec9f3f4"
+        }
+      ],
+      "touched_hash": "d132b2dbda04e6c589a0a1dfb8ecbd708de2deb7f368cd4e6842e68911a0c982",
+      "stale": false,
+      "model": "unknown",
+      "sdlc": "2.0.0-alpha"
+    }
+  ]
+}

@@ -16,12 +16,13 @@ Sources: [AIDLC Framework PRD](https://claude.ai/code/artifact/616a5892-9810-42b
 | 5 | The agent cannot switch its own guardrails off: hook scripts, hook config and the install record are protected. | W05, C03 fixtures |
 | 6 | Source writes on tier 2-3 need a passed `PLAN_CHECK.md`, no open gate, and an execution-family stage. | W02, W03, W06 fixtures |
 | 7 | Every approved artifact is hashed at approval; a later change is detected. | X02 fixture |
-| 8 | Evidence is generated, never authored. A summary is never proof. | H05 fixture; X03 fixture |
+| 8 | Evidence is generated, never authored. A summary is never proof. Verification fails closed: an error computing coverage is a FAIL, never a pass. | W08, C05, H05 (seal) fixtures; X03 fixture; `tests/aidlc-phase2.test.js` "fails closed" |
 | 9 | Tier 1 adds at most one log line per gate. Casual approvals are normalised, not rejected. | "low risk casual normalised" fixture |
 | 10 | Hooks are inert until a project runs `setup/init-track.sh`; installing sdlc_central never blocks a project that has not adopted AIDLC. | "inert without a track root" fixture |
 | 11 | Every hook runs on bash 3.2, needs only `jq` and `shasum`, and finishes inside 200 ms. | bash 3.2 test; timing check in `hooks/_test/run.sh` |
 | 12 | Every block code a hook emits is declared in its `hook.yaml`, and every hook carries a `design_ref`. | "declares every block code it emits" test |
 | 13 | Installing, updating and uninstalling never drops a user's own agent settings or hooks; uninstall never deletes the track root. | install wiring tests |
+| 15 | A pass needs fresh evidence: a run whose touched files changed since, whose log is missing or altered, or whose suite re-run disagrees, does not count. | `tests/aidlc-phase2.test.js` stale, missing-log, altered-log and re-execution tests |
 | 14 | Non-goals stay non-goals: no hosted control plane, no database, no compiled engine, no new lifecycle vocabulary. | Review; any change here needs a tech-lead decision first |
 
 ## Decisions still needed from a human

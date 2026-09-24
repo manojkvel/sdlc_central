@@ -15,14 +15,28 @@ aidlc_active || exit 0
 WRITE_OPS='(>|>>|sed[[:space:]]+-i|perl[[:space:]]+-[a-z]*i|(^|[;&|[:space:]])(rm|mv|cp|tee|chmod|chown|ln|truncate|install)[[:space:]])'
 
 # C03: shell edits to hooks, hook config or the install record.
-if printf '%s' "$CMD" | grep -Eq '(\.claude|\.sdlc|\.cursor|\.github)/(hooks|settings(\.local)?\.json|hooks\.json)|sdlc-central\.json' \
-   && printf '%s' "$CMD" | grep -Eq "$WRITE_OPS"; then
+# Running a hook or tool script (bash .claude/hooks/_bin/aidlc-verify.sh ...) is not an edit, so
+# those invocations are removed before the check.
+C03_TEXT="$(printf '%s' "$CMD" | sed -E 's#(^|[;&|])[[:space:]]*((bash|sh)[[:space:]]+)?[^[:space:];&|<>]*/hooks/(_bin|aidlc-[a-z-]+)/aidlc-[a-z-]+\.sh#\1#g')"
+if printf '%s' "$C03_TEXT" | grep -Eq '(\.claude|\.sdlc|\.cursor|\.github)/(hooks|settings(\.local)?\.json|hooks\.json)|sdlc-central\.json' \
+   && printf '%s' "$C03_TEXT" | grep -Eq "$WRITE_OPS"; then
   aidlc_block C03 "command modifies the hook machinery" "ask a human to run setup/update.sh if the hooks need to change"
 fi
 
 # C04: shell writes to the decision log bypass the approval guard.
 if printf '%s' "$CMD" | grep -Eq 'human-decisions\.md' && printf '%s' "$CMD" | grep -Eq "$WRITE_OPS"; then
   aidlc_block C04 "command writes human-decisions.md directly" "decisions are recorded only by aidlc-human-approval-guard"
+fi
+
+# C05: shell writes into generated evidence (the recorder and verifier are the only writers).
+# The recorder's own arguments may name evidence paths; the command it wraps may not write there.
+EV_TEXT="$CMD"
+if printf '%s' "$CMD" | grep -Eq '(^|[;&|[:space:]/])aidlc-(evidence|verify)\.sh'; then
+  case "$CMD" in *" -- "*) EV_TEXT="${CMD#* -- }" ;; *) EV_TEXT="" ;; esac
+fi
+if printf '%s' "$EV_TEXT" | grep -Eq '(evidence/|VERIFICATION\.md|UAT\.md|CONTRACT_EVIDENCE\.md)' \
+   && printf '%s' "$EV_TEXT" | grep -Eq "$WRITE_OPS"; then
+  aidlc_block C05 "command writes generated evidence directly" "use aidlc-evidence.sh to record runs and aidlc-verify.sh to report"
 fi
 
 DESTRUCTIVE=""

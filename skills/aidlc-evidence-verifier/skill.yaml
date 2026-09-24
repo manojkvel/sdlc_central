@@ -1,0 +1,12 @@
+name: aidlc-evidence-verifier
+version: "1.0.0"
+description: "Verify a phase from recorded execution evidence, not from summaries — map every AC and SC to fresh, untampered runs, re-execute the suite once, and generate a sealed VERIFICATION.md, UAT.md or CONTRACT_EVIDENCE.md"
+category: quality
+argument_hint: "[verify|uat|contract] [--rerun '<suite command>']"
+roles: [developer, qa, tech-lead]
+markers:
+  success: "## VERIFICATION COMPLETE"
+  block: "## VERIFICATION FAILED"
+writes: [VERIFICATION.md, UAT.md, CONTRACT_EVIDENCE.md, evidence/index.json, lineage.md]
+hooks: [aidlc-artifact-hygiene]
+design_ref: "Conversion Technical Guide > Skill layer > New skills; PRD FR-B2..B6, FR-D4"

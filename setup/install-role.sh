@@ -91,11 +91,11 @@ case "$ROLE" in
     PIPELINES=(design-to-plan system-health migration-planning)
     ;;
   developer)
-    SKILLS=(task-gen plan-check wave-scheduler task-implementer spec-review review-fix pr-orchestrator review security-audit test-gen dependency-update tech-debt-audit regression-check spec-fix doc-gen perf-review plan-gen spec-gen impact-analysis onboarding-guide design-review)
+    SKILLS=(task-gen plan-check wave-scheduler task-implementer aidlc-evidence-verifier spec-review review-fix pr-orchestrator review security-audit test-gen dependency-update tech-debt-audit regression-check spec-fix doc-gen perf-review plan-gen spec-gen impact-analysis onboarding-guide design-review)
     PIPELINES=(feature-build pr-workflow maintenance)
     ;;
   qa)
-    SKILLS=(spec-review test-gen regression-check perf-review report-trends release-readiness-checker quality-gate security-audit api-contract-analyzer drift-detector bug-report codebase-qa)
+    SKILLS=(spec-review aidlc-evidence-verifier test-gen regression-check perf-review report-trends release-readiness-checker quality-gate security-audit api-contract-analyzer drift-detector bug-report codebase-qa)
     PIPELINES=(test-strategy regression-suite release-validation bug-to-fix)
     ;;
   devops-sre)
@@ -229,7 +229,8 @@ HOOK_LEVEL="$(hook_support_level "$AGENT")"
 if [ "$NO_HOOKS" = "1" ]; then
   HOOKS_INSTALLED=false
   HOOK_LEVEL="none"
-  echo "  ○ skipped (--no-hooks)"
+  echo "  ○ hooks skipped (--no-hooks)"
+  emit_tools "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
 else
   emit_hooks "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
   HOOKS_INSTALLED=true

@@ -31,6 +31,21 @@ Without quality gates, the pipeline is a conveyor belt that pushes artifacts for
 
 ---
 
+## AIDLC phase checks (projects with a track root)
+
+At every transition, before scoring the criteria below, run the deterministic phase gate:
+
+```bash
+bash <agent-dir>/hooks/aidlc-phase-quality-gate/aidlc-phase-quality-gate.sh
+```
+
+It runs traceability (T-codes), consistency (X-codes) and hygiene (H-codes) over the phase. Exit 2 is a FAIL of this gate, whatever the other criteria say; copy its codes into the Failures section. Two AIDLC transitions are added:
+
+| Gate | Between | Passes when |
+|---|---|---|
+| `plan-check` | `/plan-gen` → `/task-gen` | `<phase>/PLAN_CHECK.md` ends with `## PLAN CHECK PASSED` |
+| `impl-to-release` (AIDLC) | as above | also: `VERIFICATION.md` sealed, `## VERIFICATION COMPLETE`, no stale evidence |
+
 ## Phase 0 — Determine Gate Type
 
 ### 0.1 Auto-detect from Context

@@ -13,6 +13,49 @@ This is Phase 4 of the spec-driven pipeline: **Spec → Plan → Tasks → Imple
 4. **TDD is mandatory.** For every IMPLEMENT task, the corresponding TEST task must pass before moving on. If a TEST task is missing, create the tests first.
 5. **Do not modify tasks.md or spec** unless instructed by the user. These are source-of-truth documents. Implementation reads them; it does not write to them.
 6. **Traceability is non-negotiable.** Every file touched must trace back to a TASK-NNN. Every TASK-NNN must trace to an AC-N. Untraced changes are bugs.
+7. **Evidence, not assertions (AIDLC projects).** When the project has a track root, every test, build and lint run goes through the evidence recorder, and your summary is never proof. See "AIDLC evidence capture" below.
+
+## AIDLC contract (projects with a track root)
+
+- Track root: read `track_root` from the agent's `sdlc-central.json`; default `.track/`.
+- Before writing: read `<track root>/state.md`. If `BLOCKED_GATE` is not `none`, stop and end with `## AIDLC GATE BLOCKED`.
+- After writing an artifact: append one lineage line to `<track root>/lineage.md`:
+  `<ISO time> | - | <family.event>: <detail> | <artifact path> | sha256:<hash> | model=<model id> | sdlc=<version>`
+- End with exactly one completion marker from this skill's `markers`.
+- Never cite `SUMMARY.md`, a summary, or a file's existence as proof of behaviour. Cite command output or an evidence entry.
+- Never write `human-decisions.md`. Decisions are recorded only by `aidlc-human-approval-guard`.
+
+### AIDLC pre-flight (tier 2 and 3)
+
+Before the first task, read `<track root>/state.md` and the phase's `unit.yaml`:
+- `BLOCKED_GATE` must be `none`, and `CURRENT_STAGE` must be `execution`.
+- `<phase>/PLAN_CHECK.md` must end with `## PLAN CHECK PASSED`. If it does not, stop and tell the user to run `/plan-check`.
+
+On Claude Code the pre-write hook enforces these; on other agents you enforce them yourself.
+
+### AIDLC evidence capture
+
+Run every test, build, lint and suite command through the recorder, so its output, exit code and the hashes of the files you changed are captured in `<phase>/evidence/`:
+
+```bash
+bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task TASK-003 --ac AC-2,AC-3 -- npm test -- auth
+bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task TASK-003 --suite -- npm test      # the full suite, once per wave
+bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task TASK-003 --kind lint -- npm run lint
+```
+
+- `--ac` names the criteria the run proves. Without it, the verifier uses the task's block in `TASKS.md`.
+- `--report <path>` attaches a machine-readable test report (JUnit XML, JSON).
+- The recorder exits with the command's exit code and prints the last lines of output; read them as you would the raw output.
+- Never write into `evidence/`, `VERIFICATION.md`, `UAT.md` or `CONTRACT_EVIDENCE.md` yourself. The pre-write and command guards block it (W08, C05), and the verifier seals its output.
+- Re-record after any source change: evidence whose touched files changed since the run is stale and does not count.
+
+When the tasks are done, write `<phase>/SUMMARY.md` as the narrative of what changed. Its first line must be:
+`> This summary is not evidence. See VERIFICATION.md.`
+Then run the verifier (the pipeline's verify step does this):
+
+```bash
+bash <agent-dir>/hooks/_bin/aidlc-verify.sh
+```
 
 ---
 
@@ -158,6 +201,7 @@ After each task, immediately record in the traceability log:
 **Tests:**
 - 8 written, 8 passing, 0 failing
 - Existing suite: 142 passing, 0 failing (no regressions)
+- Evidence (AIDLC): E-007 (task tests, exit 0), E-008 (suite, exit 0)
 
 **Definition of Done:**
 - [x] JWT tokens are validated on every protected route

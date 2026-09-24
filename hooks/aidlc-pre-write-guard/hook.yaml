@@ -11,3 +11,4 @@ codes:
   W05: protected path (hooks, hook config, install record)
   W06: stage does not permit source writes
   W07: human-decisions.md written outside the approval guard
+  W08: hand-written evidence (evidence/, VERIFICATION.md, UAT.md, CONTRACT_EVIDENCE.md)

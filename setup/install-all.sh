@@ -88,7 +88,7 @@ SKILLS=(
   perf-review
   pipeline-monitor
   pipeline-orchestrator
-  plan-gen plan-check
+  plan-gen plan-check aidlc-evidence-verifier
   plan-merge
   pr-orchestrator
   quality-gate
@@ -231,7 +231,8 @@ HOOK_LEVEL="$(hook_support_level "$AGENT")"
 if [ "$NO_HOOKS" = "1" ]; then
   HOOKS_INSTALLED=false
   HOOK_LEVEL="none"
-  echo "  ○ skipped (--no-hooks)"
+  echo "  ○ hooks skipped (--no-hooks)"
+  emit_tools "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
 else
   emit_hooks "$AGENT" "$SDLC_ROOT" "$PROJECT_DIR"
   HOOKS_INSTALLED=true

@@ -5,10 +5,20 @@ pipeline:
   trigger: "Before release to validate quality"
 
 steps:
+  - id: uat-evidence
+    skill: aidlc-evidence-verifier
+    args: "uat"
+    description: "AIDLC projects: generate the sealed UAT.md from recorded UAT runs (skipped without a track root)"
+    gate:
+      type: decision
+      pass_condition: "marker == VERIFICATION COMPLETE"
+      on_fail: hitl
+
   - id: readiness
     skill: release-readiness-checker
     args: "$INPUT"
-    description: "Aggregate release readiness signals"
+    depends_on: [uat-evidence]
+    description: "Aggregate release readiness signals, including sealed execution evidence"
 
   - id: spec-compliance
     skill: spec-review
@@ -27,4 +37,4 @@ steps:
 
 output:
   summary: "Release validation complete — quality gate passed"
-  artifacts: [release-readiness.md, spec-review.md, quality-gate.md]
+  artifacts: [UAT.md, release-readiness.md, spec-review.md, quality-gate.md]

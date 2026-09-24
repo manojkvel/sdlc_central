@@ -1,0 +1,6 @@
+id: UOW-002
+name: phase-2-evidence-rail
+profile: feature
+tier: 2
+repos: [sdlc_central]
+verify_command: node --test tests/aidlc-phase2.test.js

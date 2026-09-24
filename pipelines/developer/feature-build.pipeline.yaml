@@ -32,10 +32,22 @@ steps:
     depends_on: [schedule]
     description: "Implement tasks with TDD and traceability"
 
+  - id: verify-evidence
+    skill: aidlc-evidence-verifier
+    args: "verify"
+    depends_on: [implement]
+    description: "Map every AC and SC to fresh recorded evidence, re-run the suite once, write the sealed VERIFICATION.md"
+    gate:
+      type: decision
+      pass_condition: "marker == VERIFICATION COMPLETE"
+      on_fail:
+        auto_recover: review-fix
+        fallback: hitl
+
   - id: verify-spec
     skill: spec-review
     args: "$INPUT"
-    depends_on: [implement]
+    depends_on: [verify-evidence]
     description: "Validate implementation matches the original spec"
     gate:
       type: quality
@@ -51,5 +63,5 @@ steps:
 
 output:
   summary: "Feature implemented with spec compliance verified"
-  artifacts: [tasks.md, implementation-report.md, spec-review.md]
+  artifacts: [tasks.md, implementation-report.md, VERIFICATION.md, evidence/index.json, spec-review.md]
   next_pipeline: "developer/pr-workflow"

@@ -74,3 +74,5 @@ overrides:
   user-story-refiner: "Read, Write, Grep, Glob, Bash(git log, ls, find, tree, cat, date)"
   pipeline-orchestrator: "Read, Write, Grep, Glob, Bash(git log, git diff, git show, ls, find, cat, wc, date, jq)"
   plan-check: "Read, Write, Grep, Glob, Bash(git log, git diff, ls, find, tree, shasum, bash, date)"
+  aidlc-evidence-verifier: "Read, Grep, Glob, Bash(bash, shasum, jq, git diff, git status, ls, find, date)"
+  task-implementer: "Read, Write, Edit, Glob, Grep, Bash(git diff, git log, git status, git add, git stash, ls, find, tree, npm test, npx vitest, npx jest, pytest, make, date, bash)"
