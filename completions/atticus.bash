@@ -2,7 +2,7 @@
 _atticus() {
   local cur prev words
   cur="${COMP_WORDS[COMP_CWORD]}"; prev="${COMP_WORDS[COMP_CWORD-1]}"
-  local cmds="setup init go update doctor remove add start status resume ci migrate help version evidence verify scorecard metrics console portfolio contract sla wiki-lint knowledge-index integrity decide completion"
+  local cmds="setup init go update doctor remove add start status resume bench ci migrate help version evidence verify scorecard metrics console portfolio contract sla wiki-lint knowledge-index integrity decide completion"
   local roles="developer architect qa product-owner devops-sre tech-lead scrum-master designer release-manager"
   local agents="claude-code cursor copilot windsurf cline aider gemini antigravity tabnine agents-md"
   case "$prev" in

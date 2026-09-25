@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Measurement Bench</title>
+<style>
+:root{--ink:#0f1a24;--ink2:#3a4a58;--ink3:#64757f;--ground:#eef2f6;--surface:#fff;--surface2:#f6f9fb;--rule:#d5dfe7;--rule2:#e4ebf1;
+--brand:#00539f;--brand-wash:#e4eef7;--good:#0a6e55;--good-wash:#e2f1ec;--warn:#9a5b00;--warn-wash:#f8eedf;--bad:#c8102e;--bad-wash:#fbe9ea;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#e6eef5;--ink2:#aebecb;--ink3:#8194a3;--ground:#0c141c;--surface:#131e28;--surface2:#18242f;--rule:#2a3a48;--rule2:#22303c;
+--brand:#5fa3e6;--brand-wash:#15283b;--good:#4cc3a2;--good-wash:#12302a;--warn:#e0a64a;--warn-wash:#3a2c14;--bad:#f0656f;--bad-wash:#3a1b20;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;color-scheme:dark}}
+:root[data-theme=dark]{--ink:#e6eef5;--ink2:#aebecb;--ink3:#8194a3;--ground:#0c141c;--surface:#131e28;--surface2:#18242f;--rule:#2a3a48;--rule2:#22303c;
+--brand:#5fa3e6;--brand-wash:#15283b;--good:#4cc3a2;--good-wash:#12302a;--warn:#e0a64a;--warn-wash:#3a2c14;--bad:#f0656f;--bad-wash:#3a1b20;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--ink);font:14px/1.5 var(--sans);padding:0 16px 56px}
+.wrap{max-width:1180px;margin:0 auto}header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px 24px;padding:22px 0 14px;border-bottom:1px solid var(--rule)}
+h1{margin:0;font-size:26px}.muted{color:var(--ink3);font-size:12.5px}.mono{font-family:var(--mono)}a{color:var(--brand)}
+footer{margin-top:36px;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><h1>Measurement Bench</h1><div class="muted">Atticus · governed AI delivery</div></div>
+  <div class="muted" style="max-width:520px">Read-only. Computed from the track root by <span class="mono">aidlc-metrics.sh</span>; git is the source of truth. <a href="index.html">Open the console</a></div>
+</header>
+<main id="bench"></main>
+<footer>Measured figures come from files in <span class="mono">.track/</span>. Modelled figures come from the planning inputs on this page and stay in your browser.</footer>
+</div>
+<script>/*__AIDLC_BENCH_JS__*/</script>
+<script>
+const DATA = /*__AIDLC_DATA__*/{};
+window.AtticusBench.render(document.getElementById('bench'), DATA.metrics || null, { full: true, idPrefix: 'bench' });
+</script>
+</body>
+</html>

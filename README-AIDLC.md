@@ -845,6 +845,7 @@ The scorecard checks six dimensions and seals the result:
 ## Metrics, console and wiki
 
 ```bash
+atticus bench --open                              # refresh metrics, build the console and the Measurement Bench
 atticus metrics --out docs/aidlc/metrics        # DORA-style and governance metrics per squad
 atticus portfolio --out docs/aidlc/console-data # this repo's status for the console
 atticus console                                 # one self-contained HTML file, no backend
@@ -857,6 +858,12 @@ atticus knowledge-index                         # rebuilds the wiki index
   plus days per stage, first-pass scorecard rate and guardrail blocks. They are computed from lineage,
   gate history and evidence, and compared against `baseline.json`. Time to restore needs an
   optional `.track/incidents.json`, which the `incident-triager` skill writes.
+- **Measurement Bench.** `docs/aidlc/console/bench.html`, also the Bench tab in the console. It
+  compares each measured figure with the squad's own `baseline.json`: lead time, deployment
+  frequency, change failure rate, rework, test first, evidence coverage, approvals, gate wait and
+  tokens per unit, with charts per unit. A value model, seeded from those measurements, sizes a
+  rollout. Every figure names its source file, a missing source shows a dash, and squads are never
+  ranked. For a demo, `tests/fixtures/make-sample-track.py` writes a clearly marked sample track.
 - **Console.** Open the HTML file from disk, a CI artifact or an internal static host. Merge many
   repositories with `atticus portfolio --merge <out> <dir> <dir> …` for a department view.
 - **Wiki.** Curated knowledge in `docs/aidlc/wiki/`, maintained by the `wiki-curate` skill and
@@ -1001,6 +1008,7 @@ Three open-source projects shaped parts of Atticus. Their ideas are used, and no
 | `atticus verify [--mode verify\|uat\|contract]` | Generate sealed verification |
 | `atticus scorecard [--phase P]` | Generate the sealed governance scorecard |
 | `atticus contract …` | Hub commands: workstreams, contracts, approval, tests |
+| `atticus bench [--open]` | Build the Measurement Bench and console from fresh metrics |
 | `atticus metrics`, `portfolio`, `console`, `sla` | Measurement and reporting |
 | `atticus wiki-lint`, `knowledge-index`, `integrity`, `decide` | Upkeep and the decision bot's recorder |
 | `atticus ci [--decisions]`, `migrate […]`, `completion` | CI workflows, importing old specs, shell completion |

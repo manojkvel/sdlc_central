@@ -32,7 +32,7 @@ _copy_tools() {
   mkdir -p "$dst/_lib" "$dst/_bin"
   cp "$src"/_lib/*.sh "$dst/_lib/"
   cp "$src"/_bin/*.sh "$dst/_bin/"
-  [ -f "$src/../console/console.html" ] && cp "$src/../console/console.html" "$dst/_bin/console.html"
+  for f in console.html bench.html bench.js; do [ -f "$src/../console/$f" ] && cp "$src/../console/$f" "$dst/_bin/$f"; done
   chmod +x "$dst"/_bin/*.sh "$dst"/_lib/*.sh
 }
 

@@ -63,18 +63,40 @@ for d in "$AIDLC_TRACK"/phases/*/; do
     sc_runs="$(jq --arg p "$p" '[.gates[]? | select(.type=="release-scorecard" and .phase==$p)] | length' "$GH")"
   fi
   blocks="$(grep -F "| $p |" "$GL" 2>/dev/null | wc -l | tr -d ' ')"
+  # test first: tasks whose red run (--red, exit != 0) precedes their latest passing run; waivers counted apart
+  TF='null'
+  if [ -f "$d/TASKS.md" ]; then
+    tf_n=0; tf_p=0; tf_w=0
+    for t in $(grep -Eo 'TASK-[0-9]+' "$d/TASKS.md" | awk '!s[$0]++'); do
+      tf_n=$((tf_n+1))
+      if awk -v t="$t" '$0 ~ (t "([^0-9]|$)") && !f {f=1} f && $0 !~ t && /TASK-[0-9]+/ {exit} f' "$d/TASKS.md" | grep -Eiq '(red|verify)[^a-z]*:[[:space:]]*n/a'; then tf_w=$((tf_w+1)); continue; fi
+      [ -f "$d/evidence/index.json" ] && jq -e --arg t "$t" '
+        def n: .id | ltrimstr("E-") | tonumber;
+        ([.entries[] | select(.task == $t and .expect != "fail" and .exit_code == 0) | n] | max) as $g
+        | $g != null and ([.entries[] | select(.task == $t and .expect == "fail" and .exit_code != 0) | n | select(. < $g)] | length > 0)' \
+        "$d/evidence/index.json" >/dev/null 2>&1 && tf_p=$((tf_p+1))
+    done
+    TF="{\"tasks\":$tf_n,\"proven\":$tf_p,\"waived\":$tf_w}"
+  fi
+  # gate wait: hours from each checkpoint on this phase's artifacts to the decision that closed it
+  GW="$(awk -F'\t' -v p="/phases/$p/" '
+    index($4,p) && $3 ~ /^decision\.checkpoint_published: / { g=$3; sub(/^[^:]*: /,"",g); open[g]=$1 }
+    index($4,p) && $3 ~ /^decision\.(accepted|approved_with_risk|request_changes|request_verification|rejected|deferred): / { g=$3; sub(/^[^:]*: /,"",g); if (g in open) { print open[g]"\t"$1; delete open[g] } }
+  ' "$LTSV" | while IFS="$(printf '\t')" read -r a b; do echo $(( $(epoch "$b") - $(epoch "$a") )); done | awk '{s+=$1; n++} END {if (n) printf "%.2f", s/3600; else printf "null"}')"
+  [ -z "$GW" ] && GW=null
   stale="$(jq '[.entries[]? | select(.stale)] | length' "$d/evidence/index.json" 2>/dev/null || echo null)"
   runs="$(jq '.entries | length' "$d/evidence/index.json" 2>/dev/null || echo 0)"
   PHASES_JSON="$(printf '%s' "$PHASES_JSON" | jq -c --arg p "$p" --arg tier "${tier:-null}" --arg profile "$profile" \
     --arg first "$first" --arg rel "$released" --argjson lead "$lead" --argjson stages "$STAGES" \
     --argjson hdt "$hd_total" --argjson hdr "$hd_rework" --argjson vp "${vpass:-null}" --argjson vt "${vtotal:-null}" --argjson vr "$vresult" \
     --argjson scf "$sc_first" --argjson scr "$sc_runs" --argjson blocks "$blocks" --argjson stale "${stale:-null}" --argjson runs "${runs:-0}" \
+    --argjson tf "$TF" --argjson gw "$GW" \
     '. + [{phase:$p, tier:($tier|tonumber? // null), profile:(if $profile=="" then null else $profile end),
            started_at:(if $first=="" then null else $first end), released_at:(if $rel=="" then null else $rel end),
            lead_time_days:$lead, stage_days:$stages,
            decisions:{total:$hdt, rework:$hdr, rework_rate:(if $hdt>0 then ($hdr/$hdt) else null end)},
            evidence:{runs:$runs, stale:$stale, criteria_pass:$vp, criteria_total:$vt, coverage:(if ($vt//0)>0 then ($vp/$vt) else null end), verification:$vr},
-           scorecard:{runs:$scr, first_pass:$scf}, guardrail_blocks:$blocks}]')"
+           scorecard:{runs:$scr, first_pass:$scf}, guardrail_blocks:$blocks, test_first:$tf, gate_wait_hours:$gw}]')"
 done
 
 # approval quality across the project
@@ -94,7 +116,8 @@ GUARD="[$GUARD]"
 
 # DORA
 releases="$(grep -cF 'stage.entered: released' "$LTSV")"
-first_ev="$(head -1 "$LTSV" | cut -f1)"; last_ev="$(tail -1 "$LTSV" | cut -f1)"
+# earliest and latest timestamps, not first and last lines: migrated or merged lineage can be out of order
+first_ev="$(cut -f1 "$LTSV" | sort | head -1)"; last_ev="$(cut -f1 "$LTSV" | sort | tail -1)"
 span_days="null"; [ -n "$first_ev" ] && span_days="$(echo "scale=2; ($(epoch "$last_ev") - $(epoch "$first_ev")) / 86400" | bc)"
 INC="$AIDLC_TRACK/incidents.json"
 cfr="null"; mttr="null"; inc_n="null"
@@ -118,22 +141,29 @@ USAGE="$(cat "$AIDLC_TRACK"/runs/usage/*.json 2>/dev/null | jq -s '
 [ -z "$USAGE" ] && USAGE=null
 models="$(cut -f1- "$LIN" 2>/dev/null | grep -Eo 'model=[^ |]+' | sort -u | sed 's/model=//' | jq -R . | jq -sc .)"
 BASE="null"; [ -f "$AIDLC_TRACK/baseline.json" ] && BASE="$(cat "$AIDLC_TRACK/baseline.json")"
+# A track generated for demos and UI tests carries a SAMPLE marker; every view then says so.
+SAMPLE=false; [ -f "$AIDLC_TRACK/SAMPLE" ] && SAMPLE=true
 
 jq -n --arg squad "$SQUAD" --arg asof "$(aidlc_now)" --argjson phases "$PHASES_JSON" \
   --argjson acc "$accepted" --argjson rej "$rejected" --argjson asr "$asserted" --argjson lat "$LAT" --argjson guard "$GUARD" \
   --argjson rel "$releases" --argjson span "$span_days" --argjson cfr "$cfr" --argjson mttr "$mttr" --argjson incn "$inc_n" \
-  --argjson usage "$USAGE" --argjson models "$models" --argjson base "$BASE" '
-  {as_of:$asof, squad:$squad, baseline:$base,
+  --argjson usage "$USAGE" --argjson models "$models" --argjson base "$BASE" --argjson sample "$SAMPLE" '
+  {as_of:$asof, squad:$squad, baseline:$base} + (if $sample then {sample:true} else {} end) + {
    dora:{releases:$rel, days_observed:$span,
          deployment_frequency_per_30d:(if ($span//0)>0 then ($rel*30/$span) else null end),
          lead_time_days_median:([$phases[] | .lead_time_days | select(.!=null)] | if length==0 then null else (sort|.[(length/2|floor)]) end),
          change_failure_rate:$cfr, incidents:$incn, time_to_restore_hours_median:$mttr},
    governance:{decisions_accepted:$acc, vague_attempts_rejected:$rej,
                structured_approval_rate:(if ($acc+$rej)>0 then ($acc/($acc+$rej)) else null end),
-               asserted_identity_decisions:$asr, approval_latency:$lat, guardrail_blocks:$guard},
+               asserted_identity_decisions:$asr, approval_latency:$lat, guardrail_blocks:$guard,
+               gate_wait_share:([$phases[] | select(.lead_time_days != null and .lead_time_days > 0 and .gate_wait_hours != null)]
+                 | if length==0 then null else ((map(.gate_wait_hours)|add) / 24 / (map(.lead_time_days)|add)) end)},
    quality:{evidence_coverage:([$phases[] | .evidence | select(.criteria_total!=null)] | if length==0 then null else ((map(.criteria_pass)|add)/(map(.criteria_total)|add)) end),
             rework_rate:([$phases[] | .decisions] | if (map(.total)|add // 0)==0 then null else ((map(.rework)|add)/(map(.total)|add)) end),
-            scorecard_first_pass_rate:([$phases[] | .scorecard.first_pass | select(.!=null)] | if length==0 then null else (map(select(.))|length)/length end)},
+            scorecard_first_pass_rate:([$phases[] | .scorecard.first_pass | select(.!=null)] | if length==0 then null else (map(select(.))|length)/length end),
+            test_first_rate:([$phases[] | .test_first | select(. != null)] | (map(.tasks - .waived) | add // 0) as $d
+              | if $d == 0 then null else ((map(.proven)|add) / $d) end),
+            test_first_tasks:([$phases[] | .test_first | select(. != null)] | {tasks:(map(.tasks)|add // 0), proven:(map(.proven)|add // 0), waived:(map(.waived)|add // 0)})},
    cost:(if $usage == null then {tokens_total:null, note:"no usage recorded: only Claude Code sessions with the aidlc-usage Stop hook are measured"}
          else {tokens_total:$usage.totals.total, input:$usage.totals.input, output:$usage.totals.output,
                cache_read:$usage.totals.cache_read, cache_creation:$usage.totals.cache_creation, messages:$usage.totals.messages,

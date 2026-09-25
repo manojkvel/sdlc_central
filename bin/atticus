@@ -62,6 +62,7 @@ Setup and maintenance
 Work (the same things /atticus does inside the agent)
   atticus start <what> [--profile feature|bugfix|poc|security|infra|data|migration] [--tier N]
   atticus status | resume | go [path]
+  atticus bench [--open]            refresh metrics and build the Measurement Bench and console
   atticus evidence run --task TASK-001 -- <test command>
   atticus verify | scorecard | metrics | console | portfolio | contract | sla
           | wiki-lint | knowledge-index | integrity | decide     [tool args]
@@ -327,6 +328,22 @@ cmd_go() {
   esac
 }
 
+cmd_bench() {
+  [ -n "$(cfg_file)" ] || die "Atticus is not set up here. Run: atticus init"
+  local open=0; [ "$1" = "--open" ] && open=1
+  local m p c; m="$(tool_path metrics)"; p="$(tool_path portfolio)"; c="$(tool_path console)"
+  AIDLC_PROJECT_DIR="$PROJECT" bash "$m" > /dev/null || die "metrics failed (atticus metrics shows why)"
+  AIDLC_PROJECT_DIR="$PROJECT" bash "$p" > /dev/null || die "portfolio failed"
+  AIDLC_PROJECT_DIR="$PROJECT" bash "$c" | sed 's/^C00 /  /'
+  local out="$PROJECT/docs/aidlc/console/bench.html"
+  say "Measurement Bench: $out"
+  if [ $open -eq 1 ]; then
+    if command -v open >/dev/null 2>&1; then open "$out"
+    elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$out" >/dev/null 2>&1 &
+    elif command -v cmd.exe >/dev/null 2>&1; then cmd.exe /c start "" "$(wslpath -w "$out" 2>/dev/null || echo "$out")"; fi
+  fi
+}
+
 cmd_status() {
   local st="$PROJECT/$(track_root)/state.md"
   [ -f "$st" ] || die "Atticus is not set up here. Run: atticus init"
@@ -391,6 +408,7 @@ case "${1:-help}" in
   completion) cat "$AT_HOME/completions/atticus.bash" ;;
   ci) shift; ad="$(hooks_dir)"; exec bash "$SETUP/install-ci.sh" --agent-dir "$(basename "${ad:-.claude}")" "$@" ;;
   migrate) shift; exec bash "$SETUP/migrate-specs.sh" "$@" ;;
+  bench) shift; cmd_bench "$@" ;;
   status) cmd_status ;;
   resume) cmd_resume ;;
   start) shift; tool start "$@" ;;

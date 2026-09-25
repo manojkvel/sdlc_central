@@ -10,7 +10,7 @@
 --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
 @media (prefers-color-scheme:dark){:root{--ink:#e6eef5;--ink2:#aebecb;--ink3:#8194a3;--ground:#0c141c;--surface:#131e28;--surface2:#18242f;--rule:#2a3a48;--rule2:#22303c;
 --brand:#5fa3e6;--brand-wash:#15283b;--good:#4cc3a2;--good-wash:#12302a;--warn:#e0a64a;--warn-wash:#3a2c14;--bad:#f0656f;--bad-wash:#3a1b20;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181}}
-*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--ink);font:14px/1.5 var(--sans);padding:0 16px 48px}
+*{box-sizing:border-box}a{color:var(--brand)}body{margin:0;background:var(--ground);color:var(--ink);font:14px/1.5 var(--sans);padding:0 16px 48px}
 .wrap{max-width:1180px;margin:0 auto}header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;padding:20px 0 12px;border-bottom:1px solid var(--rule)}
 h1{margin:0;font-size:24px}h2{font-size:18px;margin:0 0 8px}h3{font-size:14px;margin:0 0 8px}.muted{color:var(--ink3);font-size:12.5px}.mono{font-family:var(--mono)}
 nav{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--rule);margin:0 -16px;padding:0 16px;position:sticky;top:0;background:var(--ground);z-index:3}
@@ -44,8 +44,10 @@ input[type=search]{font:inherit;padding:7px 10px;border:1px solid var(--rule);bo
 <section id="decisions"></section>
 <section id="governance"></section>
 <section id="metrics"></section>
+<section id="bench"></section>
 <section id="knowledge"></section>
 </div>
+<script>/*__AIDLC_BENCH_JS__*/</script>
 <script>
 const DATA = /*__AIDLC_DATA__*/{};
 const $ = s => document.querySelector(s);
@@ -59,8 +61,8 @@ const P = DATA.portfolio || {repos: []}, C = DATA.checkpoints || {items: []}, D 
 const squads = M ? (M.squads || [M]) : [];
 $('#asof').textContent = 'Data as of ' + (P.as_of || '—') + ' · ' + P.repos.length + ' repo(s)';
 
-const TABS = [['portfolio','Portfolio'],['unit','Unit of work'],['decisions','Decision console'],['governance','Governance'],['metrics','Metrics'],['knowledge','Knowledge']];
-function show(id){ document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === id)); document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === id)); try{ localStorage.setItem('aidlc.tab', id); }catch(e){} }
+const TABS = [['portfolio','Portfolio'],['unit','Unit of work'],['decisions','Decision console'],['governance','Governance'],['metrics','Metrics'],['bench','Bench'],['knowledge','Knowledge']];
+var show = function(id){ document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === id)); document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === id)); try{ localStorage.setItem('aidlc.tab', id); }catch(e){} };
 TABS.forEach(([id, label]) => { const b = document.createElement('button'); b.textContent = label; b.dataset.t = id; b.setAttribute('role','tab'); b.onclick = () => show(id); $('#tabs').appendChild(b); });
 
 /* ---------- Portfolio ---------- */
@@ -194,6 +196,11 @@ TABS.forEach(([id, label]) => { const b = document.createElement('button'); b.te
 })();
 
 let first = 'portfolio'; try { first = localStorage.getItem('aidlc.tab') || first; } catch(e){}
+/* ---------- Bench ---------- */
+// Drawn when first shown, so charts measure the visible width.
+let benchDrawn = false;
+function drawBench(){ if (benchDrawn || !window.AtticusBench) return; benchDrawn = true; window.AtticusBench.render($('#bench'), M, { idPrefix: 'cb' }); $('#bench').insertAdjacentHTML('beforeend', '<p class="muted" style="margin-top:12px">The full bench, with the value model, is in <a href="bench.html">bench.html</a> next to this file.</p>'); }
+const showTab = show; show = id => { showTab(id); if (id === 'bench') drawBench(); };
 show(TABS.some(t => t[0] === first) ? first : 'portfolio');
 </script>
 </body>
