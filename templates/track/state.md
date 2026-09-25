@@ -9,6 +9,7 @@ CURRENT_PHASE: none
 CURRENT_STAGE: intake
 BLOCKED_GATE: none
 GATE_RISK: none
+GATE_REMINDED: no
 NEXT_ACTION: Start a unit of work with /run-pipeline aidlc/unit-of-work "<request>"
 NEXT_ACTION_OWNER: human:any
 NEXT_ACTION_INPUTS: none

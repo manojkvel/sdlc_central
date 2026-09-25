@@ -160,7 +160,7 @@ When the project has a track root (`track_root` in `sdlc-central.json`, default 
 
 1. `VERIFICATION.md` exists and its first line is `<!-- generated-by: aidlc-evidence-verifier sha256:<hash> -->`. Recompute the seal with `tail -n +2 VERIFICATION.md | shasum -a 256` and compare.
 2. It ends with `## VERIFICATION COMPLETE` and its criteria table has no `FAIL` row.
-3. In `evidence/index.json`, the latest run of each command (by `command_hash`) is not `"stale": true`. Older, superseded runs may be stale.
+3. `bash <agent-dir>/hooks/_bin/aidlc-evidence.sh summary` reports `latest stale 0` (older, superseded runs may be stale).
 
 Any failure is **FAIL — no execution evidence**, a Required check, so the verdict is NO-GO. A `SUMMARY.md`, a report or a passing CI badge alone never satisfies this check. Without a track root, or on tier 1, mark it N/A.
 

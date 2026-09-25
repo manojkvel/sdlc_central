@@ -4,8 +4,8 @@ description: "Post-execution evidence verification: maps every AC and SC to fres
 role_in_lifecycle: "verification"
 model_hint: standard
 skills: [aidlc-evidence-verifier, regression-check, test-gen]
-reads: [SPEC.md, TASKS.md, evidence/index.json, SUMMARY.md, unit.yaml]
-writes: [VERIFICATION.md, UAT.md, CONTRACT_EVIDENCE.md, evidence/index.json, lineage.md]
+reads: [SPEC.md, TASKS.md, evidence summary (aidlc-evidence.sh summary), SUMMARY.md, unit.yaml]
+writes: [VERIFICATION.md, UAT.md, CONTRACT_EVIDENCE.md, evidence summary (aidlc-evidence.sh summary), lineage.md (phase lines only)]
 tools: "Read, Grep, Glob, Bash(bash, shasum, jq, git diff, git status, ls, find, date)"
 markers: ["## VERIFICATION COMPLETE", "## VERIFICATION FAILED"]
 handoff_to: [aidlc-orchestrator]

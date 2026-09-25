@@ -123,6 +123,8 @@ echo "== aidlc-human-approval-guard"
 new_project; phase 01-api planning approve-plan medium
 printf '# Plan\nAC-1\n' > "$P/.track/phases/01-api/PLAN.md"
 expect "question passes through" aidlc-human-approval-guard 0 "No decision was recorded" "$(printf "$PR" "$(j 'what does AC-1 cover?')")"
+O2="$(printf "$PR" "$(j 'and AC-2?')" | AIDLC_PROJECT_DIR="$P" bash "$HOOKS/aidlc-human-approval-guard/aidlc-human-approval-guard.sh" 2>&1)"
+[ -z "$O2" ] && PASS=$((PASS+1)) || { FAIL=$((FAIL+1)); echo "  ✗ reminder repeated on the second question: $O2"; }
 expect "A01 vague at medium" aidlc-human-approval-guard 2 A01 "$(printf "$PR" "$(j 'looks good, go ahead')")"
 expect "A02 wrong gate" aidlc-human-approval-guard 2 A02 "$(printf "$PR" "$(j 'APPROVE SPEC')")"
 expect "A04 lower case decision" aidlc-human-approval-guard 2 A04 "$(printf "$PR" "$(j 'approve plan')")"

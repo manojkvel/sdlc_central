@@ -35,7 +35,7 @@ When it exists:
 
 At a HITL gate, update the resume block, then print the checkpoint and **end your turn**:
 
-- Set `CURRENT_STAGE`, `BLOCKED_GATE: <gate id>`, `GATE_RISK: <risk>`, `NEXT_ACTION: Reply with one of the decision strings below`, `NEXT_ACTION_OWNER: human:<role>`, `NEXT_ACTION_INPUTS: <comma-separated artifact paths under review>`.
+- Set `CURRENT_STAGE`, `BLOCKED_GATE: <gate id>`, `GATE_RISK: <risk>`, `GATE_REMINDED: no`, `NEXT_ACTION: Reply with one of the decision strings below`, `NEXT_ACTION_OWNER: human:<role>`, `NEXT_ACTION_INPUTS: <comma-separated artifact paths under review>`.
 - Append a lineage line `decision.checkpoint_published: <gate>` with the first artifact and its hash.
 - Print:
 
@@ -66,6 +66,7 @@ After a receipt, continue only when `BLOCKED_GATE` is back to `none`. `REQUEST C
 
 - Rewrite the whole `## AIDLC_RESUME` block: `CURRENT_PHASE`, `CURRENT_STAGE`, `BLOCKED_GATE`, `GATE_RISK`, `NEXT_ACTION`, `NEXT_ACTION_OWNER`, `NEXT_ACTION_INPUTS`, `DONE` (steps completed), `EVIDENCE` (evidence index path or `none`), `OPEN_RISKS` (RISK ids or `none`). Keep the `## Phases` table current.
 - Append lineage lines: `stage.entered: <stage>` on every stage change, and one `<family>.<event>` line per artifact written, with its sha256. Families: stage, decision, evidence, contract, handoff, knowledge, guardrail, cost.
+- Keep context small: never load `evidence/index.json`, `lineage.md` or `guardrail-log.md` whole. Use `aidlc-evidence.sh summary`, the summary blocks of `VERIFICATION.md` and `SCORECARD.md`, and `grep '<phase>' lineage.md | tail -20`. Resume from the `## AIDLC_RESUME` block alone; open other artifacts only when the next step needs them.
 - At each quality gate, also run `bash <agent-dir>/hooks/aidlc-phase-quality-gate/aidlc-phase-quality-gate.sh`. Exit 2 is a gate failure with the code it names.
 - Before `task-implementer` runs on tier 2 or 3, `PLAN_CHECK.md` must end with `## PLAN CHECK PASSED` (run `/plan-check`). On Claude Code the pre-write hook enforces this; elsewhere, check it yourself and stop if it is missing.
 

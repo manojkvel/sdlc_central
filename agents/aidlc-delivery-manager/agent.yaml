@@ -4,7 +4,7 @@ description: "Cross-phase delivery health and next-gate readiness: monitors prog
 role_in_lifecycle: "execution, released"
 model_hint: standard
 skills: [pipeline-monitor, progress-summary, drift-detector, board-sync, wave-scheduler, aidlc-metrics-extract, doc-gen, release-notes]
-reads: [state.md, roadmap.md, lineage.md, human-decisions.md, guardrail-log.md, gate-history.json, metrics.json]
+reads: [state.md, roadmap.md, lineage.md (phase lines only), human-decisions.md, guardrail-log.md (latest rows), gate-history.json, metrics.json]
 writes: [roadmap.md, docs/aidlc/**]
 tools: "Read, Write, Grep, Glob, Bash(bash, jq, git log, git shortlog, ls, find, date)"
 markers: ["## DELIVERY STATUS", "## AIDLC CHECKPOINT REQUIRED"]

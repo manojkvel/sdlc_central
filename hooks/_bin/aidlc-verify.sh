@@ -75,10 +75,22 @@ for row in $(printf '%s' "$ENTRIES" | jq -r '.[] | @base64'); do
   if [ ! -f "$outp" ]; then state="log missing"
   elif [ "$(aidlc_hash "$outp")" != "$(printf '%s' "$e" | jq -r .stdout_sha256)" ]; then state="log altered"
   else
-    for tf in $(printf '%s' "$e" | jq -r '.touched_files[] | @base64'); do
-      p="$(printf '%s' "$tf" | base64 --decode | jq -r .path)"; h="$(printf '%s' "$tf" | base64 --decode | jq -r .sha256)"
-      if [ "$(aidlc_hash "$AIDLC_PROJECT/$p")" != "$h" ]; then state="stale: $p changed"; STALE_IDS="$STALE_IDS $id"; break; fi
-    done
+    man="$(printf '%s' "$e" | jq -r '.touched_manifest // empty')"
+    if [ -n "$man" ]; then
+      if [ ! -f "$D/$man" ] || [ "$(aidlc_hash "$D/$man")" != "$(printf '%s' "$e" | jq -r .touched_hash)" ]; then state="touched-file manifest missing or altered"
+      else
+        while IFS="$(printf '\t')" read -r h p; do
+          [ -z "$p" ] && continue
+          if [ "$(aidlc_hash "$AIDLC_PROJECT/$p")" != "$h" ]; then state="stale: $p changed"; STALE_IDS="$STALE_IDS $id"; break; fi
+        done < "$D/$man"
+      fi
+    else
+      # entries recorded before manifests: inline list (run `aidlc-evidence.sh compact` to migrate)
+      for tf in $(printf '%s' "$e" | jq -r '.touched_files[]? | @base64'); do
+        p="$(printf '%s' "$tf" | base64 --decode | jq -r .path)"; h="$(printf '%s' "$tf" | base64 --decode | jq -r .sha256)"
+        if [ "$(aidlc_hash "$AIDLC_PROJECT/$p")" != "$h" ]; then state="stale: $p changed"; STALE_IDS="$STALE_IDS $id"; break; fi
+      done
+    fi
   fi
   STATUS_JSON="$(printf '%s' "$STATUS_JSON" | jq -c --arg id "$id" --arg s "$state" '. + {($id): $s}')"
 done

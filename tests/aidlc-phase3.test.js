@@ -210,6 +210,39 @@ describe('Metrics', { skip: !jq && 'jq not installed' }, () => {
   });
 });
 
+describe('Measured token usage', { skip: !jq && 'jq not installed' }, () => {
+  it('counts each response once, per phase, incrementally, and reports it in metrics', () => {
+    const dir = project();
+    const tp = path.join(dir, 'transcript.jsonl');
+    const msg = (id, i, o, cr, cc) => JSON.stringify({ type: 'assistant', sessionId: 's1', message: { id, model: 'claude-x', usage: { input_tokens: i, output_tokens: o, cache_read_input_tokens: cr, cache_creation_input_tokens: cc } } });
+    // one response split over two lines (same id, same usage) plus a user line
+    fs.writeFileSync(tp, [msg('m1', 10, 100, 1000, 50), msg('m1', 10, 100, 1000, 50), JSON.stringify({ type: 'user' }), msg('m2', 5, 20, 500, 0)].join('\n') + '\n');
+    setState(dir, { CURRENT_PHASE: '01-calc' });
+    const stop = () => spawnSync('bash', [path.join(BIN, 'aidlc-usage.sh')], { input: JSON.stringify({ transcript_path: tp, session_id: 's1' }), encoding: 'utf8', env: { ...process.env, AIDLC_PROJECT_DIR: dir } });
+    assert.strictEqual(stop().status, 0);
+    const f = path.join(dir, '.track', 'runs', 'usage', 's1.json');
+    let u = JSON.parse(fs.readFileSync(f, 'utf8'));
+    assert.deepStrictEqual(u.by_phase['01-calc'], { messages: 2, input: 15, output: 120, cache_read: 1500, cache_creation: 50 });
+    // a second stop with nothing new changes nothing; new lines in a new phase go to that phase
+    stop();
+    fs.mkdirSync(path.join(dir, '.track', 'phases', '02-next'));
+    fs.writeFileSync(path.join(dir, '.track', 'phases', '02-next', 'unit.yaml'), 'id: UOW-002\nname: next\ntier: 1\n');
+    setState(dir, { CURRENT_PHASE: '02-next' });
+    fs.appendFileSync(tp, [msg('m2', 5, 20, 500, 0), msg('m3', 1, 30, 200, 0)].join('\n') + '\n');
+    stop();
+    u = JSON.parse(fs.readFileSync(f, 'utf8'));
+    assert.strictEqual(u.by_phase['01-calc'].output, 120, 'no double count');
+    assert.deepStrictEqual(u.by_phase['02-next'], { messages: 1, input: 1, output: 30, cache_read: 200, cache_creation: 0 }, 'm2 repeated at the boundary is skipped');
+    bin(dir, 'aidlc-metrics.sh');
+    const m = JSON.parse(fs.readFileSync(path.join(dir, 'docs', 'aidlc', 'metrics', 'metrics.json'), 'utf8'));
+    assert.strictEqual(m.cost.tokens_total, 15 + 120 + 1500 + 50 + 1 + 30 + 200);
+    assert.strictEqual(m.cost.output, 150);
+    assert.strictEqual(m.phases.find(p => p.phase === '01-calc').tokens.output, 120);
+    assert.deepStrictEqual(m.cost.per_tier, [{ tier: 1, units: 1, tokens_per_unit: 231 }, { tier: 2, units: 1, tokens_per_unit: 1685 }]);
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+});
+
 describe('Knowledge layer', { skip: !jq && 'jq not installed' }, () => {
   const page = (id, extra = {}) => {
     const fm = { id, kind: 'domain', title: 'T', owner: 'role/tech-lead', sources: '[SPEC.md]', links: '[]', review_by: '2099-01-01', ...extra };

@@ -66,7 +66,11 @@ describe('AIDLC evidence rail', { skip: !jqAvailable && 'jq not installed' }, ()
     assert.strictEqual(e.exit_code, 0);
     assert.strictEqual(e.suite, true);
     assert.match(e.stdout_sha256, /^[0-9a-f]{64}$/);
-    assert.ok(e.touched_files.some(f => f.path === 'src/calc.sh' && /^[0-9a-f]{64}$/.test(f.sha256)));
+    assert.ok(!('touched_files' in e), 'the index holds no touched-file list');
+    assert.ok(e.touched_count >= 1);
+    const man = fs.readFileSync(path.join(dir, PH, e.touched_manifest), 'utf8');
+    assert.match(man, /^[0-9a-f]{64}\tsrc\/calc\.sh$/m);
+    assert.strictEqual(require('node:crypto').createHash('sha256').update(man).digest('hex'), e.touched_hash);
     assert.strictEqual(fs.readFileSync(path.join(dir, PH, e.stdout_path), 'utf8'), 'test_add ok\n');
     assert.match(fs.readFileSync(path.join(dir, '.track', 'lineage.md'), 'utf8'), /\| E-001 \| evidence\.recorded: TASK-001 test exit=0/);
   });
@@ -79,7 +83,7 @@ describe('AIDLC evidence rail', { skip: !jqAvailable && 'jq not installed' }, ()
     const r2 = record(dir, 'TASK-002', [], 'true');
     assert.match(r2.stdout, /from git changes/);
     const idx = JSON.parse(fs.readFileSync(path.join(dir, PH, 'evidence', 'index.json'), 'utf8'));
-    assert.ok(!idx.entries[1].touched_files.some(f => f.path === 'notes.docx'), 'documents are not source');
+    assert.ok(!fs.readFileSync(path.join(dir, PH, idx.entries[1].touched_manifest), 'utf8').includes('notes.docx'), 'documents are not source');
   });
 
   it('refuses commands that mask their exit code, and the verifier ignores such entries', () => {
@@ -127,6 +131,30 @@ describe('AIDLC evidence rail', { skip: !jqAvailable && 'jq not installed' }, ()
     fs.rmSync(path.join(dir, PH, idx.entries[0].stdout_path));
     assert.strictEqual(verify(dir).status, 2);
     assert.match(row(readV(dir), 'AC-1'), /FAIL .*E-001 log missing/);
+  });
+
+  it('an altered touched-file manifest invalidates the run', () => {
+    recordBoth(dir);
+    const idx = JSON.parse(fs.readFileSync(path.join(dir, PH, 'evidence', 'index.json'), 'utf8'));
+    fs.writeFileSync(path.join(dir, PH, idx.entries[0].touched_manifest), '');
+    assert.strictEqual(verify(dir).status, 2);
+    assert.match(row(readV(dir), 'AC-1'), /manifest missing or altered/);
+  });
+
+  it('list, summary and compact keep agents off the raw index', () => {
+    recordBoth(dir);
+    record(dir, 'TASK-001', ['--suite'], 'bash test.sh');
+    const list = sh(dir, [path.join(BIN, 'aidlc-evidence.sh'), 'list']).stdout.trim().split('\n');
+    assert.strictEqual(list.length, 2, 'latest run per command only');
+    assert.match(list[1], /^E-003 TASK-001 test exit=0 bash test\.sh$/);
+    assert.match(sh(dir, [path.join(BIN, 'aidlc-evidence.sh'), 'summary']).stdout, /^runs 3 · commands 2 · latest failing 0 · latest stale 0$/m);
+    // an old-format entry with an inline list is migrated
+    const idxf = path.join(dir, PH, 'evidence', 'index.json'); const idx = JSON.parse(fs.readFileSync(idxf, 'utf8'));
+    const old = { ...idx.entries[0], id: 'E-004', command_hash: 'old' }; delete old.touched_manifest; delete old.touched_count;
+    old.touched_files = [{ path: 'src/calc.sh', sha256: 'x'.repeat(64) }]; idx.entries.push(old); fs.writeFileSync(idxf, JSON.stringify(idx));
+    assert.match(sh(dir, [path.join(BIN, 'aidlc-evidence.sh'), 'compact']).stdout, /compacted 1 entry/);
+    const after = JSON.parse(fs.readFileSync(idxf, 'utf8')).entries.at(-1);
+    assert.ok(!after.touched_files && after.touched_manifest && after.touched_count === 1);
   });
 
   it('editing a log after recording fails as altered', () => {

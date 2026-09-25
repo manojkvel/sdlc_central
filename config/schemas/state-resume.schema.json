@@ -4,17 +4,71 @@
   "title": "AIDLC_RESUME block in .track/state.md",
   "description": "One KEY: value per line under '## AIDLC_RESUME'. Values are single tokens or comma-separated path lists. The runner rewrites the whole block after every step; the approval guard edits BLOCKED_GATE, GATE_RISK and NEXT_ACTION*.",
   "type": "object",
-  "required": ["CURRENT_PHASE", "CURRENT_STAGE", "BLOCKED_GATE", "NEXT_ACTION", "NEXT_ACTION_OWNER"],
+  "required": [
+    "CURRENT_PHASE",
+    "CURRENT_STAGE",
+    "BLOCKED_GATE",
+    "NEXT_ACTION",
+    "NEXT_ACTION_OWNER"
+  ],
   "properties": {
-    "CURRENT_PHASE": {"type": "string", "pattern": "^(none|[0-9]{2}-[a-z0-9-]+)$"},
-    "CURRENT_STAGE": {"enum": ["intake", "source", "spec", "design", "planning", "execution", "verification", "review", "governance", "released"]},
-    "BLOCKED_GATE": {"type": "string", "pattern": "^(none|[a-z-]+)$"},
-    "GATE_RISK": {"enum": ["none", "low", "medium", "high", "security-sensitive", "release"]},
-    "NEXT_ACTION": {"type": "string"},
-    "NEXT_ACTION_OWNER": {"type": "string", "pattern": "^(human|agent):"},
-    "NEXT_ACTION_INPUTS": {"type": "string"},
-    "DONE": {"type": "string"},
-    "EVIDENCE": {"type": "string"},
-    "OPEN_RISKS": {"type": "string"}
+    "CURRENT_PHASE": {
+      "type": "string",
+      "pattern": "^(none|[0-9]{2}-[a-z0-9-]+)$"
+    },
+    "CURRENT_STAGE": {
+      "enum": [
+        "intake",
+        "source",
+        "spec",
+        "design",
+        "planning",
+        "execution",
+        "verification",
+        "review",
+        "governance",
+        "released"
+      ]
+    },
+    "BLOCKED_GATE": {
+      "type": "string",
+      "pattern": "^(none|[a-z-]+)$"
+    },
+    "GATE_RISK": {
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "security-sensitive",
+        "release"
+      ]
+    },
+    "NEXT_ACTION": {
+      "type": "string"
+    },
+    "NEXT_ACTION_OWNER": {
+      "type": "string",
+      "pattern": "^(human|agent):"
+    },
+    "NEXT_ACTION_INPUTS": {
+      "type": "string"
+    },
+    "DONE": {
+      "type": "string"
+    },
+    "EVIDENCE": {
+      "type": "string"
+    },
+    "OPEN_RISKS": {
+      "type": "string"
+    },
+    "GATE_REMINDED": {
+      "enum": [
+        "yes",
+        "no"
+      ],
+      "description": "Set by the approval guard after its one reminder for the open checkpoint; reset to no when a checkpoint is published or decided"
+    }
   }
 }

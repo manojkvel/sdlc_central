@@ -1,0 +1,3 @@
+f2115a40f297946a10ede7b1276c39e86fbafeb60a6380240c00f0ff7e3768da	hooks/_bin/aidlc-scorecard.sh
+9bfc00ebd00a21c321f41cf96c0a13d3cff5bf2fde0a10d720610d2c64b3275a	hooks/aidlc-artifact-hygiene/aidlc-artifact-hygiene.sh
+dbacf226682a754c14fce2f6b1737760b72ea5c02039f32a43feceed67664d40	hooks/aidlc-final-verification/aidlc-final-verification.sh

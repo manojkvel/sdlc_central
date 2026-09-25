@@ -10,7 +10,9 @@ existence never count.
 bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task TASK-003 --ac AC-2,AC-3 -- npm test -- auth
 bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task TASK-003 --suite -- npm test
 bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task UAT-01 --kind uat --ac AC-3 -- ./scripts/uat/check.sh --env dev
-bash <agent-dir>/hooks/_bin/aidlc-evidence.sh list
+bash <agent-dir>/hooks/_bin/aidlc-evidence.sh list        # latest run per command, one line each (--all for every run)
+bash <agent-dir>/hooks/_bin/aidlc-evidence.sh summary     # counts, plus failing and stale runs only
+bash <agent-dir>/hooks/_bin/aidlc-evidence.sh compact     # migrate old entries that carried inline touched-file lists
 ```
 
 | Option | Meaning |
@@ -22,9 +24,11 @@ bash <agent-dir>/hooks/_bin/aidlc-evidence.sh list
 | `--report` | Attach a machine-readable report (JUnit XML, JSON) |
 | `--files` | Touched files; default is the working-tree changes outside the track root |
 
-Each run writes `evidence/<TASK>/<NNN>-<slug>.out|.err` (gitignored bodies) and an entry in
-`evidence/index.json` (committed): command, exit code, timings, output hashes, touched files and
-their hashes. The recorder exits with the command's exit code.
+Each run writes `evidence/<TASK>/<NNN>-<slug>.out|.err` (gitignored bodies), a manifest
+`evidence/<TASK>/<NNN>-touched.tsv` of touched files and their hashes (committed), and one small
+entry in `evidence/index.json` (committed): command, exit code, timings, output hashes, touched count,
+manifest path and hash. The recorder exits with the command's exit code, refuses commands that mask
+it, and runs with pipefail. Agents read the index through `list` and `summary`, never whole.
 
 ## Verify: `aidlc-verify.sh`
 
@@ -39,6 +43,7 @@ For each AC and SC in `SPEC.md`:
 | PASS | every latest covering run is intact, fresh and exited 0 |
 | FAIL — no evidence | nothing covers the criterion (also the result of any error computing coverage) |
 | FAIL — log missing / altered | the output file is gone or its hash changed |
+| FAIL — manifest missing / altered | the touched-file manifest is gone or its hash changed |
 | FAIL — stale | a file the run touched changed after the run; `index.json` is updated with `stale: true` |
 | FAIL — last run exited N | the latest run of a covering command failed |
 

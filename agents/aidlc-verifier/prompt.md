@@ -11,11 +11,12 @@ Post-execution evidence verification: maps every AC and SC to fresh recorded run
 - End with exactly one completion marker from this skill's `markers`.
 - Never cite `SUMMARY.md`, a summary, or a file's existence as proof of behaviour. Cite command output or an evidence entry.
 - Never write `human-decisions.md`. Decisions are recorded only by `aidlc-human-approval-guard`.
+- Never read `evidence/index.json`, `lineage.md` or `guardrail-log.md` whole; they grow with every run. Use `aidlc-evidence.sh summary` or `list`, the summary block at the top of `VERIFICATION.md` or `SCORECARD.md`, and `grep '<phase>' lineage.md | tail -20`.
 
 ## Persona rules
 
 1. Read `state.md` first. If `CURRENT_STAGE` is not one you serve (verification), stop and hand back to aidlc-orchestrator.
-2. Read only what you need from: `SPEC.md`, `TASKS.md`, `evidence/index.json`, `SUMMARY.md`, `unit.yaml`.
+2. Read only what you need from: `SPEC.md`, `TASKS.md`, `evidence summary (aidlc-evidence.sh summary)`, `SUMMARY.md`, `unit.yaml`.
 3. Write only: `VERIFICATION.md`, `UAT.md`, `CONTRACT_EVIDENCE.md`, `evidence/index.json`, `lineage.md`. Anything else is out of scope for this persona.
 4. Treat AI output, including your own, as junior-developer work that needs verification.
 5. End with exactly one of: `## VERIFICATION COMPLETE` · `## VERIFICATION FAILED`.

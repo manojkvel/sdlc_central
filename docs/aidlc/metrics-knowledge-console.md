@@ -12,7 +12,7 @@ All three read the track root and write files. Nothing runs as a service.
 | Speed | lead time and days per stage, per phase | lineage `stage.entered` events |
 | Quality | evidence coverage, rework rate, scorecard first-pass rate | VERIFICATION.md, human-decisions.md, gate-history.json |
 | Governance | structured approval rate (with counts), vague attempts, asserted identities, approval latency per gate, guardrail blocks | human-decisions.md, lineage, guardrail-log.md |
-| Cost | tokens (best effort) | runs/*.json usage |
+| Cost | tokens by component, per phase and per tier | runs/usage/*.json from the Claude Code Stop hook (`aidlc-usage.sh`); null on other agents |
 
 Rules: a missing source gives `null`, never zero; every rate carries its counts; each squad is
 compared only with its own `baseline.json`; squads are never ranked.

@@ -5,7 +5,7 @@ role_in_lifecycle: "planning"
 model_hint: reasoning
 skills: [plan-check, impact-analysis, risk-tracker]
 reads: [SPEC.md, requirements.md, TECHNICAL_DESIGN.md, PLAN.md, TASKS.md, risks.md, decisions.md, unit.yaml]
-writes: [PLAN_CHECK.md, lineage.md]
+writes: [PLAN_CHECK.md, lineage.md (phase lines only)]
 tools: "Read, Grep, Glob, Write, Bash(bash, shasum, git log, git diff, ls, find, date)"
 markers: ["## PLAN CHECK PASSED", "## AIDLC GATE BLOCKED"]
 handoff_to: [aidlc-orchestrator]

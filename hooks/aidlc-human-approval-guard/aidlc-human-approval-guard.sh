@@ -146,7 +146,11 @@ case "$LINE" in
         APPROVE\ *|REQUEST\ *|DEFER|DEFER\ *|DEFER:*|REJECT\ *|LIFT\ *)
           reject A04 "decision strings are upper case and exact (\"$UP\" would be read as a decision)" ;;
       esac
-      echo "AIDLC: gate $GATE is open ($RISK risk). No decision was recorded from this message. Decide with: $(accepted_list)"
+      # Remind once per checkpoint: this text is added to the model's context on every prompt it is printed.
+      if [ "$(resume_field "$AIDLC_STATE" GATE_REMINDED)" != "yes" ]; then
+        echo "AIDLC: gate $GATE is open ($RISK risk). No decision was recorded from this message. Decide with: $(accepted_list)"
+        set_resume_field "$AIDLC_STATE" GATE_REMINDED yes
+      fi
       exit 0
     fi ;;
 esac
@@ -269,6 +273,7 @@ if [ "$EVENT" = "decision.lifted_exclusion" ] && [ -f "$AIDLC_PHASE_DIR/unit.yam
 fi
 
 # ---------- update the resume block ----------
+set_resume_field "$AIDLC_STATE" GATE_REMINDED no
 case "$STATUS" in
   "APPROVED"|"APPROVED W/ RISK")
     set_resume_field "$AIDLC_STATE" BLOCKED_GATE none

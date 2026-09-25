@@ -30,6 +30,7 @@ Sources: [AIDLC Framework PRD](https://claude.ai/code/artifact/616a5892-9810-42b
 | 20 | No consumer builds against an unapproved producer contract; building on a risk-accepted contract excludes the consumer's release claims until LIFT EXCLUSION is decided. | `tests/aidlc-phase4.test.js` hub-and-spoke tests (W09, D5, lift) |
 | 21 | A broken approved contract is detected by its own test and blocks consumers (BREACHED) until restored; a real edit to an approved contract is detected, registry-maintained fields are not edits. | phase 4 breach and X02 tests |
 | 22 | Authenticated decisions go through the same guard as typed ones; the bot refuses gate races and unauthorised deciders, and can be made mandatory for high and release risk. | phase 4 decision-bot tests (A05, A06) |
+| 23 | Context stays small: agents never read growing logs whole, the evidence index holds one line per run, the open-gate reminder shows once per checkpoint, and real usage is measured per phase on Claude Code. | `tests/aidlc-phase2.test.js` list/summary/compact and manifest tests; reminder fixture; `tests/aidlc-phase3.test.js` measured usage test |
 | 14 | Non-goals stay non-goals: no hosted control plane, no database, no compiled engine, no new lifecycle vocabulary. | Review; any change here needs a tech-lead decision first |
 
 ## Decisions still needed from a human

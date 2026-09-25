@@ -140,6 +140,7 @@ EOF
     ID="$1"; F="$C/$ID.md"; [ -f "$F" ] || die "$ID not registered"
     set_resume_field "$AIDLC_STATE" BLOCKED_GATE approve-contract
     set_resume_field "$AIDLC_STATE" GATE_RISK high
+    set_resume_field "$AIDLC_STATE" GATE_REMINDED no
     set_resume_field "$AIDLC_STATE" NEXT_ACTION "Decide $ID: APPROVE WORKSTREAM CONTRACT: $(contract_field "$F" producer) - <acknowledgement> | APPROVE WORKSTREAM CONTRACT WITH RISK: $(contract_field "$F" producer) - <risk and excluded scope> | REQUEST CHANGES: <reason>"
     set_resume_field "$AIDLC_STATE" NEXT_ACTION_OWNER "human:architect"
     set_resume_field "$AIDLC_STATE" NEXT_ACTION_INPUTS "$(aidlc_rel "$F")"
@@ -205,6 +206,7 @@ EOF
     WS="$(grep -E '^workstream:' "$U" | grep -Eo 'WS-[0-9]+')"; WS="${WS:-WS-NNN}"
     set_resume_field "$AIDLC_STATE" BLOCKED_GATE lift-exclusion
     set_resume_field "$AIDLC_STATE" GATE_RISK high
+    set_resume_field "$AIDLC_STATE" GATE_REMINDED no
     set_resume_field "$AIDLC_STATE" NEXT_ACTION "Every consumed contract is APPROVED. Reply LIFT EXCLUSION: $WS - <acknowledgement> to restore release claims"
     set_resume_field "$AIDLC_STATE" NEXT_ACTION_OWNER "human:architect"
     set_resume_field "$AIDLC_STATE" NEXT_ACTION_INPUTS "$(aidlc_rel "$U")"

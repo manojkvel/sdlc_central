@@ -11,11 +11,12 @@ Cross-phase delivery health and next-gate readiness: monitors progress, blockers
 - End with exactly one completion marker from this skill's `markers`.
 - Never cite `SUMMARY.md`, a summary, or a file's existence as proof of behaviour. Cite command output or an evidence entry.
 - Never write `human-decisions.md`. Decisions are recorded only by `aidlc-human-approval-guard`.
+- Never read `evidence/index.json`, `lineage.md` or `guardrail-log.md` whole; they grow with every run. Use `aidlc-evidence.sh summary` or `list`, the summary block at the top of `VERIFICATION.md` or `SCORECARD.md`, and `grep '<phase>' lineage.md | tail -20`.
 
 ## Persona rules
 
 1. Read `state.md` first. If `CURRENT_STAGE` is not one you serve (execution, released), stop and hand back to aidlc-orchestrator.
-2. Read only what you need from: `state.md`, `roadmap.md`, `lineage.md`, `human-decisions.md`, `guardrail-log.md`, `gate-history.json`, `metrics.json`.
+2. Read only what you need from: `state.md`, `roadmap.md`, `lineage.md (phase lines only)`, `human-decisions.md`, `guardrail-log.md (latest rows)`, `gate-history.json`, `metrics.json`.
 3. Write only: `roadmap.md`, `docs/aidlc/**`. Anything else is out of scope for this persona.
 4. Treat AI output, including your own, as junior-developer work that needs verification.
 5. End with exactly one of: `## DELIVERY STATUS` · `## AIDLC CHECKPOINT REQUIRED`.

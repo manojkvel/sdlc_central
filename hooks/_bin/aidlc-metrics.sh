@@ -103,14 +103,26 @@ if [ -f "$INC" ]; then
   [ "$releases" -gt 0 ] && cfr="$(jq --argjson r "$releases" '([.incidents[]? | select(.phase != null) | .phase] | unique | length) / $r' "$INC")"
   mttr="$(jq '[.incidents[]? | .restore_hours // empty] | if length==0 then null else (sort | .[(length/2|floor)]) end' "$INC")"
 fi
-tokens="$(cat "$AIDLC_TRACK"/runs/*.json 2>/dev/null | jq -s '[.[] | .usage.total_tokens? // empty] | if length==0 then null else add end')"
+# Real usage recorded by aidlc-usage.sh (Claude Code Stop hook), per session and phase.
+USAGE="$(cat "$AIDLC_TRACK"/runs/usage/*.json 2>/dev/null | jq -s '
+  if length == 0 then null else
+  { sessions: length,
+    by_phase: (reduce (.[] | .by_phase | to_entries[]) as $e ({};
+      .[$e.key] = ((.[$e.key] // {messages:0,input:0,output:0,cache_read:0,cache_creation:0}) as $b
+        | {messages:($b.messages+$e.value.messages), input:($b.input+$e.value.input), output:($b.output+$e.value.output),
+           cache_read:($b.cache_read+$e.value.cache_read), cache_creation:($b.cache_creation+$e.value.cache_creation)}))) }
+  | .totals = ([.by_phase[]] | {messages:(map(.messages)|add), input:(map(.input)|add), output:(map(.output)|add),
+                                cache_read:(map(.cache_read)|add), cache_creation:(map(.cache_creation)|add)})
+  | .totals.total = (.totals.input + .totals.output + .totals.cache_read + .totals.cache_creation)
+  end')"
+[ -z "$USAGE" ] && USAGE=null
 models="$(cut -f1- "$LIN" 2>/dev/null | grep -Eo 'model=[^ |]+' | sort -u | sed 's/model=//' | jq -R . | jq -sc .)"
 BASE="null"; [ -f "$AIDLC_TRACK/baseline.json" ] && BASE="$(cat "$AIDLC_TRACK/baseline.json")"
 
 jq -n --arg squad "$SQUAD" --arg asof "$(aidlc_now)" --argjson phases "$PHASES_JSON" \
   --argjson acc "$accepted" --argjson rej "$rejected" --argjson asr "$asserted" --argjson lat "$LAT" --argjson guard "$GUARD" \
   --argjson rel "$releases" --argjson span "$span_days" --argjson cfr "$cfr" --argjson mttr "$mttr" --argjson incn "$inc_n" \
-  --argjson tokens "$tokens" --argjson models "$models" --argjson base "$BASE" '
+  --argjson usage "$USAGE" --argjson models "$models" --argjson base "$BASE" '
   {as_of:$asof, squad:$squad, baseline:$base,
    dora:{releases:$rel, days_observed:$span,
          deployment_frequency_per_30d:(if ($span//0)>0 then ($rel*30/$span) else null end),
@@ -122,8 +134,14 @@ jq -n --arg squad "$SQUAD" --arg asof "$(aidlc_now)" --argjson phases "$PHASES_J
    quality:{evidence_coverage:([$phases[] | .evidence | select(.criteria_total!=null)] | if length==0 then null else ((map(.criteria_pass)|add)/(map(.criteria_total)|add)) end),
             rework_rate:([$phases[] | .decisions] | if (map(.total)|add // 0)==0 then null else ((map(.rework)|add)/(map(.total)|add)) end),
             scorecard_first_pass_rate:([$phases[] | .scorecard.first_pass | select(.!=null)] | if length==0 then null else (map(select(.))|length)/length end)},
-   cost:{tokens_total:$tokens, note:"best effort: only agents that expose usage are counted"},
-   models:$models, phases:$phases}' > "$OUTDIR/metrics.json"
+   cost:(if $usage == null then {tokens_total:null, note:"no usage recorded: only Claude Code sessions with the aidlc-usage Stop hook are measured"}
+         else {tokens_total:$usage.totals.total, input:$usage.totals.input, output:$usage.totals.output,
+               cache_read:$usage.totals.cache_read, cache_creation:$usage.totals.cache_creation, messages:$usage.totals.messages,
+               sessions:$usage.sessions,
+               per_tier:([$phases[] | {tier, t: ($usage.by_phase[.phase] // null)}] | map(select(.t != null)) | group_by(.tier)
+                 | map({tier: .[0].tier, units: length, tokens_per_unit: ((map(.t.input+.t.output+.t.cache_read+.t.cache_creation)|add) / length)})),
+               note:"measured from Claude Code transcripts; cache reads are billed at a fraction of input"} end),
+   models:$models, phases:($phases | map(. + {tokens: (if $usage == null then null else ($usage.by_phase[.phase] // null) end)}))}' > "$OUTDIR/metrics.json"
 
 jq -r '["phase","tier","profile","started_at","released_at","lead_time_days","decisions","rework","criteria_pass","criteria_total","scorecard_first_pass","guardrail_blocks"],
        (.phases[] | [.phase,.tier,.profile,.started_at,.released_at,.lead_time_days,.decisions.total,.decisions.rework,.evidence.criteria_pass,.evidence.criteria_total,.scorecard.first_pass,.guardrail_blocks]) | @csv' "$OUTDIR/metrics.json" > "$OUTDIR/phases.csv"

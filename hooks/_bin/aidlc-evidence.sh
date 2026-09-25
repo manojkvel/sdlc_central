@@ -5,12 +5,15 @@
 # Usage:
 #   aidlc-evidence.sh run --task TASK-003 [--ac AC-1,AC-2] [--kind test|build|lint|uat|contract]
 #                         [--suite] [--report <path>] [--files a,b] -- <command ...>
-#   aidlc-evidence.sh list [--phase NN-slug]
+#   aidlc-evidence.sh list [--all] [--phase NN-slug]   latest run per command, one line each
+#   aidlc-evidence.sh summary [--phase NN-slug]        counts plus failing and stale runs only
+#   aidlc-evidence.sh compact [--phase NN-slug]        move old inline touched-file lists into manifests
 #
 # Writes, under <track root>/phases/<phase>/evidence/:
 #   <TASK>/<NNN>-<slug>.out | .err     command output (gitignored bodies)
-#   index.json                         one entry per run: task, acs, kind, command, exit code,
-#                                      output hashes, touched files and their hashes
+#   <TASK>/<NNN>-touched.tsv           touched files and their hashes (committed)
+#   index.json                         one small entry per run: task, acs, kind, command, exit code,
+#                                      output hashes, touched count, manifest path and hash
 # and a lineage line `evidence.recorded`. Exits with the command's own exit code.
 #
 # Touched files: --files, else the backticked paths in the task's TASKS.md block, else the working-tree
@@ -47,8 +50,35 @@ IDX="$EV/index.json"
 mkdir -p "$EV"
 [ -f "$IDX" ] || echo '{"version":1,"entries":[]}' > "$IDX"
 
+# Read-side commands: agents use these instead of reading index.json.
 if [ "$SUB" = "list" ]; then
-  jq -r '.entries[] | "\(.id)  \(.task)  exit=\(.exit_code)  stale=\(.stale)  \(.kind)  \(.command)"' "$IDX"
+  # latest run per command only; --all shows superseded runs too
+  ALL=false; [ "$1" = "--all" ] && ALL=true
+  jq -r --argjson all "$ALL" '(if $all then .entries else ([.entries | group_by(.command_hash)[] | max_by(.id)] | sort_by(.id)) end)
+    | .[] | "\(.id) \(.task) \(.kind) exit=\(.exit_code)\(if .stale then " STALE" else "" end) \(.command | .[0:70])"' "$IDX"
+  exit 0
+fi
+if [ "$SUB" = "summary" ]; then
+  jq -r '[.entries | group_by(.command_hash)[] | max_by(.id)] as $l
+    | "runs \(.entries|length) · commands \($l|length) · latest failing \([$l[]|select(.exit_code!=0)]|length) · latest stale \([$l[]|select(.stale)]|length)",
+      ($l[] | select(.exit_code!=0 or .stale) | "  \(.id) \(.task) exit=\(.exit_code)\(if .stale then " STALE" else "" end) \(.command | .[0:70])")' "$IDX"
+  exit 0
+fi
+if [ "$SUB" = "compact" ]; then
+  # Move inline touched_files lists (recorded before manifests existed) into manifests.
+  n=0
+  for id in $(jq -r '.entries[] | select(.touched_files != null) | .id' "$IDX"); do
+    e="$(jq -c --arg id "$id" '.entries[] | select(.id==$id)' "$IDX")"
+    t="$(printf '%s' "$e" | jq -r .task)"; num="$(printf '%s' "$id" | sed 's/^E-//')"
+    m="$EV/$t/$num-touched.tsv"; mkdir -p "$EV/$t"
+    printf '%s' "$e" | jq -r '.touched_files[] | "\(.sha256)\t\(.path)"' | sort -k2 > "$m"
+    TMP="$(mktemp)"
+    jq --arg id "$id" --arg tm "evidence/$t/$(basename "$m")" --arg th "$(aidlc_hash "$m")" --argjson tc "$(wc -l < "$m" | tr -d ' ')" \
+      '.entries |= map(if .id==$id then (del(.touched_files) + {touched_count:$tc, touched_manifest:$tm, touched_hash:$th}) else . end)' "$IDX" > "$TMP" && cat "$TMP" > "$IDX"
+    rm -f "$TMP"; n=$((n+1))
+  done
+  [ $n -gt 0 ] && aidlc_lineage "-" "evidence.compacted: $n entries" "$(aidlc_rel "$IDX")" "$(aidlc_hash "$IDX")"
+  echo "compacted $n entr$( [ $n -eq 1 ] && echo y || echo ies) in $(aidlc_rel "$IDX")"
   exit 0
 fi
 [ "$SUB" = "run" ] || { echo "usage: aidlc-evidence.sh run --task TASK-NNN [...] -- <command>" >&2; exit 64; }
@@ -98,15 +128,17 @@ else
     TF_SOURCE="git changes"
   fi
 fi
-TF_JSON='[]'
+# The touched-file list lives in a manifest beside the log (one "sha256<TAB>path" line per file), not in
+# the index: the index stays one small line per run however many files a run touches.
+MAN="$EV/$TASK/$(printf '%03d' "$N")-touched.tsv"
+: > "$MAN"
 OLDIFS="$IFS"; IFS='
 '
-for f in $LIST; do
-  h="$(aidlc_hash "$AIDLC_PROJECT/$f")"
-  TF_JSON="$(printf '%s' "$TF_JSON" | jq -c --arg p "$f" --arg h "$h" '. + [{path:$p, sha256:$h}]')"
-done
+for f in $LIST; do printf '%s\t%s\n' "$(aidlc_hash "$AIDLC_PROJECT/$f")" "$f" >> "$MAN"; done
 IFS="$OLDIFS"
-TOUCHED_HASH="$(printf '%s' "$TF_JSON" | jq -r '.[] | "\(.path):\(.sha256)"' | sort | shasum -a 256 | cut -c1-64)"
+sort -k2 "$MAN" -o "$MAN"
+TOUCHED_COUNT="$(wc -l < "$MAN" | tr -d ' ')"
+TOUCHED_HASH="$(aidlc_hash "$MAN")"
 
 REPORT_REL=""; REPORT_HASH=""
 if [ -n "$REPORT" ]; then
@@ -125,13 +157,13 @@ jq --arg id "$ID" --arg task "$TASK" --argjson acs "$ACS_JSON" --arg kind "$KIND
    --arg start "$START" --arg end "$END" --argjson dur "$((T1 - T0))" --argjson rc "$RC" \
    --arg out "evidence/$TASK/$(basename "$OUT")" --arg err "evidence/$TASK/$(basename "$ERR")" \
    --arg outh "$(aidlc_hash "$OUT")" --arg errh "$(aidlc_hash "$ERR")" \
-   --arg rep "$REPORT_REL" --arg reph "$REPORT_HASH" --argjson tf "$TF_JSON" --arg th "$TOUCHED_HASH" \
+   --arg rep "$REPORT_REL" --arg reph "$REPORT_HASH" --argjson tc "$TOUCHED_COUNT" --arg tm "evidence/$TASK/$(basename "$MAN")" --arg th "$TOUCHED_HASH" \
    --arg model "${AIDLC_MODEL:-unknown}" --arg sdlc "$AIDLC_SDLC_VERSION" \
    '.entries += [{id:$id, task:$task, acs:$acs, kind:$kind, suite:$suite, command:$cmd, command_hash:$cmdh, cwd:$cwd,
       started_at:$start, finished_at:$end, duration_ms:$dur, exit_code:$rc,
       stdout_path:$out, stdout_sha256:$outh, stderr_path:$err, stderr_sha256:$errh,
       report_path:(if $rep=="" then null else $rep end), report_sha256:(if $reph=="" then null else $reph end),
-      touched_files:$tf, touched_hash:$th, stale:false, model:$model, sdlc:$sdlc}]' "$IDX" > "$TMP" && cat "$TMP" > "$IDX"
+      touched_count:$tc, touched_manifest:$tm, touched_hash:$th, stale:false, model:$model, sdlc:$sdlc}]' "$IDX" > "$TMP" && cat "$TMP" > "$IDX"
 rm -f "$TMP"
 
 aidlc_lineage "$ID" "evidence.recorded: $TASK $KIND exit=$RC" "$(aidlc_rel "$IDX")" "$(aidlc_hash "$IDX")"
@@ -139,5 +171,5 @@ aidlc_lineage "$ID" "evidence.recorded: $TASK $KIND exit=$RC" "$(aidlc_rel "$IDX
 # Show the agent what happened, briefly.
 tail -n 25 "$OUT"
 [ -s "$ERR" ] && { echo "--- stderr (last 15 lines)"; tail -n 15 "$ERR"; }
-echo "AIDLC EVIDENCE $ID recorded for $TASK: exit $RC, $(printf '%s' "$TF_JSON" | jq 'length') touched file(s) from $TF_SOURCE, log $(aidlc_rel "$OUT")"
+echo "AIDLC EVIDENCE $ID recorded for $TASK: exit $RC, $TOUCHED_COUNT touched file(s) from $TF_SOURCE, log $(aidlc_rel "$OUT")"
 exit $RC

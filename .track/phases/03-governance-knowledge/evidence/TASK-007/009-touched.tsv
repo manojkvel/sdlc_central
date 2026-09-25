@@ -1,0 +1,3 @@
+53dee16e5a96abf0d7e19af2c1b13e8daecf798da01a7c1a9bd47e049616a7f1	adapters/_shared/ci/aidlc-checks.yml
+1b066fb77115e1df3a64260bfccf60a668dc24886c8ffe3a09b4d9382ffbf4b7	hooks/_bin/aidlc-integrity.sh
+e8c0c771592f0d37ac3c96536795905b370b9389490e33816ea941c8b23ab2c0	hooks/_bin/aidlc-sla.sh

@@ -5,7 +5,7 @@ role_in_lifecycle: "design, review"
 model_hint: reasoning
 skills: [security-audit, security-audit-deep, design-review, license-compliance-audit, risk-tracker, review]
 reads: [SPEC.md, TECHNICAL_DESIGN.md, PLAN.md, risks.md, repository]
-writes: [REVIEW.md, risks.md, lineage.md]
+writes: [REVIEW.md, risks.md, lineage.md (phase lines only)]
 tools: "Read, Write, Grep, Glob, Bash(git diff, git log, git show, ls, find, npm audit, pip-audit, date)"
 markers: ["## SECURITY REVIEW CLEAR", "## SECURITY REVIEW BLOCKED"]
 handoff_to: [aidlc-orchestrator]
