@@ -47,7 +47,11 @@ bash <agent-dir>/hooks/aidlc-traceability-check/aidlc-traceability-check.sh --ph
 ```
 
 Exit 0 prints `T00 traced`. Exit 2 lists every gap with its code:
-- `T01` orphan requirement, `T02` AC or SC missing from PLAN.md, `T03` dangling D/DEC/RISK id, `T04` task that names no AC or SC.
+- `T01` orphan requirement, `T02` AC or SC missing from PLAN.md, `T03` dangling D/DEC/RISK id, `T04` task that names no AC or SC,
+  `T05` a decision under `## Decisions` in CONTEXT.md or SPEC.md that PLAN.md never mentions, `T06` an item left under
+  `## Open questions` in CONTEXT.md, `T07` a task in TASKS.md with no `Verify:` line.
+- T05 to T07 are also enforced by the pre-write guard: even after you write `## PLAN CHECK PASSED`, source writes stay
+  blocked (W02) while any of them fails. Do not pass a plan the script fails.
 
 Copy each line into the findings table. Any T-code is a FAIL.
 
@@ -60,7 +64,7 @@ Copy each line into the findings table. Any T-code is a FAIL.
 | P3 | **Scope bound** | The plan changes files or behaviour no AC asks for (scope creep), or touches a path outside `unit.yaml` `repos` |
 | P4 | **Destructive commands declared** | The plan implies a migration, deploy, data deletion, infra apply or force push, and does not list the exact command under `## Permitted destructive commands` |
 | P5 | **Rollback** | Tier 2 or 3, and the plan has no `## Rollback` section with concrete steps |
-| P6 | **Test first** | Implementation steps precede the tests that verify them |
+| P6 | **Test first** | Implementation steps precede the tests that verify them, or a task's `Verify:` command could not fail before the change (for example it only checks that a file exists) |
 | P7 | **Design alignment** | `TECHNICAL_DESIGN.md` exists and the plan contradicts a decision in it or in `decisions.md` |
 | P8 | **Risk handling** | A risk in `risks.md` or in the plan's own risk section has no mitigation step and no owner |
 | P9 | **Contracts (tier 3)** | The unit consumes a contract (`unit.yaml` `consumes`) and the plan does not name the contract version it builds against |

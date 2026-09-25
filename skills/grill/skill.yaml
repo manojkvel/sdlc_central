@@ -1,0 +1,12 @@
+name: grill
+version: "1.0.0"
+description: "Interview the requester before the spec is written until nothing is left assumed: ask every question that is ready in one numbered round, each with a recommended answer, look up facts yourself, and record each answer as a decision (D id) in CONTEXT.md and decisions.md. Use before spec, or when someone says 'grill me' or 'ask me questions first'."
+category: planning
+argument_hint: "[.track/phases/NN-slug] (defaults to the current phase)"
+roles: [product-owner, architect, developer, tech-lead, designer]
+markers:
+  success: "## GRILL COMPLETE"
+  block: "## AIDLC GATE BLOCKED"
+writes: [CONTEXT.md, decisions.md, lineage.md]
+hooks: [aidlc-traceability-check]
+design_ref: "README-AIDLC.md > Use cases; idea credited to grill-me (Matt Pocock) and GSD discuss-phase"

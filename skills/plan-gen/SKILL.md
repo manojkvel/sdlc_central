@@ -17,6 +17,8 @@ This is Phase 2 of the spec-driven pipeline: **Spec → Plan → Tasks → Imple
 2. **Ground the plan in the actual codebase.** Read existing code to understand patterns, conventions, and architecture before proposing changes.
 3. **Every plan item must trace back to an acceptance criterion** in the spec. If a plan item doesn't serve any AC, it's scope creep — remove it.
 4. **TDD by default.** Tests are written before implementation code. Every phase starts with test definitions.
+5. **Carry every decision.** Each `D-NNN` under `## Decisions` in the phase's `CONTEXT.md` (from the grill step) or
+   `SPEC.md` must appear in PLAN.md where it shapes the design. The traceability check fails with T05 otherwise.
 
 ---
 

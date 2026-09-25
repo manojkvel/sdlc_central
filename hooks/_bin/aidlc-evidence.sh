@@ -4,7 +4,10 @@
 # ------------------------------------------------------------------
 # Usage:
 #   aidlc-evidence.sh run --task TASK-003 [--ac AC-1,AC-2] [--kind test|build|lint|uat|contract]
-#                         [--suite] [--report <path>] [--files a,b] -- <command ...>
+#                         [--suite] [--report <path>] [--files a,b] [--red] -- <command ...>
+#     --red  test-first proof: run the new test BEFORE the change. It must fail. A red run that passes
+#            proves nothing and exits 3. Red runs never count as passing evidence; the verifier requires
+#            one per task (before its passing run) when red_green_required is on.
 #   aidlc-evidence.sh list [--all] [--phase NN-slug]   latest run per command, one line each
 #   aidlc-evidence.sh summary [--phase NN-slug]        counts plus failing and stale runs only
 #   aidlc-evidence.sh compact [--phase NN-slug]        move old inline touched-file lists into manifests
@@ -14,7 +17,8 @@
 #   <TASK>/<NNN>-touched.tsv           touched files and their hashes (committed)
 #   index.json                         one small entry per run: task, acs, kind, command, exit code,
 #                                      output hashes, touched count, manifest path and hash
-# and a lineage line `evidence.recorded`. Exits with the command's own exit code.
+# and a lineage line `evidence.recorded`. Exits with the command's own exit code (for --red: 0 when it failed
+# as expected, 3 when it passed).
 #
 # Touched files: --files, else the backticked paths in the task's TASKS.md block, else the working-tree
 # changes (documents and images excluded, track root excluded). Their hashes make evidence go stale when source
@@ -26,13 +30,14 @@ aidlc_require_jq
 AIDLC_INPUT='{}'
 
 SUB="$1"; shift
-TASK=""; ACS=""; KIND="test"; SUITE=false; REPORT=""; FILES=""; PHASE_ARG=""
+TASK=""; ACS=""; KIND="test"; SUITE=false; REPORT=""; FILES=""; PHASE_ARG=""; RED=false
 while [ $# -gt 0 ]; do
   case "$1" in
     --task) TASK="$2"; shift 2 ;;
     --ac|--acs) ACS="$2"; shift 2 ;;
     --kind) KIND="$2"; shift 2 ;;
     --suite) SUITE=true; shift ;;
+    --red|--expect-fail) RED=true; shift ;;
     --report) REPORT="$2"; shift 2 ;;
     --files) FILES="$2"; shift 2 ;;
     --phase) PHASE_ARG="$2"; shift 2 ;;
@@ -55,12 +60,12 @@ if [ "$SUB" = "list" ]; then
   # latest run per command only; --all shows superseded runs too
   ALL=false; [ "$1" = "--all" ] && ALL=true
   jq -r --argjson all "$ALL" '(if $all then .entries else ([.entries | group_by(.command_hash)[] | max_by(.id)] | sort_by(.id)) end)
-    | .[] | "\(.id) \(.task) \(.kind) exit=\(.exit_code)\(if .stale then " STALE" else "" end) \(.command | .[0:70])"' "$IDX"
+    | .[] | "\(.id) \(.task) \(if .expect == "fail" then "red" else .kind end) exit=\(.exit_code)\(if .stale then " STALE" else "" end) \(.command | .[0:70])"' "$IDX"
   exit 0
 fi
 if [ "$SUB" = "summary" ]; then
-  jq -r '[.entries | group_by(.command_hash)[] | max_by(.id)] as $l
-    | "runs \(.entries|length) · commands \($l|length) · latest failing \([$l[]|select(.exit_code!=0)]|length) · latest stale \([$l[]|select(.stale)]|length)",
+  jq -r '[.entries | map(select(.expect != "fail")) | group_by(.command_hash)[] | max_by(.id)] as $l
+    | "runs \(.entries|length) · commands \($l|length) · latest failing \([$l[]|select(.exit_code!=0)]|length) · latest stale \([$l[]|select(.stale)]|length) · red runs \([.entries[]|select(.expect == "fail")]|length)",
       ($l[] | select(.exit_code!=0 or .stale) | "  \(.id) \(.task) exit=\(.exit_code)\(if .stale then " STALE" else "" end) \(.command | .[0:70])")' "$IDX"
   exit 0
 fi
@@ -153,23 +158,29 @@ fi
 ACS_JSON="$(printf '%s' "$ACS" | tr ',' '\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | sed '/^$/d' | jq -R . | jq -sc .)"
 TMP="$(mktemp)"
 jq --arg id "$ID" --arg task "$TASK" --argjson acs "$ACS_JSON" --arg kind "$KIND" --argjson suite "$SUITE" \
-   --arg cmd "$CMD" --arg cmdh "$(printf '%s' "$CMD" | shasum -a 256 | cut -c1-16)" --arg cwd "$(aidlc_rel "$AIDLC_PROJECT")" \
+   --arg cmd "$CMD" --arg cmdh "$(printf '%s' "$CMD" | aidlc_sha256 | cut -c1-16)" --arg cwd "$(aidlc_rel "$AIDLC_PROJECT")" \
    --arg start "$START" --arg end "$END" --argjson dur "$((T1 - T0))" --argjson rc "$RC" \
    --arg out "evidence/$TASK/$(basename "$OUT")" --arg err "evidence/$TASK/$(basename "$ERR")" \
    --arg outh "$(aidlc_hash "$OUT")" --arg errh "$(aidlc_hash "$ERR")" \
    --arg rep "$REPORT_REL" --arg reph "$REPORT_HASH" --argjson tc "$TOUCHED_COUNT" --arg tm "evidence/$TASK/$(basename "$MAN")" --arg th "$TOUCHED_HASH" \
-   --arg model "${AIDLC_MODEL:-unknown}" --arg sdlc "$AIDLC_SDLC_VERSION" \
+   --arg model "${AIDLC_MODEL:-unknown}" --arg sdlc "$AIDLC_SDLC_VERSION" --argjson red "$RED" \
    '.entries += [{id:$id, task:$task, acs:$acs, kind:$kind, suite:$suite, command:$cmd, command_hash:$cmdh, cwd:$cwd,
       started_at:$start, finished_at:$end, duration_ms:$dur, exit_code:$rc,
       stdout_path:$out, stdout_sha256:$outh, stderr_path:$err, stderr_sha256:$errh,
       report_path:(if $rep=="" then null else $rep end), report_sha256:(if $reph=="" then null else $reph end),
-      touched_count:$tc, touched_manifest:$tm, touched_hash:$th, stale:false, model:$model, sdlc:$sdlc}]' "$IDX" > "$TMP" && cat "$TMP" > "$IDX"
+      touched_count:$tc, touched_manifest:$tm, touched_hash:$th, stale:false, model:$model, sdlc:$sdlc}
+      + (if $red then {expect:"fail"} else {} end)]' "$IDX" > "$TMP" && cat "$TMP" > "$IDX"
 rm -f "$TMP"
 
-aidlc_lineage "$ID" "evidence.recorded: $TASK $KIND exit=$RC" "$(aidlc_rel "$IDX")" "$(aidlc_hash "$IDX")"
+aidlc_lineage "$ID" "evidence.recorded: $TASK $( $RED && echo red || echo "$KIND") exit=$RC" "$(aidlc_rel "$IDX")" "$(aidlc_hash "$IDX")"
 
 # Show the agent what happened, briefly.
 tail -n 25 "$OUT"
 [ -s "$ERR" ] && { echo "--- stderr (last 15 lines)"; tail -n 15 "$ERR"; }
 echo "AIDLC EVIDENCE $ID recorded for $TASK: exit $RC, $TOUCHED_COUNT touched file(s) from $TF_SOURCE, log $(aidlc_rel "$OUT")"
+if $RED; then
+  if [ "$RC" != "0" ]; then echo "AIDLC RED confirmed for $TASK: the test fails before the change. Now make it pass."; exit 0; fi
+  echo "AIDLC RED not shown for $TASK: the test passed before the change, so it proves nothing. Write a test that fails first." >&2
+  exit 3
+fi
 exit $RC

@@ -16,6 +16,9 @@
 # hook checks (H05), so a hand edit is detected.
 # Exit 0 = "## VERIFICATION COMPLETE", 2 = "## VERIFICATION FAILED".
 # Tier 1 phases skip the file (evidence is still recorded) unless --force.
+# Test first: when red_green_required is true in gate-config.json (or unit.yaml has red_green: required),
+# every task in TASKS.md needs a red run (recorded with --red, exit != 0) before its latest passing run.
+# A task is waived only by "Red: n/a - <reason>" or "Verify: n/a - <reason>" in its block; waivers are listed.
 # ------------------------------------------------------------------
 AIDLC_HOOK_NAME="aidlc-verify"
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/_lib/track-parse.sh"
@@ -58,9 +61,11 @@ case "$MODE" in
 esac
 
 # ---- 1. freshness and integrity of every entry --------------------------------------------
-ENTRIES='[]'; MASKED='[]'
+ENTRIES='[]'; MASKED='[]'; REDS='[]'
 if [ -f "$IDX" ]; then
-  ALL="$(jq -c --argjson k "$KINDS" '[.entries[] | select(.kind as $x | $k | index($x))]' "$IDX")"
+  # Red (test-first) runs are expected to fail: they never count as coverage, only as proof of a failing start.
+  REDS="$(jq -c '[.entries[] | select(.expect == "fail")]' "$IDX")"
+  ALL="$(jq -c --argjson k "$KINDS" '[.entries[] | select(.expect != "fail") | select(.kind as $x | $k | index($x))]' "$IDX")"
   # Entries whose command masks its exit code prove nothing: excluded from coverage and listed.
   MASKED="$(printf '%s' "$ALL" | jq -c --arg re '(;\s*(exit|return)\s+0\s*$|\|\|\s*(true|:|exit\s+0)\s*$|;\s*true\s*$)' '[.[] | select(.command | test($re; "x"))]' 2>/dev/null || echo '[]')"
   ENTRIES="$(printf '%s' "$ALL" | jq -c --arg re '(;\s*(exit|return)\s+0\s*$|\|\|\s*(true|:|exit\s+0)\s*$|;\s*true\s*$)' '[.[] | select(.command | test($re; "x") | not)]' 2>/dev/null || echo '[]')"
@@ -145,6 +150,30 @@ NCRIT=$((NPASS + NFAIL))
 [ $NCRIT -eq 0 ] && { ROWS="| — | SPEC.md names no AC or SC | FAIL | — | nothing to verify |
 "; NFAIL=1; }
 
+# ---- 2b. test first ---------------------------------------------------------------------------
+RG_REQ=false
+GCF="$AIDLC_PROJECT/$(aidlc_agent_dir_name "$AIDLC_PROJECT")/config/gate-config.json"
+[ -f "$GCF" ] && [ "$(jq -r '.red_green_required // false' "$GCF" 2>/dev/null)" = "true" ] && RG_REQ=true
+[ -f "$D/unit.yaml" ] && grep -Eq '^red_green:[[:space:]]*required' "$D/unit.yaml" && RG_REQ=true
+RG_ROWS=""; RG_FAIL=0
+if [ "$MODE" = "verify" ] && $RG_REQ && [ -f "$TASKS" ]; then
+  for t in $(grep -Eo 'TASK-[0-9]+' "$TASKS" | awk '!s[$0]++'); do
+    block="$(awk -v t="$t" '$0 ~ (t "([^0-9]|$)") && !f {f=1} f && $0 !~ t && /TASK-[0-9]+/ {exit} f' "$TASKS")"
+    waiver="$(printf '%s\n' "$block" | grep -Ei '(red|verify)[^a-z]*:[[:space:]]*n/a' | head -1 | sed -E 's/^[^:]*:[[:space:]]*//' | tr '|' '/' | cut -c1-80)"
+    if [ -n "$waiver" ]; then RG_ROWS="$RG_ROWS| $t | WAIVED | — | $waiver |
+"; continue; fi
+    num() { printf '%s' "$1" | sed 's/^E-//' | sed 's/^0*//'; }
+    green="$(printf '%s' "$ENTRIES" | jq -r --arg t "$t" '[.[] | select(.task == $t and .exit_code == 0)] | max_by(.id | ltrimstr("E-") | tonumber) | .id // empty')"
+    if [ -z "$green" ]; then RG_ROWS="$RG_ROWS| $t | FAIL | — | no passing run for this task |
+"; RG_FAIL=$((RG_FAIL+1)); continue; fi
+    red="$(printf '%s' "$REDS" | jq -r --arg t "$t" --argjson g "$(num "$green")" '[.[] | select(.task == $t and .exit_code != 0 and ((.id | ltrimstr("E-") | tonumber) < $g))] | min_by(.id | ltrimstr("E-") | tonumber) | .id // empty')"
+    if [ -n "$red" ]; then RG_ROWS="$RG_ROWS| $t | PASS | $red then $green | failed first, then passed |
+"
+    else RG_ROWS="$RG_ROWS| $t | FAIL | $green | no failing run before the passing one; record the new test with --red before the change |
+"; RG_FAIL=$((RG_FAIL+1)); fi
+  done
+fi
+
 # ---- 3. re-execution -------------------------------------------------------------------------
 RERUN_ROW=""; RERUN_OK=1
 if [ "$MODE" = "verify" ]; then
@@ -180,7 +209,7 @@ if [ "$MODE" = "verify" ]; then
 fi
 
 # ---- 4. write the sealed file ------------------------------------------------------------------
-if [ $NFAIL -eq 0 ] && [ $RERUN_OK -eq 1 ]; then RESULT="COMPLETE"; else RESULT="FAILED"; fi
+if [ $NFAIL -eq 0 ] && [ $RERUN_OK -eq 1 ] && [ $RG_FAIL -eq 0 ]; then RESULT="COMPLETE"; else RESULT="FAILED"; fi
 NSTALE="$(printf '%s' "$STALE_IDS" | wc -w | tr -d ' ')"
 CLAIMS="none"
 [ -f "$D/SUMMARY.md" ] && CLAIMS="$(sed '/^#/d; /^[[:space:]]*$/d' "$D/SUMMARY.md" | head -3 | tr '\n' ' ' | cut -c1-240)"
@@ -192,6 +221,7 @@ BODY="$(mktemp)"
   echo "- **Result:** $RESULT"
   echo "- **Criteria:** $NPASS pass, $NFAIL fail, of $NCRIT"
   echo "- **Stale evidence entries:** $NSTALE"
+  $RG_REQ && [ "$MODE" = "verify" ] && echo "- **Test first:** $RG_FAIL task(s) without a failing run before the passing one"
   echo "- **Evidence index:** \`evidence/index.json\` sha256:$(aidlc_hash "$IDX")"
   echo "- **Spec:** \`SPEC.md\` sha256:$(aidlc_hash "$SPEC")"
   echo "- **Mode:** $MODE · **Tier:** $TIER · **Generated:** $(aidlc_now)"
@@ -205,6 +235,14 @@ BODY="$(mktemp)"
   printf '%s' "$ROWS"
   [ -n "$RERUN_ROW" ] && echo "$RERUN_ROW"
   echo ""
+  if [ -n "$RG_ROWS" ]; then
+    echo "## Test-first proof"
+    echo ""
+    echo "| Task | Result | Evidence | Notes |"
+    echo "| --- | --- | --- | --- |"
+    printf '%s' "$RG_ROWS"
+    echo ""
+  fi
   if [ "$(printf '%s' "$MASKED" | jq 'length')" != "0" ]; then
     echo "## Rejected evidence"
     echo ""
@@ -214,7 +252,7 @@ BODY="$(mktemp)"
   fi
   echo "## VERIFICATION $RESULT"
 } > "$BODY"
-SEAL="$(shasum -a 256 "$BODY" | cut -c1-64)"
+SEAL="$(aidlc_sha256 "$BODY")"
 { echo "<!-- generated-by: aidlc-evidence-verifier sha256:$SEAL -->"; cat "$BODY"; } > "$OUT"
 rm -f "$BODY"
 

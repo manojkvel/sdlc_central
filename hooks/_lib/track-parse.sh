@@ -125,8 +125,12 @@ aidlc_tier() {
   echo "$t"
 }
 
+# sha256 of a file argument or of stdin: shasum (macOS, most Linux, Git Bash) or sha256sum (coreutils).
+if command -v shasum >/dev/null 2>&1; then aidlc_sha256() { shasum -a 256 "$@" | cut -c1-64; }
+else aidlc_sha256() { sha256sum "$@" | cut -c1-64; }; fi
+
 aidlc_hash() {
-  if [ -f "$1" ]; then shasum -a 256 "$1" | cut -c1-64; else echo "-"; fi
+  if [ -f "$1" ]; then aidlc_sha256 "$1"; else echo "-"; fi
 }
 
 # Hash of an artifact as approved. For contracts, the fields the registry maintains after approval
@@ -135,9 +139,9 @@ aidlc_hash() {
 aidlc_artifact_hash() {
   [ -f "$1" ] || { echo "-"; return; }
   case "$1" in
-    */contracts/C-*.md) grep -Ev '^(status|approved_by_decision|last_test):' "$1" | shasum -a 256 | cut -c1-64 ;;
-    */unit.yaml) grep -Ev '^release_claims_excluded:' "$1" | shasum -a 256 | cut -c1-64 ;;
-    *) shasum -a 256 "$1" | cut -c1-64 ;;
+    */contracts/C-*.md) grep -Ev '^(status|approved_by_decision|last_test):' "$1" | aidlc_sha256 ;;
+    */unit.yaml) grep -Ev '^release_claims_excluded:' "$1" | aidlc_sha256 ;;
+    *) aidlc_sha256 "$1" ;;
   esac
 }
 

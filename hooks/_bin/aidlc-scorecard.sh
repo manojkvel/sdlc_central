@@ -116,7 +116,7 @@ if [ "$TIER" = "1" ]; then
 elif [ ! -f "$V" ]; then dim D4 "Evidence rail proof" FAIL "VERIFICATION.md missing" "aidlc-verifier (developer / QA)"
 else
   SEAL="$(head -1 "$V" | sed -n 's/^<!-- generated-by: aidlc-evidence-verifier sha256:\([0-9a-f]\{64\}\) -->$/\1/p')"
-  if [ -z "$SEAL" ] || [ "$SEAL" != "$(tail -n +2 "$V" | shasum -a 256 | cut -c1-64)" ]; then
+  if [ -z "$SEAL" ] || [ "$SEAL" != "$(tail -n +2 "$V" | aidlc_sha256)" ]; then
     dim D4 "Evidence rail proof" FAIL "VERIFICATION.md is not sealed by the verifier" "aidlc-verifier (developer / QA)"
   elif ! grep -q '^## VERIFICATION COMPLETE' "$V"; then
     dim D4 "Evidence rail proof" FAIL "VERIFICATION.md is FAILED: $(grep -E '^\| [A-Z]+-?[0-9]* \|.*\| FAIL \|' "$V" | cut -d'|' -f2 | tr -d ' ' | tr '\n' ' ')" "aidlc-verifier (developer / QA)"
@@ -173,7 +173,7 @@ OUT="$D/SCORECARD.md"; BODY="$(mktemp)"
   echo ""
   echo "## GOVERNANCE $RESULT"
 } > "$BODY"
-SEAL="$(shasum -a 256 "$BODY" | cut -c1-64)"
+SEAL="$(aidlc_sha256 "$BODY")"
 { echo "<!-- generated-by: aidlc-scorecard sha256:$SEAL -->"; cat "$BODY"; } > "$OUT"
 rm -f "$BODY"
 

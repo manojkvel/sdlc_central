@@ -50,6 +50,13 @@ bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task TASK-003 --suite -- npm
 bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task TASK-003 --kind lint -- npm run lint
 ```
 
+- **Test first.** Before changing code for a task, write its test and record it failing with `--red`:
+  `bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task TASK-003 --red -- npm test -- auth`.
+  It must fail (the recorder exits 3 if it passes: that test proves nothing, so fix the test). Then make
+  it pass and record the green run. When `red_green_required` is on, the verifier fails any task without a
+  red run before its passing run. Only a task whose `TASKS.md` block says `Red: n/a - <reason>` (for
+  example a docs task) is waived, and the waiver is shown in `VERIFICATION.md`.
+- Run the task's `Verify:` command from `TASKS.md` as its evidence; do not invent a different one.
 - `--ac` names the criteria the run proves. Without it, the verifier uses the task's block in `TASKS.md`.
 - `--report <path>` attaches a machine-readable test report (JUnit XML, JSON).
 - The recorder exits with the command's exit code and prints the last lines of output; read them as you would the raw output.

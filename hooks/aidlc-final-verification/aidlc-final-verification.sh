@@ -47,7 +47,7 @@ if grep -Ei '(CRITICAL|HIGH)' "$R" | grep -Eiq '(\|[[:space:]]*open[[:space:]]*\
   aidlc_block F02 "$TRIGGER with open CRITICAL/HIGH review findings" "resolve them with review-fix"
 fi
 SSEAL="$( [ -f "$S" ] && head -1 "$S" | sed -n 's/^<!-- generated-by: aidlc-scorecard sha256:\([0-9a-f]\{64\}\) -->$/\1/p')"
-if [ ! -f "$S" ] || ! grep -q '^## GOVERNANCE APPROVED' "$S" || [ -z "$SSEAL" ] || [ "$SSEAL" != "$(tail -n +2 "$S" | shasum -a 256 | cut -c1-64)" ]; then
+if [ ! -f "$S" ] || ! grep -q '^## GOVERNANCE APPROVED' "$S" || [ -z "$SSEAL" ] || [ "$SSEAL" != "$(tail -n +2 "$S" | aidlc_sha256)" ]; then
   aidlc_block F03 "$TRIGGER without an approved governance scorecard" "run governance-scorecard and resolve the blocked dimensions"
 fi
 if [ -f "$E" ] && jq -e '[.entries | group_by(.command_hash)[] | max_by(.id) | select(.stale)] | length > 0' "$E" >/dev/null 2>&1; then

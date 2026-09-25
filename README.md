@@ -2,6 +2,9 @@
 
 A central repository of **61 skills** and **30 composable pipelines** covering the full software development lifecycle. Works with **any coding agent** — Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, Aider, Gemini, Antigravity, Tabnine CLI, or any AGENTS.md-compatible tool.
 
+> **Atticus (AIDLC):** governed AI delivery with hooks, human gates, sealed evidence and resumable state.
+> Set up once with `atticus setup`, then `atticus init` in a project and `/atticus` in your agent. See [README-AIDLC.md](README-AIDLC.md).
+
 Includes **Figma MCP integration** for design-to-code workflows and **non-coder skills** for product owners, designers, QA, and scrum masters.
 
 ## Quickstart

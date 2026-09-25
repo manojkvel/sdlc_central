@@ -90,6 +90,9 @@ Each task follows this structure:
 2. <concrete action>
 3. <concrete action>
 
+**Verify:** `<the exact command that proves this task, and fails before it is done>`
+  (or `n/a - <reason>` for tasks nothing can test, such as docs; add `Red: n/a - <reason>` when the test cannot fail first)
+
 **Files to touch:**
 - `<file path>` — <what to do to this file>
 

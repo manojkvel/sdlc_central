@@ -6,14 +6,15 @@
 #            every hook is still wired in .claude/settings.json. Exit 2 on any mismatch.
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"   # <agent-dir>/hooks
 MAN="$HERE/MANIFEST.sha256"
+if command -v shasum >/dev/null 2>&1; then SUM="shasum -a 256"; else SUM="sha256sum"; fi
 cd "$HERE" || exit 1
 if [ "$1" = "--write" ]; then
-  find . -type f \( -name '*.sh' -o -name 'hook.yaml' \) ! -path './_test/*' | sort | xargs shasum -a 256 > "$MAN"
+  find . -type f \( -name '*.sh' -o -name 'hook.yaml' \) ! -path './_test/*' | sort | xargs $SUM > "$MAN"
   echo "  ✓ hook manifest: $(wc -l < "$MAN" | tr -d ' ') files"
   exit 0
 fi
 [ -f "$MAN" ] || { echo "AIDLC INTEGRITY I01: no MANIFEST.sha256 in $HERE; re-run setup/update.sh" >&2; exit 2; }
-BAD="$(shasum -a 256 -c "$MAN" 2>/dev/null | grep -v ': OK$')"
+BAD="$($SUM -c "$MAN" 2>/dev/null | grep -v ': OK$')"
 if [ -n "$BAD" ]; then echo "AIDLC INTEGRITY I02: hook files differ from the installed manifest:" >&2; echo "$BAD" >&2; exit 2; fi
 PROJECT="$(cd "$HERE/../.." && pwd)"; AD="$(basename "$(dirname "$HERE")")"
 if [ "$AD" = ".claude" ] && [ -f "$HERE/wrap.sh" ]; then

@@ -36,7 +36,7 @@ fi
 T="$PROJECT_DIR/$TRACK_ROOT"
 LIN="$T/lineage.md"
 now() { date -u +%Y-%m-%dT%H:%M:%SZ; }
-hash() { shasum -a 256 "$1" | cut -c1-64; }
+if command -v shasum >/dev/null 2>&1; then hash() { shasum -a 256 "$1" | cut -c1-64; }; else hash() { sha256sum "$1" | cut -c1-64; }; fi
 
 if [ ! -f "$T/state.md" ] && [ $DRY -eq 0 ] && [ $REVERSE -eq 0 ]; then
   echo "No track root at $TRACK_ROOT. Run setup/init-track.sh first." >&2; exit 1

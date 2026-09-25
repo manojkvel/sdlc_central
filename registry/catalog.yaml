@@ -7,13 +7,13 @@ categories:
     skills: [review, security-audit, security-audit-deep, test-gen, doc-gen, design-review, review-fix, spec-fix, pr-orchestrator, design-to-code, design-token-sync]
   planning:
     description: "Specification, planning, and task breakdown"
-    skills: [spec-gen, plan-gen, plan-check, task-gen, impact-analysis, plan-merge, user-story-refiner, source-extract]
+    skills: [grill, spec-gen, plan-gen, plan-check, task-gen, impact-analysis, plan-merge, user-story-refiner, source-extract]
   quality:
     description: "Testing, regression, and performance"
     skills: [regression-check, perf-review, quality-gate, visual-review, bug-report, aidlc-evidence-verifier]
   pipeline-automation:
     description: "Pipeline orchestration and monitoring"
-    skills: [pipeline-orchestrator, wave-scheduler, auto-triage, pipeline-monitor, feedback-loop, drift-detector]
+    skills: [atticus, pipeline-orchestrator, wave-scheduler, auto-triage, pipeline-monitor, feedback-loop, drift-detector]
   decision-support:
     description: "Gates, tracking, and decision capture"
     skills: [gate-briefing, scope-tracker, risk-tracker, decision-log, feature-balance-sheet]
@@ -43,6 +43,13 @@ categories:
     skills: [board-sync, task-implementer]
 
 skills:
+  - name: atticus
+    description: "Single entry point: say what you want; Atticus resumes, starts or routes the work to the right persona by intent and stage"
+    category: pipeline-automation
+    command: "/atticus"
+    argument_hint: "[anything: continue | status | build <idea> | fix <bug> | ready to ship | hand off]"
+    roles: [product-owner, architect, developer, qa, devops-sre, tech-lead, scrum-master, designer, release-manager]
+
   - name: aidlc-decision-guard
     description: "Record a gate decision through the approval guard, or audit gates passed without an accepted decision"
     category: governance
@@ -294,6 +301,13 @@ skills:
     command: "/pipeline-orchestrator"
     argument_hint: "run|resume|status [--gates minimal|standard|strict] path/to/spec"
     roles: [tech-lead]
+
+  - name: grill
+    description: "Interview the requester before the spec until nothing is assumed: batched rounds with recommended answers; decisions recorded as D ids"
+    category: planning
+    command: "/grill"
+    argument_hint: "[.track/phases/NN-slug]"
+    roles: [product-owner, architect, developer, tech-lead, designer]
 
   - name: plan-check
     description: "Audit a plan before any code is written and write PLAN_CHECK.md, the gate the pre-write guard enforces"
@@ -588,8 +602,10 @@ hooks:
 
 roles:
   product-owner:
-    skill_count: 22
+    skill_count: 24
     skills:
+      - atticus
+      - grill
       - aidlc-metrics-extract
       - wiki-curate
       - source-extract
@@ -621,8 +637,10 @@ roles:
       - sprint-demo
 
   architect:
-    skill_count: 23
+    skill_count: 25
     skills:
+      - atticus
+      - grill
       - contract-registry
       - wiki-curate
       - source-extract
@@ -653,8 +671,10 @@ roles:
       - migration-planning
 
   developer:
-    skill_count: 25
+    skill_count: 27
     skills:
+      - atticus
+      - grill
       - task-gen
       - wave-scheduler
       - task-implementer
@@ -686,8 +706,9 @@ roles:
       - maintenance
 
   qa:
-    skill_count: 16
+    skill_count: 17
     skills:
+      - atticus
       - spec-review
       - aidlc-evidence-verifier
       - governance-scorecard
@@ -711,8 +732,9 @@ roles:
       - bug-to-fix
 
   devops-sre:
-    skill_count: 15
+    skill_count: 16
     skills:
+      - atticus
       - release-readiness-checker
       - incident-detector
       - slo-sla-tracker
@@ -742,8 +764,9 @@ roles:
       - governance
 
   release-manager:
-    skill_count: 12
+    skill_count: 13
     skills:
+      - atticus
       - contract-registry
       - aidlc-metrics-extract
       - governance-scorecard
@@ -760,8 +783,9 @@ roles:
       - integration-release
 
   scrum-master:
-    skill_count: 17
+    skill_count: 18
     skills:
+      - atticus
       - aidlc-decision-guard
       - wiki-curate
       - aidlc-metrics-extract
@@ -785,8 +809,10 @@ roles:
       - impediment-tracker
 
   designer:
-    skill_count: 13
+    skill_count: 15
     skills:
+      - atticus
+      - grill
       - spec-gen
       - spec-review
       - design-review

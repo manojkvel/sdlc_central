@@ -192,5 +192,6 @@
     }
   },
   "authenticated_identity_required": false,
+  "red_green_required": true,
   "authenticated_identity_note": "Set true once the decision bot (setup/install-ci.sh --decisions) is deployed: high, security-sensitive and release decisions are then accepted only with an authenticated identity (A05), and the scorecard fails D3 on asserted ones."
 }

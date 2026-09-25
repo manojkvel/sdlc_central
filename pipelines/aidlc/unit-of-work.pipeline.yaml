@@ -1,0 +1,148 @@
+pipeline:
+  name: "AIDLC Unit of Work"
+  description: "Governed lifecycle for one unit of work: source, grill, spec, approve, risk, plan, plan check, approve, tasks, guarded execution, evidence, review, scorecard, release decision, handoff"
+  role: aidlc
+  trigger: "Any tier 2 or 3 unit of work (tier 1 fixes can use a short unit.md instead)"
+  persona: aidlc-orchestrator
+
+steps:
+  - id: source
+    skill: source-extract
+    args: "$INPUT"
+    persona: aidlc-domain-expert
+    description: "Trusted facts with provenance into CONTEXT.md; gaps listed, never guessed"
+
+  - id: grill
+    skill: grill
+    args: "$INPUT"
+    depends_on: [source]
+    persona: aidlc-product-strategist
+    description: "Every open decision asked in batched rounds with recommended answers; D ids into CONTEXT.md and decisions.md; no open questions left"
+    gate:
+      type: quality
+      condition: "CONTEXT.md ends with ## GRILL COMPLETE"
+      on_fail:
+        fallback: hitl
+
+  - id: spec
+    skill: spec-gen
+    args: "$INPUT"
+    depends_on: [grill]
+    persona: aidlc-product-strategist
+    description: "SPEC.md with AC and SC ids referencing REQ ids in requirements.md"
+    gate:
+      type: quality
+      on_fail:
+        auto_recover: spec-fix
+        fallback: hitl
+
+  - id: approve-spec
+    skill: gate-briefing
+    args: "--gate approve-spec"
+    depends_on: [spec]
+    description: "Checkpoint: the product owner replies APPROVE SPEC (or REQUEST CHANGES: <reason>)"
+    gate:
+      type: hitl
+      description: "Recorded by the approval guard as an HD record"
+
+  - id: risk
+    skill: risk-tracker
+    args: "$INPUT"
+    depends_on: [approve-spec]
+    persona: aidlc-security-standards-reviewer
+    description: "Risk pass: threats and NFR risks into risks.md"
+
+  - id: plan
+    skill: plan-gen
+    args: "$spec.output"
+    depends_on: [risk]
+    description: "PLAN.md with rollback and permitted destructive commands"
+
+  - id: check-plan
+    skill: plan-check
+    args: "$INPUT"
+    depends_on: [plan]
+    persona: aidlc-plan-checker
+    description: "PLAN_CHECK.md; source writes stay blocked until it passes"
+    gate:
+      type: decision
+      pass_condition: "marker == PLAN CHECK PASSED"
+      on_fail: hitl
+
+  - id: approve-plan
+    skill: gate-briefing
+    args: "--gate approve-plan"
+    depends_on: [check-plan]
+    description: "Checkpoint: the architect replies APPROVE PLAN"
+    gate:
+      type: hitl
+      description: "Recorded by the approval guard as an HD record"
+
+  - id: tasks
+    skill: task-gen
+    args: "$plan.output"
+    depends_on: [approve-plan]
+    description: "TASKS.md: every task names its AC or SC and the files it touches"
+
+  - id: implement
+    skill: task-implementer
+    args: "$tasks.output"
+    depends_on: [tasks]
+    description: "Guarded execution: every test, build and lint run recorded as evidence"
+
+  - id: verify
+    skill: aidlc-evidence-verifier
+    args: "verify"
+    depends_on: [implement]
+    persona: aidlc-verifier
+    description: "Sealed VERIFICATION.md from fresh evidence and one suite re-run"
+    gate:
+      type: decision
+      pass_condition: "marker == VERIFICATION COMPLETE"
+      on_fail:
+        auto_recover: review-fix
+        fallback: hitl
+
+  - id: review
+    skill: review
+    args: "$INPUT"
+    depends_on: [verify]
+    persona: aidlc-security-standards-reviewer
+    description: "Findings into REVIEW.md; open CRITICAL or HIGH blocks release"
+
+  - id: spec-conformance
+    skill: spec-review
+    args: "$spec.output"
+    depends_on: [review]
+    description: "Implementation matches the spec"
+
+  - id: scorecard
+    skill: governance-scorecard
+    args: "$INPUT"
+    depends_on: [spec-conformance]
+    persona: aidlc-governance-reviewer
+    description: "Six-dimension governance scorecard; sealed SCORECARD.md"
+    gate:
+      type: decision
+      pass_condition: "marker == GOVERNANCE APPROVED"
+      on_fail: hitl
+
+  - id: approve-release
+    skill: gate-briefing
+    args: "--gate approve-release"
+    depends_on: [scorecard]
+    description: "Checkpoint: the release manager replies APPROVE RELEASE: <scope>, DEFER RELEASE or REJECT RELEASE"
+    gate:
+      type: hitl
+      description: "Recorded by the approval guard (or the decision bot) with the scorecard hash"
+
+  - id: handoff
+    skill: doc-gen
+    args: "$INPUT"
+    depends_on: [approve-release]
+    persona: aidlc-delivery-manager
+    description: "Docs and handoff into docs/aidlc; roadmap and phase closed"
+
+output:
+  summary: "Unit of work delivered through every AIDLC gate with its evidence and decisions on record"
+  artifacts: [CONTEXT.md, SPEC.md, PLAN.md, PLAN_CHECK.md, TASKS.md, SUMMARY.md, VERIFICATION.md, REVIEW.md, SCORECARD.md]

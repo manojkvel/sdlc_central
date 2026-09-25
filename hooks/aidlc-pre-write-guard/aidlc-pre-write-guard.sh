@@ -72,6 +72,13 @@ if [ ! -f "$AIDLC_PHASE_DIR/PLAN_CHECK.md" ] || ! grep -q '^## PLAN CHECK PASSED
   aidlc_block W02 "plan not checked for phase $AIDLC_PHASE" \
     "run the plan-check step until PLAN_CHECK.md ends with ## PLAN CHECK PASSED"
 fi
+# A passed plan check is not enough if the plan has since lost a decision, a task its verify command,
+# or the context still holds an open question (T05 to T07, computed by script, not by the model).
+GAP="$(AIDLC_PROJECT_DIR="$AIDLC_PROJECT" bash "$(dirname "${BASH_SOURCE[0]}")/../aidlc-traceability-check/aidlc-traceability-check.sh" --plan-gate "$AIDLC_PHASE" 2>&1 >/dev/null | grep -E '^T0[5-7] ' | head -1)"
+if [ -n "$GAP" ]; then
+  aidlc_block W02 "plan incomplete for phase $AIDLC_PHASE (${GAP%% *}): ${GAP#* }" \
+    "update PLAN.md, TASKS.md or CONTEXT.md, then re-run the plan-check step"
+fi
 
 case "$AIDLC_STAGE" in
   execution|verification|review) ;;

@@ -64,6 +64,8 @@ echo ""
 
 # All skills
 SKILLS=(
+  atticus
+  grill
   api-contract-analyzer
   approval-workflow-auditor
   auto-triage
@@ -117,7 +119,7 @@ SKILLS=(
   wave-scheduler
 )
 
-ALL_ROLES=(product-owner architect developer qa devops-sre tech-lead scrum-master designer)
+ALL_ROLES=(product-owner architect developer qa devops-sre tech-lead scrum-master designer release-manager aidlc)
 
 # --- Install skills via adapter ---
 ADAPTER="$SDLC_ROOT/adapters/$AGENT/adapter.sh"

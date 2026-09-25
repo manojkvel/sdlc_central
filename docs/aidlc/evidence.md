@@ -30,6 +30,29 @@ entry in `evidence/index.json` (committed): command, exit code, timings, output 
 manifest path and hash. The recorder exits with the command's exit code, refuses commands that mask
 it, and runs with pipefail. Agents read the index through `list` and `summary`, never whole.
 
+## Test first: `--red`
+
+A passing test proves a change only if the same test failed before it. Before changing code for a
+task, record its new test with `--red`:
+
+```bash
+bash <agent-dir>/hooks/_bin/aidlc-evidence.sh run --task TASK-003 --red -- npm test -- reset
+```
+
+- The run must fail. The recorder exits 0 with `RED confirmed`. If the test already passes, it exits 3:
+  the test proves nothing and must be rewritten.
+- Red runs are stored with `"expect": "fail"`. They never count as coverage, never make a criterion
+  fail, and are left out of the "latest failing" count in `summary`.
+- With `red_green_required: true` in `gate-config.json` (the default), or `red_green: required` in
+  `unit.yaml`, the verifier adds a **Test-first proof** table. Each task in `TASKS.md` passes only when
+  a red run for that task comes before its latest passing run. A task whose block says
+  `Red: n/a - <reason>` or `Verify: n/a - <reason>` is listed as WAIVED with the reason, for a reviewer
+  to judge.
+- Every task in `TASKS.md` needs a `Verify:` line naming the command that proves it (T07).
+
+Credit: the rule follows the red-green discipline in obra/superpowers (test-driven-development) and
+the verify-before-code idea in Get Shit Done. No text was copied.
+
 ## Verify: `aidlc-verify.sh`
 
 ```bash

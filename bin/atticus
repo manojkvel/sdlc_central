@@ -1,0 +1,400 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# Atticus — governed AI delivery (AIDLC) for any coding agent.
+#   atticus help        the short list
+#   atticus help all    every command
+# Works on macOS, Linux, and Windows through WSL2 or Git Bash.
+# ------------------------------------------------------------------
+set -e
+AT_NAME="atticus"
+AT_VERSION="2.0.0-alpha"
+SELF="${BASH_SOURCE[0]}"
+while [ -h "$SELF" ]; do d="$(cd "$(dirname "$SELF")" && pwd)"; SELF="$(readlink "$SELF")"; case "$SELF" in /*) ;; *) SELF="$d/$SELF" ;; esac; done
+AT_HOME="$(cd "$(dirname "$SELF")/.." && pwd)"
+SETUP="$AT_HOME/setup"
+PROJECT="$(pwd)"
+ROLES="developer architect qa product-owner devops-sre tech-lead scrum-master designer release-manager"
+AGENTS="claude-code cursor copilot windsurf cline aider gemini antigravity tabnine agents-md"
+
+say()  { printf '%s\n' "$*"; }
+die()  { printf '%s: %s\n' "$AT_NAME" "$*" >&2; exit 1; }
+interactive() { [ -z "$ATTICUS_YES" ] && [ -t 1 ] && [ -r /dev/tty ]; }
+# ask "<question>" <default>  → answer on stdout (default when not interactive)
+ask() { local a=""; if interactive; then printf '%s [%s]: ' "$1" "$2" > /dev/tty; read -r a < /dev/tty || a=""; fi; printf '%s' "${a:-$2}"; }
+
+usage() {
+cat <<U
+Atticus $AT_VERSION: governed AI delivery for any coding agent.
+
+  atticus setup          once per machine: PATH, shell profile, completion
+  atticus init           in a project: detect your agent, pick a role, install, create .track/
+  atticus go             open your agent on this project where you left off
+  atticus update         update Atticus and this project's install
+  atticus doctor [--fix] check the machine and the install, and repair
+  atticus remove         remove Atticus from this project (keeps .track/)
+
+In your agent, just type /atticus followed by what you want, for example:
+  /atticus                          continue where you left off
+  /atticus add password reset       start new work
+  /atticus fix login crash          start a small fix
+  /atticus is this ready to ship    route to the right reviewer
+
+More: atticus help all
+U
+}
+
+usage_all() {
+usage
+cat <<U
+
+Setup and maintenance
+  atticus setup [--shell zsh|bash|fish|pwsh] [--global] [--name "Your Name"] [--undo]
+  atticus init [--agent A[,B]] [--role R[,S]] [--tier 1|2|3] [--hub] [--ci] [--decisions]
+               [--track-root P] [--no-hooks] [--track-only] [-y]
+  atticus add <role>                 add another role's skills and pipelines
+  atticus update [--self|--project]  default: both
+  atticus doctor [--fix]
+  atticus remove
+  atticus ci [--decisions]           add GitHub Actions checks (and the decision bot)
+  atticus migrate [--dry-run] [--from D] [--reverse]
+  atticus completion                 print the bash/zsh completion script
+
+Work (the same things /atticus does inside the agent)
+  atticus start <what> [--profile feature|bugfix|poc|security|infra|data|migration] [--tier N]
+  atticus status | resume | go [path]
+  atticus evidence run --task TASK-001 -- <test command>
+  atticus verify | scorecard | metrics | console | portfolio | contract | sla
+          | wiki-lint | knowledge-index | integrity | decide     [tool args]
+
+Agents: $AGENTS
+Roles:  $ROLES
+U
+}
+
+cfg_file() { for d in .claude .sdlc .cursor .github; do [ -f "$PROJECT/$d/sdlc-central.json" ] && { echo "$PROJECT/$d/sdlc-central.json"; return; }; done; }
+hooks_dir() { for d in .claude .cursor .github .sdlc; do [ -d "$PROJECT/$d/hooks/_bin" ] && { echo "$PROJECT/$d"; return; }; done; }
+installed_agents() {
+  local out=""
+  [ -f "$PROJECT/.claude/sdlc-central.json" ] && out="claude-code"
+  if [ -f "$PROJECT/.sdlc/sdlc-central.json" ] && command -v jq >/dev/null 2>&1; then
+    local a; a="$(jq -r '.agent // empty' "$PROJECT/.sdlc/sdlc-central.json")"; [ -n "$a" ] && out="$out $a"
+  fi
+  echo $out
+}
+track_root() {
+  local c r=""; c="$(cfg_file)"
+  [ -n "$c" ] && command -v jq >/dev/null 2>&1 && r="$(jq -r '.track_root // empty' "$c")"
+  echo "${r:-.track}"
+}
+tool_path() {
+  local ad; ad="$(hooks_dir)"
+  if [ -n "$ad" ] && [ -f "$ad/hooks/_bin/aidlc-$1.sh" ]; then echo "$ad/hooks/_bin/aidlc-$1.sh"
+  elif [ -f "$AT_HOME/hooks/_bin/aidlc-$1.sh" ]; then echo "$AT_HOME/hooks/_bin/aidlc-$1.sh"; fi
+}
+tool() {
+  local name="$1"; shift
+  [ -n "$(cfg_file)" ] || die "Atticus is not set up here. Run: atticus init"
+  local t; t="$(tool_path "$name")"; [ -n "$t" ] || die "unknown tool '$name'"
+  AIDLC_PROJECT_DIR="$PROJECT" exec bash "$t" "$@"
+}
+
+# Agents this project already uses, from their marker files; else what is installed on the machine.
+detect_agents() {
+  local f=""
+  { [ -d .claude ] || [ -f CLAUDE.md ]; } && f="$f claude-code"
+  [ -d .cursor ] && f="$f cursor"
+  { [ -f .github/copilot-instructions.md ] || [ -d .github/instructions ]; } && f="$f copilot"
+  { [ -d .windsurf ] || [ -f .windsurfrules ]; } && f="$f windsurf"
+  [ -e .clinerules ] && f="$f cline"
+  { [ -f .aider.conf.yml ] || [ -f CONVENTIONS.md ]; } && f="$f aider"
+  { [ -f GEMINI.md ] || [ -d .gemini ]; } && f="$f gemini"
+  [ -d .antigravity ] && f="$f antigravity"
+  [ -f TABNINE.md ] && f="$f tabnine"
+  [ -f AGENTS.md ] && f="$f agents-md"
+  if [ -z "$f" ]; then
+    if command -v claude >/dev/null 2>&1; then f="claude-code"
+    elif command -v cursor >/dev/null 2>&1; then f="cursor"
+    elif command -v gemini >/dev/null 2>&1; then f="gemini"
+    elif command -v aider >/dev/null 2>&1; then f="aider"
+    else f="claude-code"; fi
+  fi
+  echo $f
+}
+
+pick_from() { # pick_from "<prompt>" "<list>" <default>
+  local list="$2" def="$3" i=1 x ans
+  if interactive; then
+    for x in $list; do printf '  %d) %s\n' "$i" "$x" > /dev/tty; i=$((i+1)); done
+    ans="$(ask "$1" "$def")"
+    case "$ans" in *[!0-9,]*|"") echo "$ans" ;; *) echo "$ans" | tr ',' '\n' | while read -r n; do echo "$list" | tr ' ' '\n' | sed -n "${n}p"; done | paste -sd, - ;; esac
+  else echo "$def"; fi
+}
+
+run_quiet() { # run_quiet <label> <cmd...>: output goes to a log, shown only on failure or with -v
+  shift
+  local log="${TMPDIR:-/tmp}/atticus-$$.log"
+  if [ -n "$AT_VERBOSE" ]; then "$@"; return; fi
+  if "$@" > "$log" 2>&1; then rm -f "$log"; return 0; fi
+  cat "$log" >&2; rm -f "$log"; return 1
+}
+
+cmd_init() {
+  local agents="" roles="" pass=() tr="" hub=0 ci=0 dec=0 track_only=0 A R
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --agent) agents="$2"; shift 2 ;; --agent=*) agents="${1#*=}"; shift ;;
+      --role) roles="$2"; shift 2 ;; --role=*) roles="${1#*=}"; shift ;;
+      --tier|--tier-default) pass+=(--tier-default "$2"); shift 2 ;;
+      --track-root) pass+=(--track-root "$2"); tr="$2"; shift 2 ;;
+      --no-hooks) pass+=(--no-hooks); shift ;;
+      --hub) hub=1; shift ;; --ci) ci=1; shift ;; --decisions) ci=1; dec=1; shift ;;
+      --track-only) track_only=1; shift ;;
+      -y|--yes) export ATTICUS_YES=1; shift ;;
+      -v|--verbose) AT_VERBOSE=1; shift ;;
+      -*) die "unknown option $1 (atticus help all)" ;;
+      *) roles="${roles:+$roles,}$1"; shift ;;
+    esac
+  done
+  command -v jq >/dev/null 2>&1 || say "Note: jq is missing, so hooks will warn and allow until you install it (atticus doctor)."
+  if [ $track_only -eq 0 ]; then
+    if [ -z "$agents" ]; then
+      local found; found="$(detect_agents)"
+      set -- $found
+      if [ $# -gt 1 ] && interactive; then
+        say "This project has files for more than one agent:"
+        agents="$(pick_from "Which agents? (numbers, comma separated)" "$found" 1)"
+        [ "$agents" = "1" ] && agents="$1"
+      else agents="$1"; [ $# -gt 1 ] && say "Using $1 (also found: ${*:2}; add them with --agent)."; fi
+    fi
+    if [ -z "$roles" ]; then
+      interactive && say "Your role:"
+      roles="$(pick_from "Role" "$ROLES" developer)"
+      [ "$roles" = "1" ] && roles=developer
+    fi
+    for A in $(echo "$agents" | tr ',' ' '); do
+      echo " $AGENTS " | grep -q " $A " || die "unknown agent '$A' (one of: $AGENTS)"
+      for R in $(echo "$roles" | tr ',' ' '); do
+        [ "$R" = "all" ] && R=tech-lead
+        echo " $ROLES " | grep -q " $R " || die "unknown role '$R' (one of: $ROLES)"
+        printf 'Installing %s for %s ... ' "$R" "$A"
+        run_quiet install bash "$SETUP/install-role.sh" "$R" --agent "$A" ${pass[@]+"${pass[@]}"} || die "install failed (rerun with -v for detail)"
+        say "done"
+      done
+    done
+  fi
+  local ia=(); [ -n "$tr" ] && ia+=(--track-root "$tr"); [ $hub -eq 1 ] && ia+=(--hub)
+  run_quiet track bash "$SETUP/init-track.sh" ${ia[@]+"${ia[@]}"} || die "could not create the track root"
+  say "Track root ready: $(track_root)/"
+  if [ $ci -eq 1 ]; then
+    local hd; hd="$(hooks_dir)"; local ca=(--agent-dir "$(basename "${hd:-.claude}")"); [ $dec -eq 1 ] && ca+=(--decisions)
+    run_quiet ci bash "$SETUP/install-ci.sh" "${ca[@]}" && say "CI workflows added under .github/workflows/"
+  fi
+  [ -n "$AT_ADDING" ] && return 0
+  say ""
+  say "Atticus is ready. Commit the new files so your team gets them too."
+  say "Next: atticus go   (or open your agent and type /atticus)"
+}
+
+cmd_add() {
+  [ -n "$1" ] || die "usage: atticus add <role>"
+  local a; a="$(installed_agents)"; [ -n "$a" ] || die "Atticus is not set up here. Run: atticus init"
+  AT_ADDING=1 cmd_init --role "$1" --agent "$(echo $a | tr ' ' ',')" -y
+}
+
+cmd_update() {
+  local self=1 proj=1
+  case "$1" in --self) proj=0 ;; --project) self=0 ;; esac
+  if [ $self -eq 1 ]; then
+    if [ -d "$AT_HOME/.git" ]; then
+      if [ -n "$(git -C "$AT_HOME" status --porcelain 2>/dev/null)" ]; then
+        say "Atticus: local changes in $AT_HOME, so it was not pulled."
+      else
+        local before after; before="$(git -C "$AT_HOME" rev-parse --short HEAD)"
+        git -C "$AT_HOME" pull --quiet --ff-only || say "Atticus: could not fast-forward $AT_HOME; update it by hand."
+        after="$(git -C "$AT_HOME" rev-parse --short HEAD)"
+        [ "$before" = "$after" ] && say "Atticus is up to date ($after)." || say "Atticus updated $before → $after."
+      fi
+    fi
+    # Run the project step with the new code.
+    [ $proj -eq 1 ] && exec bash "$AT_HOME/bin/atticus" update --project
+    return 0
+  fi
+  [ -n "$(cfg_file)" ] || { say "No Atticus install in this directory; nothing else to update."; return 0; }
+  printf 'Refreshing this project ... '
+  run_quiet update bash "$SETUP/update.sh" || die "update failed (rerun: bash $SETUP/update.sh)"
+  say "done (config and $(track_root)/ kept)"
+}
+
+
+# ---------------- shell profile ----------------
+BEGIN_MARK="# >>> atticus >>>"; END_MARK="# <<< atticus <<<"
+strip_block() { [ -f "$1" ] || return 0; awk -v b="$BEGIN_MARK" -v e="$END_MARK" '$0==b{s=1;next} $0==e{s=0;next} !s' "$1" > "$1.atticus.tmp" && cat "$1.atticus.tmp" > "$1" && rm -f "$1.atticus.tmp"; }
+put_block() { # put_block <file> <body>
+  mkdir -p "$(dirname "$1")"; touch "$1"; strip_block "$1"
+  printf '%s\n%s\n%s\n' "$BEGIN_MARK" "$2" "$END_MARK" >> "$1"
+  say "  ✓ $1"
+}
+
+cmd_setup() {
+  local shell="" global=0 name="" undo=0 bin="${ATTICUS_BIN:-$HOME/.local/bin}"
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --shell) shell="$2"; shift 2 ;; --global) global=1; shift ;; --name) name="$2"; shift 2 ;;
+      --bin) bin="$2"; shift 2 ;; --undo) undo=1; shift ;; -y|--yes) export ATTICUS_YES=1; shift ;;
+      *) die "unknown option $1" ;;
+    esac
+  done
+  [ -z "$shell" ] && shell="$(basename "${SHELL:-bash}")"
+  local os; os="$(uname -s 2>/dev/null)"
+  if [ $undo -eq 1 ]; then
+    for f in "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.config/fish/conf.d/atticus.fish"; do
+      [ -f "$f" ] && grep -qF "$BEGIN_MARK" "$f" && { strip_block "$f"; say "  ✓ cleaned $f"; }
+    done
+    rm -f "$bin/atticus"; say "Removed the atticus command and profile lines. $AT_HOME is left in place."
+    return 0
+  fi
+  say "Setting up Atticus for $shell on $os"
+  mkdir -p "$bin"; ln -sf "$AT_HOME/bin/atticus" "$bin/atticus"; say "  ✓ $bin/atticus"
+  local pbin="$bin"; case "$bin" in "$HOME"/*) pbin="\$HOME${bin#$HOME}" ;; esac
+  local ahome="$AT_HOME"; case "$AT_HOME" in "$HOME"/*) ahome="\$HOME${AT_HOME#$HOME}" ;; esac
+  local path_line="case \":\$PATH:\" in *\":$pbin:\"*) ;; *) export PATH=\"$pbin:\$PATH\" ;; esac"
+  local id_line=""; [ -n "$name" ] && id_line="export AIDLC_DECIDER=\"$name\""
+  case "$shell" in
+    zsh)
+      put_block "$HOME/.zshrc" "export ATTICUS_HOME=\"$ahome\"
+$path_line${id_line:+
+$id_line}
+autoload -Uz compinit bashcompinit; (( \$+functions[compdef] )) || compinit -i; bashcompinit
+[ -f \"\$ATTICUS_HOME/completions/atticus.bash\" ] && . \"\$ATTICUS_HOME/completions/atticus.bash\"" ;;
+    bash)
+      put_block "$HOME/.bashrc" "export ATTICUS_HOME=\"$ahome\"
+$path_line${id_line:+
+$id_line}
+[ -f \"\$ATTICUS_HOME/completions/atticus.bash\" ] && . \"\$ATTICUS_HOME/completions/atticus.bash\""
+      # Login shells (macOS Terminal, some Linux consoles) read .bash_profile, not .bashrc.
+      if [ "$os" = Darwin ] || [ -f "$HOME/.bash_profile" ]; then
+        grep -q 'bashrc' "$HOME/.bash_profile" 2>/dev/null || put_block "$HOME/.bash_profile" '[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"'
+      fi ;;
+    fish)
+      put_block "$HOME/.config/fish/conf.d/atticus.fish" "set -gx ATTICUS_HOME \"$AT_HOME\"
+fish_add_path -g \"$bin\"${name:+
+set -gx AIDLC_DECIDER \"$name\"}
+complete -c atticus -f -a 'setup init go update doctor remove add start status resume ci migrate help'" ;;
+    pwsh|powershell)
+      say "Add this to your PowerShell profile (notepad \$PROFILE):"
+      say ""
+      say "  # >>> atticus >>>"
+      say "  function atticus { & bash \"$AT_HOME/bin/atticus\" @args }"
+      say "  # <<< atticus <<<"
+      say ""
+      say "It needs bash from Git for Windows or WSL on PATH." ;;
+    *) die "unsupported shell '$shell' (zsh, bash, fish, pwsh)" ;;
+  esac
+  if [ $global -eq 1 ] || { [ -d "$HOME/.claude" ] && [ "$(ask "Make /atticus and the personas available in every Claude Code project? (y/N)" n)" = y ]; }; then
+    local HOME_PROJECT="$HOME"
+    bash "$AT_HOME/adapters/claude-code/adapter.sh" "$AT_HOME" "$HOME_PROJECT" atticus > /dev/null
+    ( . "$AT_HOME/adapters/_shared/agents.sh"; emit_agents claude-code "$AT_HOME" "$HOME_PROJECT" > /dev/null )
+    say "  ✓ ~/.claude/skills/atticus, ~/.claude/skills/run-pipeline, ~/.claude/agents/aidlc-*"
+    say "    Hooks stay per project: enforcement starts when you run atticus init in a repo."
+  fi
+  say ""
+  say "Open a new terminal (or: exec \$SHELL), then run: atticus doctor"
+}
+
+cmd_go() {
+  [ -n "$1" ] && { cd "$1" || die "no such directory $1"; PROJECT="$(pwd)"; }
+  [ -n "$(cfg_file)" ] || die "Atticus is not set up in $PROJECT. Run: atticus init"
+  local a; a="$(installed_agents | awk '{print $1}')"
+  case "$a" in
+    claude-code)
+      command -v claude >/dev/null 2>&1 || die "the claude command is not on PATH"
+      exec claude "/atticus" ;;
+    *)
+      local line="/atticus continue"
+      case "$a" in cursor|windsurf|antigravity) line="@sdlc-atticus continue" ;; aider) line="/read .sdlc/skills/atticus.md  then: continue" ;; esac
+      if command -v pbcopy >/dev/null 2>&1; then printf '%s' "$line" | pbcopy; c=1
+      elif command -v wl-copy >/dev/null 2>&1; then printf '%s' "$line" | wl-copy; c=1
+      elif command -v xclip >/dev/null 2>&1; then printf '%s' "$line" | xclip -selection clipboard; c=1
+      elif command -v clip.exe >/dev/null 2>&1; then printf '%s' "$line" | clip.exe; c=1; fi
+      say "Paste this into $a${c:+ (it is on your clipboard)}:"; say "  $line"
+      case "$a" in
+        cursor) command -v cursor >/dev/null 2>&1 && cursor . ;;
+        windsurf) command -v windsurf >/dev/null 2>&1 && windsurf . ;;
+        copilot|cline) command -v code >/dev/null 2>&1 && code . ;;
+        aider) command -v aider >/dev/null 2>&1 && exec aider ;;
+        gemini) command -v gemini >/dev/null 2>&1 && exec gemini ;;
+      esac ;;
+  esac
+}
+
+cmd_status() {
+  local st="$PROJECT/$(track_root)/state.md"
+  [ -f "$st" ] || die "Atticus is not set up here. Run: atticus init"
+  awk '/^## AIDLC_RESUME/{f=1;next} f&&/^## /{exit} f&&NF' "$st"
+}
+
+cmd_resume() {
+  cmd_status; say ""
+  local st="$PROJECT/$(track_root)/state.md" gate
+  gate="$(awk '/^## AIDLC_RESUME/{f=1;next} f&&/^## /{exit} f&&/^BLOCKED_GATE:/{sub(/^BLOCKED_GATE: */,"");print}' "$st")"
+  if [ -n "$gate" ] && [ "$gate" != "none" ]; then
+    say "A human decision is pending for $gate. Type it in your agent as a plain message, for example:"
+    say "  APPROVE $(printf '%s' "${gate#approve-}" | tr 'a-z-' 'A-Z ')"
+    say "  REQUEST CHANGES: <what to change>"
+  else
+    say "Continue with: atticus go   (or type /atticus in your agent)"
+  fi
+}
+
+cmd_doctor() {
+  local fix=0 bad=0 os; [ "$1" = "--fix" ] && fix=1
+  os="$(uname -s 2>/dev/null || echo unknown)"
+  case "$os" in
+    Darwin) os="macOS" ;; Linux) grep -qi microsoft /proc/version 2>/dev/null && os="Linux (WSL)" || os="Linux" ;;
+    MINGW*|MSYS*|CYGWIN*) os="Windows (Git Bash)" ;;
+  esac
+  say "Atticus $AT_VERSION at $AT_HOME"
+  say "Platform: $os, bash $BASH_VERSION, shell $(basename "${SHELL:-?}")"
+  chk() { if command -v "$1" >/dev/null 2>&1; then say "  ok    $1"; else say "  MISS  $1  $2"; [ "$3" = req ] && bad=1; fi; return 0; }
+  chk jq   "(required; brew install jq | sudo apt-get install jq | winget install jqlang.jq)" req
+  chk git  "(required)" req
+  if command -v shasum >/dev/null 2>&1 || command -v sha256sum >/dev/null 2>&1; then say "  ok    shasum/sha256sum"; else say "  MISS  shasum or sha256sum (required)"; bad=1; fi
+  chk perl "(optional: evidence timing)"
+  if command -v atticus >/dev/null 2>&1; then say "  ok    atticus on PATH"
+  else say "  MISS  atticus on PATH"; [ $fix -eq 1 ] && cmd_setup -y > /dev/null && say "        fixed: ran atticus setup (open a new terminal)"; fi
+  if [ -n "$(cfg_file)" ]; then
+    say "Project: $PROJECT ($(installed_agents))"
+    local t; t="$(tool_path integrity)"
+    if [ -n "$t" ] && [ -n "$(hooks_dir)" ]; then
+      if AIDLC_PROJECT_DIR="$PROJECT" bash "$t" > /dev/null 2>&1; then say "  ok    hooks intact"
+      else say "  FAIL  hooks changed or missing"; bad=1; [ $fix -eq 1 ] && cmd_update --project > /dev/null && say "        fixed: reinstalled" && bad=0; fi
+    fi
+    if [ -f "$PROJECT/$(track_root)/state.md" ]; then say "  ok    track root $(track_root)/"
+    else say "  MISS  track root (hooks stay inert until it exists)"; [ $fix -eq 1 ] && bash "$SETUP/init-track.sh" > /dev/null && say "        fixed: created $(track_root)/"; fi
+  else
+    say "Project: none here (run atticus init inside a repository)"
+  fi
+  return $bad
+}
+
+case "${1:-help}" in
+  help|-h|--help) [ "$2" = all ] && usage_all || usage ;;
+  version|--version|-v) say "atticus $AT_VERSION" ;;
+  setup) shift; cmd_setup "$@" ;;
+  init|install) shift; cmd_init "$@" ;;
+  add) shift; cmd_add "$@" ;;
+  update|upgrade) shift; cmd_update "$@" ;;
+  remove|uninstall) shift; exec bash "$SETUP/uninstall.sh" "$@" ;;
+  doctor) shift; cmd_doctor "$@" ;;
+  go) shift; cmd_go "$@" ;;
+  link) shift; mkdir -p "${1:-$HOME/.local/bin}"; ln -sf "$AT_HOME/bin/atticus" "${1:-$HOME/.local/bin}/atticus"; say "linked ${1:-$HOME/.local/bin}/atticus" ;;
+  completion) cat "$AT_HOME/completions/atticus.bash" ;;
+  ci) shift; ad="$(hooks_dir)"; exec bash "$SETUP/install-ci.sh" --agent-dir "$(basename "${ad:-.claude}")" "$@" ;;
+  migrate) shift; exec bash "$SETUP/migrate-specs.sh" "$@" ;;
+  status) cmd_status ;;
+  resume) cmd_resume ;;
+  start) shift; tool start "$@" ;;
+  evidence|verify|scorecard|metrics|console|portfolio|contract|sla|wiki-lint|knowledge-index|integrity|decide)
+    t="$1"; shift; tool "$t" "$@" ;;
+  *) die "unknown command '$1' (atticus help)" ;;
+esac

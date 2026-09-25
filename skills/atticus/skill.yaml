@@ -1,0 +1,12 @@
+name: atticus
+version: "1.0.0"
+description: "Atticus, the single entry point to governed AI delivery: say what you want in plain words and it resumes, starts or routes the work to the right persona by intent and stage. Use for continue, status, new work, fixes, questions, verification, release and handoff."
+category: pipeline-automation
+argument_hint: "[anything: continue | status | build <idea> | fix <bug> | check the plan | is it secure | ready to ship | hand off to <who>]"
+roles: [product-owner, architect, developer, qa, devops-sre, tech-lead, scrum-master, designer, release-manager]
+markers:
+  success: "## ATTICUS ROUTED"
+  block: "## AIDLC GATE BLOCKED"
+writes: [state.md (through aidlc-start.sh and the runner only), lineage.md]
+hooks: [aidlc-pre-write-guard, aidlc-human-approval-guard]
+design_ref: "README-AIDLC.md > Using Atticus in your agent"

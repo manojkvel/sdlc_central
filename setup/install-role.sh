@@ -83,15 +83,15 @@ fi
 # --- Role → Skill Mappings ---
 case "$ROLE" in
   product-owner)
-    SKILLS=(feature-balance-sheet spec-gen source-extract wiki-curate aidlc-metrics-extract aidlc-decision-guard quality-gate gate-briefing scope-tracker board-sync report-trends risk-tracker release-readiness-checker release-notes decision-log drift-detector changelog-plain progress-summary demo-prep user-story-refiner bug-report codebase-qa)
+    SKILLS=(grill feature-balance-sheet spec-gen source-extract wiki-curate aidlc-metrics-extract aidlc-decision-guard quality-gate gate-briefing scope-tracker board-sync report-trends risk-tracker release-readiness-checker release-notes decision-log drift-detector changelog-plain progress-summary demo-prep user-story-refiner bug-report codebase-qa)
     PIPELINES=(feature-intake sprint-health release-signoff stakeholder-update idea-to-spec sprint-demo)
     ;;
   architect)
-    SKILLS=(design-review contract-registry plan-gen plan-check source-extract wiki-curate aidlc-decision-guard quality-gate decision-log tech-debt-audit code-ownership-mapper api-contract-analyzer report-trends migration-tracker impact-analysis plan-merge spec-gen spec-review spec-evolve feature-balance-sheet gate-briefing reverse-engineer)
+    SKILLS=(grill design-review contract-registry plan-gen plan-check source-extract wiki-curate aidlc-decision-guard quality-gate decision-log tech-debt-audit code-ownership-mapper api-contract-analyzer report-trends migration-tracker impact-analysis plan-merge spec-gen spec-review spec-evolve feature-balance-sheet gate-briefing reverse-engineer)
     PIPELINES=(design-to-plan system-health migration-planning contract-first)
     ;;
   developer)
-    SKILLS=(task-gen plan-check wave-scheduler task-implementer aidlc-evidence-verifier spec-review review-fix pr-orchestrator review security-audit test-gen dependency-update tech-debt-audit regression-check spec-fix doc-gen perf-review plan-gen spec-gen impact-analysis onboarding-guide design-review)
+    SKILLS=(grill task-gen plan-check wave-scheduler task-implementer aidlc-evidence-verifier spec-review review-fix pr-orchestrator review security-audit test-gen dependency-update tech-debt-audit regression-check spec-fix doc-gen perf-review plan-gen spec-gen impact-analysis onboarding-guide design-review)
     PIPELINES=(feature-build pr-workflow maintenance)
     ;;
   qa)
@@ -120,7 +120,7 @@ case "$ROLE" in
     PIPELINES=(sprint-tracking retrospective-data impediment-tracker)
     ;;
   designer)
-    SKILLS=(spec-gen spec-review design-review api-contract-analyzer doc-gen design-to-code design-token-sync component-audit visual-review bug-report codebase-qa user-story-refiner changelog-plain)
+    SKILLS=(grill spec-gen spec-review design-review api-contract-analyzer doc-gen design-to-code design-token-sync component-audit visual-review bug-report codebase-qa user-story-refiner changelog-plain)
     PIPELINES=(spec-collaboration design-validation design-implementation design-system-sync design-handoff)
     ;;
   *)
@@ -129,6 +129,9 @@ case "$ROLE" in
     exit 1
     ;;
 esac
+
+# Every role gets the Atticus entry point (/atticus), which routes work to personas by intent.
+SKILLS=(atticus "${SKILLS[@]}")
 
 echo "╔══════════════════════════════════════════════╗"
 echo "║     SDLC Central — $ROLE ($AGENT)"
@@ -191,6 +194,14 @@ for pipeline in "${PIPELINES[@]}"; do
     echo "  ○ $ROLE/$pipeline (pipeline definition not found)"
   fi
 done
+
+# --- AIDLC: the governed unit-of-work pipeline ships with every role ---
+if [ -d "$SDLC_ROOT/pipelines/aidlc" ]; then
+  mkdir -p "$PIPELINE_DIR/aidlc"
+  for p in "$SDLC_ROOT/pipelines/aidlc"/*.pipeline.yaml; do
+    [ -f "$p" ] && cp "$p" "$PIPELINE_DIR/aidlc/" && echo "  ✓ aidlc/$(basename "$p" .pipeline.yaml)"
+  done
+fi
 
 # --- Install config (preserve existing) ---
 echo ""

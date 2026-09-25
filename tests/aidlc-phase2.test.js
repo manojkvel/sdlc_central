@@ -147,7 +147,7 @@ describe('AIDLC evidence rail', { skip: !jqAvailable && 'jq not installed' }, ()
     const list = sh(dir, [path.join(BIN, 'aidlc-evidence.sh'), 'list']).stdout.trim().split('\n');
     assert.strictEqual(list.length, 2, 'latest run per command only');
     assert.match(list[1], /^E-003 TASK-001 test exit=0 bash test\.sh$/);
-    assert.match(sh(dir, [path.join(BIN, 'aidlc-evidence.sh'), 'summary']).stdout, /^runs 3 · commands 2 · latest failing 0 · latest stale 0$/m);
+    assert.match(sh(dir, [path.join(BIN, 'aidlc-evidence.sh'), 'summary']).stdout, /^runs 3 · commands 2 · latest failing 0 · latest stale 0 · red runs 0$/m);
     // an old-format entry with an inline list is migrated
     const idxf = path.join(dir, PH, 'evidence', 'index.json'); const idx = JSON.parse(fs.readFileSync(idxf, 'utf8'));
     const old = { ...idx.entries[0], id: 'E-004', command_hash: 'old' }; delete old.touched_manifest; delete old.touched_count;

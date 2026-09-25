@@ -49,7 +49,7 @@ function project() {
   fs.appendFileSync(path.join(dir, '.track', 'requirements.md'), '| REQ-001 | sums | PO | approved |\n');
   fs.writeFileSync(path.join(dir, PH, 'SPEC.md'), '# Spec\nREQ-001\n- AC-1: add returns the sum\n');
   fs.writeFileSync(path.join(dir, PH, 'PLAN.md'), '# Plan\n- test then implement add (AC-1)\n## Rollback\nrevert\n');
-  fs.writeFileSync(path.join(dir, PH, 'TASKS.md'), '## TASK-001 add\n- covers AC-1\n- Files: `src/calc.sh`\n');
+  fs.writeFileSync(path.join(dir, PH, 'TASKS.md'), '## TASK-001 add\n- covers AC-1\n- Verify: `bash test.sh`\n- Files: `src/calc.sh`\n');
   fs.writeFileSync(path.join(dir, 'src', 'calc.sh'), 'add(){ echo $(($1+$2)); }\n');
   fs.writeFileSync(path.join(dir, 'test.sh'), '. src/calc.sh; [ "$(add 2 3)" = 5 ] && echo ok\n');
   return dir;
@@ -59,6 +59,11 @@ function completePhase(dir) {
   fs.writeFileSync(path.join(dir, PH, 'PLAN_CHECK.md'), '<!-- generated-by: plan-check -->\n## PLAN CHECK PASSED\n');
   decide(dir, 'approve-plan', 'medium', `${PH}/PLAN.md`, 'APPROVE PLAN', 'architect');
   setState(dir, { BLOCKED_GATE: 'none', GATE_RISK: 'none', CURRENT_STAGE: 'governance' });
+  // Test first: the test fails before the change (red), then passes after it (green).
+  const calc = path.join(dir, 'src', 'calc.sh'), good = fs.readFileSync(calc, 'utf8');
+  fs.writeFileSync(calc, 'add(){ echo 0; }\n');
+  bin(dir, 'aidlc-evidence.sh', ['run', '--task', 'TASK-001', '--red', '--', 'bash test.sh']);
+  fs.writeFileSync(calc, good);
   bin(dir, 'aidlc-evidence.sh', ['run', '--task', 'TASK-001', '--suite', '--', 'bash test.sh']);
   bin(dir, 'aidlc-verify.sh');
   fs.writeFileSync(path.join(dir, PH, 'REVIEW.md'), '| Severity | Finding | Status |\n| HIGH | input validation | fixed |\n');
