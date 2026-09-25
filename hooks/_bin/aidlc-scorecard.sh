@@ -99,8 +99,12 @@ if [ -n "$MISSING_G" ]; then dim D3 "Human approval audit" FAIL "no accepted dec
 elif [ $CR -ne 0 ]; then dim D3 "Human approval audit" FAIL "$(printf '%s' "$CO" | grep -Eo 'X0[0-9] .*' | head -1)" "aidlc-governance-reviewer (tech lead)"
 else
   NOTE="gates:$(printf ' %s' $GATES) all decided; X00 consistent"
-  [ -n "$ASSERTED" ] && NOTE="$NOTE; advisory: asserted identity at high/release risk on$ASSERTED (authoritative only through the decision bot, phase 4)"
-  dim D3 "Human approval audit" PASS "$NOTE" "aidlc-governance-reviewer"
+  if [ -n "$ASSERTED" ] && [ "$(jq -r '.authenticated_identity_required // false' "$GC")" = "true" ]; then
+    dim D3 "Human approval audit" FAIL "asserted identity at high/release risk on$ASSERTED; decide through the decision bot" "aidlc-governance-reviewer (tech lead)"
+  else
+    [ -n "$ASSERTED" ] && NOTE="$NOTE; advisory: asserted identity at high/release risk on$ASSERTED (set authenticated_identity_required once the decision bot is deployed)"
+    dim D3 "Human approval audit" PASS "$NOTE" "aidlc-governance-reviewer"
+  fi
 fi
 
 # ---------------- D4 ----------------
@@ -122,21 +126,15 @@ else
 fi
 
 # ---------------- D5 ----------------
-CONSUMES="$(grep -E '^consumes:' "$D/unit.yaml" 2>/dev/null | grep -Eo 'C-[0-9]+' | tr '\n' ' ')"
+. "$HOOKS/_lib/contracts.sh"
+CONSUMES="$(unit_list "$D/unit.yaml" consumes | tr '\n' ' ')"
 if [ "$TIER" != "3" ] || [ -z "$CONSUMES" ]; then dim D5 "Contract & workstream alignment" "N/A" "no consumed contracts" "aidlc-governance-reviewer"
 else
-  HUB="$(grep -E '^hub:' "$D/unit.yaml" | sed 's/^hub:[[:space:]]*//')"
-  REGDIR="$AIDLC_TRACK"; [ -n "$HUB" ] && { case "$HUB" in /*) REGDIR="$HUB" ;; *) REGDIR="$AIDLC_PROJECT/$HUB" ;; esac; [ -d "$REGDIR/.track" ] && REGDIR="$REGDIR/.track"; }
-  BAD=""; EXCL=""
-  for c in $CONSUMES; do
-    st="$(sed -n 's/^status:[[:space:]]*//p' "$REGDIR/contracts/$c.md" 2>/dev/null | head -1)"
-    [ "$st" = "APPROVED" ] && continue
-    if grep -E "APPROVE WORKSTREAM CONTRACT WITH RISK" "$REGDIR/human-decisions.md" 2>/dev/null | grep -q "$c"; then EXCL="$EXCL $c"; else BAD="$BAD $c(${st:-unregistered})"; fi
-  done
-  if [ -n "$BAD" ]; then dim D5 "Contract & workstream alignment" FAIL "consumed contracts not approved:$BAD" "aidlc-governance-reviewer (architect)"
-  elif [ -n "$EXCL" ] || grep -q '^release_claims_excluded:[[:space:]]*true' "$D/unit.yaml"; then
-    dim D5 "Contract & workstream alignment" FAIL "built on risk-accepted contracts:$EXCL; release claims are excluded until LIFT EXCLUSION" "aidlc-governance-reviewer (architect)"
-  else dim D5 "Contract & workstream alignment" PASS "consumed contracts approved:$CONSUMES" "aidlc-governance-reviewer"; fi
+  CO5="$(contract_check_unit "$D/unit.yaml")"; R5=$?
+  if [ $R5 -eq 2 ]; then dim D5 "Contract & workstream alignment" FAIL "consumed contracts not approved: $(printf '%s' "$CO5" | grep '^BLOCKED' | sed 's/^BLOCKED //' | tr '\n' ';')" "aidlc-governance-reviewer (architect)"
+  elif [ $R5 -eq 3 ] || grep -q '^release_claims_excluded:[[:space:]]*true' "$D/unit.yaml"; then
+    dim D5 "Contract & workstream alignment" FAIL "release claims excluded: built on $(printf '%s' "$CO5" | grep -Eo 'C-[0-9]+' | tr '\n' ' ')until the contracts are verified and LIFT EXCLUSION is decided" "aidlc-governance-reviewer (architect)"
+  else dim D5 "Contract & workstream alignment" PASS "consumed contracts approved: $CONSUMES" "aidlc-governance-reviewer"; fi
 fi
 
 # ---------------- D6 ----------------

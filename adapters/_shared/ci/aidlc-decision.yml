@@ -1,0 +1,37 @@
+# AIDLC decision bot — record a gate decision with an authenticated GitHub identity.
+# Install with: bash /path/to/sdlc_central/setup/install-ci.sh --decisions
+# Run from the Actions tab ("Run workflow") or: gh workflow run aidlc-decision.yml -f gate=approve-plan -f decision="APPROVE PLAN"
+# GitHub authenticates github.actor; only people who can run workflows on this repository can decide.
+# The decision still goes through aidlc-human-approval-guard, and stakeholders.yaml `people` restricts who may
+# decide each gate (A06). Once this is deployed, set authenticated_identity_required: true in gate-config.json.
+name: aidlc-decision
+on:
+  workflow_dispatch:
+    inputs:
+      gate:
+        description: "The open gate you are deciding (must match BLOCKED_GATE in .track/state.md)"
+        required: true
+      decision:
+        description: "Exact decision string, e.g. APPROVE PLAN or APPROVE RELEASE: v1.4 data and API only"
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: aidlc-decision
+  cancel-in-progress: false
+env:
+  AGENT_DIR: .claude
+jobs:
+  decide:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record the decision
+        env:
+          DECISION: ${{ inputs.decision }}
+          GATE: ${{ inputs.gate }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          bash "$AGENT_DIR/hooks/_bin/aidlc-integrity.sh"
+          bash "$AGENT_DIR/hooks/_bin/aidlc-decide.sh" --decision "$DECISION" --expect-gate "$GATE" \
+            --actor "$ACTOR" --identity github --push

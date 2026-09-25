@@ -87,8 +87,8 @@ case "$ROLE" in
     PIPELINES=(feature-intake sprint-health release-signoff stakeholder-update idea-to-spec sprint-demo)
     ;;
   architect)
-    SKILLS=(design-review plan-gen plan-check source-extract wiki-curate aidlc-decision-guard quality-gate decision-log tech-debt-audit code-ownership-mapper api-contract-analyzer report-trends migration-tracker impact-analysis plan-merge spec-gen spec-review spec-evolve feature-balance-sheet gate-briefing reverse-engineer)
-    PIPELINES=(design-to-plan system-health migration-planning)
+    SKILLS=(design-review contract-registry plan-gen plan-check source-extract wiki-curate aidlc-decision-guard quality-gate decision-log tech-debt-audit code-ownership-mapper api-contract-analyzer report-trends migration-tracker impact-analysis plan-merge spec-gen spec-review spec-evolve feature-balance-sheet gate-briefing reverse-engineer)
+    PIPELINES=(design-to-plan system-health migration-planning contract-first)
     ;;
   developer)
     SKILLS=(task-gen plan-check wave-scheduler task-implementer aidlc-evidence-verifier spec-review review-fix pr-orchestrator review security-audit test-gen dependency-update tech-debt-audit regression-check spec-fix doc-gen perf-review plan-gen spec-gen impact-analysis onboarding-guide design-review)
@@ -112,7 +112,7 @@ case "$ROLE" in
     exit 0
     ;;
   release-manager)
-    SKILLS=(governance-scorecard release-readiness-checker rollback-assessor gate-briefing release-notes aidlc-evidence-verifier risk-tracker aidlc-decision-guard quality-gate changelog-plain aidlc-metrics-extract)
+    SKILLS=(governance-scorecard release-readiness-checker rollback-assessor gate-briefing release-notes aidlc-evidence-verifier risk-tracker aidlc-decision-guard quality-gate changelog-plain aidlc-metrics-extract contract-registry)
     PIPELINES=(integration-release)
     ;;
   scrum-master)

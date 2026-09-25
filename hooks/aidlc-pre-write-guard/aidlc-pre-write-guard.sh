@@ -79,5 +79,19 @@ case "$AIDLC_STAGE" in
        "advance the pipeline to execution through its gates" ;;
 esac
 
-# Tier 3 contract precheck lands with the contract registry (phase 4 of the delivery plan).
+# W09: tier 3 — no source against a consumed contract that is not approved.
+# Building on a contract approved WITH RISK is allowed and marks the unit's release claims excluded.
+if [ "$TIER" = "3" ] && grep -Eq '^consumes:.*C-[0-9]' "$AIDLC_PHASE_DIR/unit.yaml" 2>/dev/null; then
+  . "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/_lib/contracts.sh"
+  OUT="$(contract_check_unit "$AIDLC_PHASE_DIR/unit.yaml")"; R=$?
+  if [ $R -eq 2 ]; then
+    aidlc_block W09 "consumed contract not approved: $(printf '%s' "$OUT" | grep '^BLOCKED' | sed 's/^BLOCKED //' | tr '\n' ';' | sed 's/;$//')" \
+      "wait for the producer contract to be approved, or have the architect record APPROVE WORKSTREAM CONTRACT WITH RISK in the hub"
+  fi
+  if [ $R -eq 3 ] && ! grep -q '^release_claims_excluded:[[:space:]]*true' "$AIDLC_PHASE_DIR/unit.yaml"; then
+    unit_set_excluded "$AIDLC_PHASE_DIR/unit.yaml" true
+    aidlc_log_guardrail W09 "building on risk-accepted contract(s); release claims excluded: $(printf '%s' "$OUT" | grep '^EXCLUDED' | cut -d' ' -f2 | tr '\n' ' ')"
+    aidlc_lineage "-" "contract.release_claims_excluded: $AIDLC_PHASE" "$(aidlc_rel "$AIDLC_PHASE_DIR/unit.yaml")" "$(aidlc_hash "$AIDLC_PHASE_DIR/unit.yaml")"
+  fi
+fi
 exit 0

@@ -45,7 +45,7 @@ if [ -f "$LIN" ]; then
       [ -z "$art" ] || [ "$art" = "-" ] && continue
       case "$art" in */risks.md) continue ;; esac
       want="${h#sha256:}"; [ "$want" = "-" ] && continue
-      now="$(aidlc_hash "$(aidlc_abs "$art")")"
+      now="$(aidlc_artifact_hash "$(aidlc_abs "$art")")"
       [ "$now" != "$want" ] && echo "X02 approved artifact $art changed after approval"
     done > "${TMPDIR:-/tmp}/aidlc-x02.$$"
   while IFS= read -r l; do [ -n "$l" ] && fail "${l%% *}" "${l#* }"; done < "${TMPDIR:-/tmp}/aidlc-x02.$$"

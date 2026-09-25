@@ -151,6 +151,23 @@ case "$LINE" in
     fi ;;
 esac
 
+# ---------- identity and authorisation ----------
+GCF="$AIDLC_PROJECT/$(aidlc_agent_dir_name "$AIDLC_PROJECT")/config/gate-config.json"
+if [ -f "$GCF" ] && [ "$(jq -r '.authenticated_identity_required // false' "$GCF")" = "true" ] && [ "$IDSRC" = "asserted" ]; then
+  case "$RISK" in high|security-sensitive|release)
+    reject A05 "authenticated identity required at $RISK risk; this reply came from an unauthenticated session" ;;
+  esac
+fi
+SHY="$AIDLC_TRACK/stakeholders.yaml"
+if [ "$IDSRC" != "asserted" ] && [ -f "$SHY" ] && [ -n "$DECIDER" ]; then
+  DROLE="$(grep -E "^  $GATE:" "$SHY" | sed 's/#.*//' | sed -n 's/.*decider: *\([a-z-]*\).*/\1/p')"
+  ALLOWED="$(awk '/^people:/ {f=1; next} f && /^[^ ]/ {exit} f' "$SHY" | awk -v r="  ${DROLE:-none}:" 'index($0, r)==1 {print; exit}' | sed 's/#.*//; s/^[^:]*:[[:space:]]*//; s/[[:space:]]*$//')"
+  if [ -n "$ALLOWED" ] && [ "$ALLOWED" != "[]" ] && ! printf '%s' "$ALLOWED" | tr -d '[]"' | tr ',' '\n' | sed 's/^ *//; s/ *$//' | grep -Fxq "$DECIDER"; then
+    reject A06 "$DECIDER is not listed for role $DROLE, which decides $GATE (stakeholders.yaml people)"
+  fi
+  [ -n "$DROLE" ] && ROLE="$DROLE"
+fi
+
 # ---------- record the decision ----------
 HDF="$AIDLC_TRACK/human-decisions.md"
 if [ ! -f "$HDF" ]; then
@@ -174,7 +191,7 @@ for a in $INPUTS; do
   a="$(printf '%s' "$a" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
   [ -z "$a" ] || [ "$a" = "none" ] && continue
   ab="$(aidlc_abs "$a")"; [ -f "$ab" ] || ab="$AIDLC_PHASE_DIR/$a"
-  h="$(aidlc_hash "$ab")"
+  h="$(aidlc_artifact_hash "$ab")"
   ART_LINES="$ART_LINES  - \`$(aidlc_rel "$ab")\` sha256:$h
 "
   [ "$FIRST_ART" = "-" ] && { FIRST_ART="$(aidlc_rel "$ab")"; FIRST_HASH="$h"; }
@@ -242,6 +259,14 @@ rm -f "$TMP"
 
 aidlc_lineage "$HD" "$EVENT: $GATE" "$FIRST_ART" "$FIRST_HASH"
 [ -n "$RISK_ID" ] && aidlc_lineage "$HD" "decision.approved_with_risk: $RISK_ID" "$(aidlc_rel "$AIDLC_TRACK/risks.md")" "-"
+
+# A lifted exclusion restores the unit's release claims.
+if [ "$EVENT" = "decision.lifted_exclusion" ] && [ -f "$AIDLC_PHASE_DIR/unit.yaml" ]; then
+  if grep -q '^release_claims_excluded:' "$AIDLC_PHASE_DIR/unit.yaml"; then
+    sed -i.bak 's/^release_claims_excluded:.*/release_claims_excluded: false/' "$AIDLC_PHASE_DIR/unit.yaml" && rm -f "$AIDLC_PHASE_DIR/unit.yaml.bak"
+  fi
+  aidlc_lineage "$HD" "contract.exclusion_lifted: $AIDLC_PHASE" "$(aidlc_rel "$AIDLC_PHASE_DIR/unit.yaml")" "$(aidlc_hash "$AIDLC_PHASE_DIR/unit.yaml")"
+fi
 
 # ---------- update the resume block ----------
 case "$STATUS" in

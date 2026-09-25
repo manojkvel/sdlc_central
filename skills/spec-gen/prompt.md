@@ -14,6 +14,10 @@ This skill follows the spec-driven development philosophy: specs are first-class
 
 ---
 
+## AIDLC requirements (projects with a track root)
+
+When `<track root>/requirements.md` exists, reference its business requirements: each acceptance criterion names the `REQ-NNN` it serves (for example `AC-3 (REQ-002): ...`), and the spec lists the REQ ids it covers under its goals. Add success criteria as `SC-N` when the outcome is measured after release. The traceability check fails an orphan REQ (T01) and an AC or SC missing from the plan (T02). Write the spec to `<track root>/phases/NN-slug/SPEC.md`.
+
 ## Phase 1 — Context Gathering
 
 ### 1.1 Understand the Input

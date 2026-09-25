@@ -3,6 +3,15 @@
 
 Compare the API surface between two versions of your codebase to detect breaking changes, missing versioning, and contract drift. Catches renamed fields, removed endpoints, changed types, and incompatible response shapes before they hit production and break downstream consumers.
 
+## Registry mode (AIDLC tier 3)
+
+`/api-contract-analyzer --registry C-NNN` compares the implemented API surface with the **registered contract**, not with a branch. Find the contract in the hub (`<hub>/.track/contracts/C-NNN.md`, where `<hub>` is `hub:` in the phase's `unit.yaml`); its `schema:` field points at the OpenAPI document (relative to the producer repository).
+
+1. Build the surface map of this repository as in Steps 2-3.
+2. Build the surface map of the registered schema.
+3. Classify every difference as in Step 4. Any breaking change against a contract whose `status` is `APPROVED` is a **gate failure** in the producer's pipeline: report `CONTRACT BREACH C-NNN` with each change, and tell the producer either to restore compatibility or to register a new contract version (a changed approved contract counts as churn and needs a new approval).
+4. Remind the user that the hub's `aidlc-contract.sh test C-NNN` is what flips an approved contract to `BREACHED` and blocks consumers; this analysis explains why.
+
 ## Step 1 — Identify the Comparison Baseline
 
 If `$ARGUMENTS` is provided:

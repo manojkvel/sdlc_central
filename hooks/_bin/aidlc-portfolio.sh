@@ -47,11 +47,12 @@ for row in $(printf '%s' "$PHASES" | jq -r '.[] | @base64'); do
   sc="$(grep -m1 'Result:' "$d/SCORECARD.md" 2>/dev/null | sed 's/.*Result:\*\* //')"
   EN="$(printf '%s' "$EN" | jq -c --argjson r "$r" --arg v "${v:-none}" --arg sc "${sc:-none}" '. + [$r + {verification:$v, scorecard:$sc}]')"
 done
-CONTRACTS="$(awk -F'|' '/^\| C-[0-9]+/ {for(i=2;i<=8;i++) gsub(/^ +| +$/,"",$i); printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\n",$2,$3,$4,$5,$6,$7,$8}' "$AIDLC_TRACK/contract-registry.md" 2>/dev/null \
-  | jq -R 'split("\t") | {id:.[0], kind:.[1], producer:.[2], consumers:.[3], version:.[4], status:.[5], approved_by:.[6]}' | jq -sc .)"
-jq -n --arg repo "$REPO" --arg asof "$(aidlc_now)" --arg ph "$(rf CURRENT_PHASE)" --arg st "$(rf CURRENT_STAGE)" --arg g "$(rf BLOCKED_GATE)" \
+CONTRACTS="$(awk -F'|' '/^\| C-[0-9]+/ {for(i=2;i<=9;i++) gsub(/^ +| +$/,"",$i); printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",$2,$3,$4,$5,$6,$7,$8,$9}' "$AIDLC_TRACK/contract-registry.md" 2>/dev/null \
+  | jq -R 'split("\t") | {id:.[0], kind:.[1], producer:.[2], consumers:.[3], version:.[4], status:.[5], approved_by:.[6], last_test:.[7]}' | jq -sc .)"
+REMOTE="$(git -C "$AIDLC_PROJECT" config --get remote.origin.url 2>/dev/null | sed -E 's#^git@github.com:#https://github.com/#; s#\.git$##')"
+jq -n --arg repo "$REPO" --arg remote "$REMOTE" --arg asof "$(aidlc_now)" --arg ph "$(rf CURRENT_PHASE)" --arg st "$(rf CURRENT_STAGE)" --arg g "$(rf BLOCKED_GATE)" \
   --arg risk "$(rf GATE_RISK)" --arg na "$(rf NEXT_ACTION)" --arg owner "$(rf NEXT_ACTION_OWNER)" --argjson phases "$EN" --argjson contracts "${CONTRACTS:-[]}" \
-  '{as_of:$asof, repos:[{repo:$repo, resume:{phase:$ph, stage:$st, blocked_gate:$g, gate_risk:$risk, next_action:$na, owner:$owner}, phases:$phases, contracts:$contracts}]}' > "$OUT/portfolio.json"
+  '{as_of:$asof, repos:[{repo:$repo, remote:(if $remote=="" then null else $remote end), resume:{phase:$ph, stage:$st, blocked_gate:$g, gate_risk:$risk, next_action:$na, owner:$owner}, phases:$phases, contracts:$contracts}]}' > "$OUT/portfolio.json"
 
 ITEMS='[]'
 if [ "$(rf BLOCKED_GATE)" != "none" ] && [ -n "$(rf BLOCKED_GATE)" ]; then
@@ -62,9 +63,10 @@ if [ "$(rf BLOCKED_GATE)" != "none" ] && [ -n "$(rf BLOCKED_GATE)" ]; then
   INPUTS='[]'; OLDIFS="$IFS"; IFS=','
   for a in $(rf NEXT_ACTION_INPUTS); do a="$(printf '%s' "$a" | sed 's/^ *//; s/ *$//')"; [ -z "$a" ] || [ "$a" = none ] && continue
     INPUTS="$(printf '%s' "$INPUTS" | jq -c --arg p "$a" --arg h "$(aidlc_hash "$(aidlc_abs "$a")")" '. + [{path:$p, sha256:$h}]')"; done; IFS="$OLDIFS"
-  ITEMS="$(jq -nc --arg repo "$REPO" --arg g "$G" --arg risk "$(rf GATE_RISK)" --arg ph "$(rf CURRENT_PHASE)" --arg pub "$PUB" \
+  REMOTE="$(git -C "$AIDLC_PROJECT" config --get remote.origin.url 2>/dev/null | sed -E 's#^git@github.com:#https://github.com/#; s#\.git$##')"
+  ITEMS="$(jq -nc --arg remote "$REMOTE" --arg repo "$REPO" --arg g "$G" --arg risk "$(rf GATE_RISK)" --arg ph "$(rf CURRENT_PHASE)" --arg pub "$PUB" \
     --arg sla "${SLA:-48}" --arg decider "${DECIDER:-unspecified}" --argjson inputs "$INPUTS" --arg na "$(rf NEXT_ACTION)" \
-    '[{repo:$repo, gate:$g, risk:$risk, phase:$ph, published_at:(if $pub=="" then null else $pub end), sla_hours:($sla|tonumber), decider:$decider, inputs:$inputs, next_action:$na}]')"
+    '[{repo:$repo, remote:(if $remote=="" then null else $remote end), gate:$g, risk:$risk, phase:$ph, published_at:(if $pub=="" then null else $pub end), sla_hours:($sla|tonumber), decider:$decider, inputs:$inputs, next_action:$na}]')"
 fi
 jq -n --arg asof "$(aidlc_now)" --argjson items "$ITEMS" '{as_of:$asof, items:$items}' > "$OUT/checkpoints.json"
 
@@ -73,7 +75,7 @@ DEC="$(awk '/^### \[HD-/ {id=$2; gsub(/[\[\]]/,"",id); t=$0; sub(/^### \[[^]]*\]
   /\*\*Timestamp:\*\*/ {ts=$0; sub(/.*\*\*Timestamp:\*\* /,"",ts)}
   /\*\*Decider:\*\*/ {who=$0; sub(/.*\*\*Decider:\*\* /,"",who)}
   /\*\*Gate:\*\*/ && id!="" {g=$0; sub(/.*\*\*Gate:\*\* `/,"",g); sub(/`.*/,"",g); r=$0; sub(/.*\*\*Risk:\*\* /,"",r); sub(/ .*/,"",r); p=$0; sub(/.*\*\*Phase:\*\* `/,"",p); sub(/`.*/,"",p); st=$0; sub(/.*\*\*Status:\*\* /,"",st); printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", id, ts, who, g, r, p, st, t; id=""}' "$HDF" 2>/dev/null \
-  | jq -R --arg repo "$REPO" 'split("\t") | {repo:$repo, id:.[0], at:.[1], decider:.[2], gate:.[3], risk:.[4], phase:.[5], status:.[6], decision:.[7], identity:(if (.[2]|test("identity: sso")) then "sso" else "asserted" end)}' | jq -sc .)"
+  | jq -R --arg repo "$REPO" 'split("\t") | {repo:$repo, id:.[0], at:.[1], decider:.[2], gate:.[3], risk:.[4], phase:.[5], status:.[6], decision:.[7], identity:(if (.[2]|test("identity: (sso|github)")) then "authenticated" else "asserted" end)}' | jq -sc .)"
 BLK="$(grep -E '^\* \*\*Attempt on' "$HDF" 2>/dev/null | sed -E 's/^\* \*\*Attempt on ([^ ]+) \(([^ ]*) - gate ([^,]*), risk ([^)]*)\)\*\*:$/\1\t\2\t\3\t\4/' \
   | jq -R --arg repo "$REPO" 'split("\t") | {repo:$repo, at:.[0], role:.[1], gate:.[2], risk:.[3], status:"REJECTED (vague)"}' | jq -sc .)"
 jq -n --arg asof "$(aidlc_now)" --argjson d "${DEC:-[]}" --argjson b "${BLK:-[]}" '{as_of:$asof, items:($d + $b)}' > "$OUT/decisions.json"

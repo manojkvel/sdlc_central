@@ -22,7 +22,7 @@ categories:
     skills: [spec-review, spec-evolve, spec-fix]
   governance:
     description: "Compliance, standards, and auditing"
-    skills: [governance-scorecard, aidlc-decision-guard, skill-gap-analyzer, license-compliance-audit, release-readiness-checker, api-contract-analyzer, cross-repo-standards-enforcer, approval-workflow-auditor, code-ownership-mapper, component-audit]
+    skills: [governance-scorecard, aidlc-decision-guard, skill-gap-analyzer, license-compliance-audit, release-readiness-checker, api-contract-analyzer, cross-repo-standards-enforcer, approval-workflow-auditor, code-ownership-mapper, component-audit, contract-registry]
   production-support:
     description: "Incident detection, triage, and recovery"
     skills: [incident-detector, incident-triager, rollback-assessor, incident-postmortem-synthesizer]
@@ -126,6 +126,13 @@ skills:
     command: "/component-audit"
     argument_hint: "<figma-url-or-file-key> [--scope full|unmapped|stale]"
     roles: [designer, architect, tech-lead]
+
+  - name: contract-registry
+    description: "Hub contract registry for tier 3: register, approve, test (breach detection), consumer check, propose lifting exclusions"
+    category: governance
+    command: "/contract-registry"
+    argument_hint: "init | register C-NNN ... | request-approval | approve | test | check | propose-lift"
+    roles: [architect, tech-lead, release-manager]
 
   - name: cross-repo-standards-enforcer
     description: "Audit a repository against organizational standards"
@@ -614,8 +621,9 @@ roles:
       - sprint-demo
 
   architect:
-    skill_count: 22
+    skill_count: 23
     skills:
+      - contract-registry
       - wiki-curate
       - source-extract
       - design-review
@@ -639,6 +647,7 @@ roles:
       - reverse-engineer
       - component-audit
     pipelines:
+      - contract-first
       - design-to-plan
       - system-health
       - migration-planning
@@ -733,8 +742,9 @@ roles:
       - governance
 
   release-manager:
-    skill_count: 11
+    skill_count: 12
     skills:
+      - contract-registry
       - aidlc-metrics-extract
       - governance-scorecard
       - release-readiness-checker

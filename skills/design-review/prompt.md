@@ -3,6 +3,10 @@
 
 Evaluate the structural quality of the codebase or a specific module.
 
+## AIDLC two-tier design (tier 3)
+
+When the repository belongs to a hub (`hub:` in the phase's `unit.yaml`), review in two tiers. The **central** design (`<hub>/.track/TECHNICAL_DESIGN.md`) owns integration boundaries, contract formats and shared security assumptions; the **local** `TECHNICAL_DESIGN.md` owns package layout, runtime frameworks and repo-specific logic. Flag as HIGH any local decision that crosses a central boundary, any interface not covered by a registered contract, and a local design that does not cite the central version it was written against.
+
 ## Step 1 — Scope the Review
 
 If `$ARGUMENTS` is a file or module path, focus on that area.

@@ -8,3 +8,5 @@ codes:
   A02: decision names a different gate
   A03: required text missing (risk acknowledgement, release scope, reason, workstream id)
   A04: decision string not in exact upper case
+  A05: authenticated identity required at high, security-sensitive and release risk (authenticated_identity_required)
+  A06: authenticated decider not listed for the deciding role in stakeholders.yaml

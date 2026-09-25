@@ -77,8 +77,8 @@ TABS.forEach(([id, label]) => { const b = document.createElement('button'); b.te
   h += `</table></div>${phases.length ? '' : '<div class="empty">No phases yet.</div>'}${src('<track root>/state.md ## Phases; phases/*/VERIFICATION.md; phases/*/SCORECARD.md')}</div>`;
   const contracts = P.repos.flatMap(r => (r.contracts || []).map(c => ({...c, repo: r.repo})));
   h += `<div class="card" style="margin-top:14px"><h2>Contracts</h2>`;
-  if (!contracts.length) h += `<div class="empty">No contracts registered (tier 3 hub-and-spoke arrives in phase 4).</div>`;
-  else { h += `<div class="tw"><table><tr><th>Contract</th><th>Kind</th><th>Producer</th><th>Consumers</th><th>Version</th><th>Status</th></tr>`; contracts.forEach(c => h += `<tr><td class="mono">${esc(c.id)}</td><td>${esc(c.kind)}</td><td>${esc(c.producer)}</td><td>${esc(c.consumers)}</td><td>${esc(c.version)}</td><td>${pill(c.status)}</td></tr>`); h += `</table></div>`; }
+  if (!contracts.length) h += `<div class="empty">No contracts registered. Tier 3 hubs register them with aidlc-contract.sh.</div>`;
+  else { h += `<div class="tw"><table><tr><th>Contract</th><th>Kind</th><th>Producer</th><th>Consumers</th><th>Version</th><th>Status</th><th>Approved by</th><th>Last test</th></tr>`; contracts.forEach(c => h += `<tr><td class="mono">${esc(c.id)}</td><td>${esc(c.kind)}</td><td>${esc(c.producer)}</td><td>${esc(c.consumers)}</td><td>${esc(c.version)}</td><td>${pill(c.status)}</td><td class="mono">${esc(c.approved_by)}</td><td class="mono">${esc(c.last_test)}</td></tr>`); h += `</table></div>`; }
   h += src('<track root>/contract-registry.md') + `</div>`;
   $('#portfolio').innerHTML = h;
 })();
@@ -103,18 +103,19 @@ TABS.forEach(([id, label]) => { const b = document.createElement('button'); b.te
   const strings = (it) => { const g = it.gate, t = g.replace(/^approve-/, '').replace(/-/g, ' ').toUpperCase(); const need = /high|security/.test(it.risk) ? ': <risk acknowledgement>' : it.risk === 'release' ? ': <release scope>' : '';
     const base = g === 'lift-exclusion' ? 'LIFT EXCLUSION: WS-NNN' : g === 'approve-contract' ? 'APPROVE WORKSTREAM CONTRACT: WS-NNN' : 'APPROVE ' + t + need;
     return [base, 'APPROVE WITH RISK: <risk and excluded scope>', 'REQUEST CHANGES: <reason>', 'REQUEST VERIFICATION: <missing evidence>'].concat(/release/.test(g) ? ['DEFER RELEASE','REJECT RELEASE'] : ['DEFER']); };
-  let h = `<div class="card"><h2>Open checkpoints</h2><p class="muted">Decisions are typed in the agent (or, from phase 4, submitted here through the decision bot). The approval guard rejects anything else.</p>`;
+  let h = `<div class="card"><h2>Open checkpoints</h2><p class="muted">Decisions are typed in the agent (identity asserted) or recorded by the decision bot workflow (identity authenticated by GitHub). Both go through the approval guard, which rejects anything else.</p>`;
   if (!C.items.length) h += `<div class="empty">No gate is waiting for a decision.</div>`;
   C.items.forEach(it => {
     const age = it.published_at ? Math.round((Date.now() - Date.parse(it.published_at)) / 36e5) : null;
     h += `<div style="border-top:1px solid var(--rule2);padding:10px 0"><h3>${esc(it.repo)} · <span class="mono">${esc(it.phase)}</span> · ${esc(it.gate)} ${pill(it.risk)}</h3>
       <div class="muted">Decider: ${esc(it.decider)} · waiting ${age == null ? '—' : age + 'h'} of ${esc(it.sla_hours)}h SLA ${age != null && age > it.sla_hours ? '<span class="pill bad">over SLA</span>' : ''}</div>
       <table style="margin:6px 0">${(it.inputs || []).map(i => `<tr><td class="mono">${esc(i.path)}</td><td class="mono muted">sha256:${esc(String(i.sha256).slice(0, 16))}…</td></tr>`).join('')}</table>
-      <div>${strings(it).map(s => `<button class="cp" data-copy="${esc(s)}">${esc(s)}</button>`).join('')}</div></div>`;
+      <div>${strings(it).map(s => `<button class="cp" data-copy="${esc(s)}">${esc(s)}</button>`).join('')}</div>
+      <div class="muted" style="margin-top:6px">${it.remote ? `Decide with an authenticated identity: <a href="${esc(it.remote)}/actions/workflows/aidlc-decision.yml" target="_blank" rel="noopener">run the aidlc-decision workflow</a> or ` : 'Decide in the agent, or with the decision bot: '}<code>gh workflow run aidlc-decision.yml -f gate=${esc(it.gate)} -f decision="&lt;decision string&gt;"</code></div></div>`;
   });
   h += src('<track root>/state.md; lineage.md decision.checkpoint_published; stakeholders.yaml') + `</div>`;
   h += `<div class="card" style="margin-top:14px"><h2>Decision history</h2><div class="tw"><table><tr><th>ID</th><th>When</th><th>Gate</th><th>Risk</th><th>Phase</th><th>Status</th><th>Identity</th><th>Decision</th></tr>`;
-  D.items.slice().reverse().forEach(d => h += `<tr><td class="mono">${esc(d.id || '—')}</td><td class="mono">${esc(d.at)}</td><td>${esc(d.gate)}</td><td>${esc(d.risk)}</td><td class="mono">${esc(d.phase || '')}</td><td>${pill(d.status)}</td><td>${d.identity ? pill(d.identity === 'sso' ? 'sso' : 'asserted') : ''}</td><td>${esc(d.decision || '')}</td></tr>`);
+  D.items.slice().reverse().forEach(d => h += `<tr><td class="mono">${esc(d.id || '—')}</td><td class="mono">${esc(d.at)}</td><td>${esc(d.gate)}</td><td>${esc(d.risk)}</td><td class="mono">${esc(d.phase || '')}</td><td>${pill(d.status)}</td><td>${d.identity ? pill(d.identity) : ''}</td><td>${esc(d.decision || '')}</td></tr>`);
   h += `</table></div>${D.items.length ? '' : '<div class="empty">No decisions recorded yet.</div>'}${src('<track root>/human-decisions.md sections 3 and 4')}</div>`;
   $('#decisions').innerHTML = h;
   document.querySelectorAll('.cp').forEach(b => b.onclick = () => { navigator.clipboard && navigator.clipboard.writeText(b.dataset.copy).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = b.dataset.copy, 1200); }).catch(() => {}); });

@@ -81,3 +81,4 @@ overrides:
   aidlc-metrics-extract: "Read, Grep, Glob, Bash(bash, jq, bc, ls, find, date)"
   source-extract: "Read, Write, Grep, Glob, Bash(git log, git show, ls, find, cat, jq, date)"
   wiki-curate: "Read, Write, Edit, Grep, Glob, Bash(bash, jq, git log, ls, find, date)"
+  contract-registry: "Read, Grep, Glob, Bash(bash, jq, shasum, git log, ls, find, date)"

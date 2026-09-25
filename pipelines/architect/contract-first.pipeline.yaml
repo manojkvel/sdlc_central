@@ -1,0 +1,41 @@
+pipeline:
+  name: "Contract First"
+  description: "Tier 3 hub: register a producer contract, decide it at the approve-contract gate, apply the decision, and test it so consumers can build"
+  role: architect
+  trigger: "When a workstream will produce an interface another workstream consumes"
+
+steps:
+  - id: register
+    skill: contract-registry
+    args: "register $INPUT"
+    description: "Register the contract as DRAFT with its schema and test command"
+
+  - id: design-check
+    skill: design-review
+    args: "$INPUT"
+    depends_on: [register]
+    description: "Two-tier design review: the contract stays inside the central TDES boundaries"
+
+  - id: approval
+    skill: contract-registry
+    args: "request-approval $INPUT"
+    depends_on: [design-check]
+    description: "Publish the approve-contract checkpoint (high risk)"
+    gate:
+      type: hitl
+      description: "Architect replies APPROVE WORKSTREAM CONTRACT: WS-NNN - <ack>, or WITH RISK to let consumers build ahead with release claims excluded"
+
+  - id: apply
+    skill: contract-registry
+    args: "approve $INPUT"
+    depends_on: [approval]
+    description: "Apply the recorded decision; a plain approval also requires a green contract test"
+    gate:
+      type: decision
+      pass_condition: "marker == CONTRACT OK"
+      on_fail: hitl
+
+output:
+  summary: "Contract approved (or approved with risk) and registered in the hub"
+  artifacts: [contracts/C-NNN.md, contract-registry.md, dependency-map.md, human-decisions.md]
+  next_pipeline: "developer/feature-build"

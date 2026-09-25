@@ -1,0 +1,6 @@
+id: UOW-004
+name: phase-4-hub-and-spoke-and-decision-bot
+profile: feature
+tier: 2
+repos: [sdlc_central]
+verify_command: node --test tests/aidlc-phase4.test.js

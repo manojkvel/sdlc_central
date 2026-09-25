@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "E-001",
+      "task": "TASK-001",
+      "acs": [],
+      "kind": "test",
+      "suite": true,
+      "command": "node --test tests/aidlc-phase4.test.js",
+      "command_hash": "2af6011a3f8cdb13",
+      "cwd": "/Users/kvel/Documents/manoj_ws/sdlc_central",
+      "started_at": "2026-09-24T19:41:38Z",
+      "finished_at": "2026-09-24T19:41:43Z",
+      "duration_ms": 4226,
+      "exit_code": 0,
+      "stdout_path": "evidence/TASK-001/001-node-test-tests-aidlc-phase4-test-js.out",
+      "stdout_sha256": "2de6ac73384699ffcdf215d40b5f8d499df1e4cfdb139ab7f05ee0528373896e",
+      "stderr_path": "evidence/TASK-001/001-node-test-tests-aidlc-phase4-test-js.err",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "report_path": null,
+      "report_sha256": null,
+      "touched_files": [
+        {
+          "path": "hooks/_bin/aidlc-contract.sh",
+          "sha256": "c06b5af1cab33de43a64d0664f46c7aeedd9b89018b04f611e5b00c867e0da15"
+        },
+        {
+          "path": "hooks/_lib/contracts.sh",
+          "sha256": "2a28c4ed68d75beb482ce9e78390fa239387b5746ede4e0c5c0a1a68bddaca3d"
+        }
+      ],
+      "touched_hash": "dc182d2137375e4f932d2e9203f99ede4b0a81ad7615f654d6cbdcf2df70af9c",
+      "stale": false,
+      "model": "unknown",
+      "sdlc": "2.0.0-alpha"
+    },
+    {
+      "id": "E-002",
+      "task": "TASK-002",
+      "acs": [],
+      "kind": "test",
+      "suite": false,
+      "command": "node --test --test-name-pattern=\"Hub-and-spoke\" tests/aidlc-phase4.test.js && bash hooks/_test/run.sh",
+      "command_hash": "1cf12c040d2afc06",
+      "cwd": "/Users/kvel/Documents/manoj_ws/sdlc_central",
+      "started_at": "2026-09-24T19:41:43Z",
+      "finished_at": "2026-09-24T19:41:52Z",
+      "duration_ms": 9655,
+      "exit_code": 0,
+      "stdout_path": "evidence/TASK-002/002-node-test-test-name-pattern-Hub-and-spok.out",
+      "stdout_sha256": "e09784474f4e89abfdf4c1de814d9a9ec7dcc53716c85f85962970db840d6f28",
+      "stderr_path": "evidence/TASK-002/002-node-test-test-name-pattern-Hub-and-spok.err",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "report_path": null,
+      "report_sha256": null,
+      "touched_files": [
+        {
+          "path": "hooks/aidlc-pre-write-guard/aidlc-pre-write-guard.sh",
+          "sha256": "281cce7adbd3c06d2cece7636fafeacdf6fe8cdc1616d7947cb8bff2571961f9"
+        },
+        {
+          "path": "hooks/_bin/aidlc-scorecard.sh",
+          "sha256": "6479083ad376378ec6ab91034ee1ee4bd8a5e61350f7caa6d24efd24d64376dd"
+        },
+        {
+          "path": "hooks/_lib/track-parse.sh",
+          "sha256": "40ca5a8fb6955db13dbd6aac0de883efd120d51b82d6b7fbc1b13906cce5c020"
+        }
+      ],
+      "touched_hash": "331759db3a72b69ce5beaf9c650bd0b9278c0bb438bea1be20185237cff25a8e",
+      "stale": false,
+      "model": "unknown",
+      "sdlc": "2.0.0-alpha"
+    },
+    {
+      "id": "E-003",
+      "task": "TASK-003",
+      "acs": [],
+      "kind": "test",
+      "suite": false,
+      "command": "node --test --test-name-pattern=\"Decision bot\" tests/aidlc-phase4.test.js",
+      "command_hash": "07765ca31b26d0e6",
+      "cwd": "/Users/kvel/Documents/manoj_ws/sdlc_central",
+      "started_at": "2026-09-24T19:41:53Z",
+      "finished_at": "2026-09-24T19:41:54Z",
+      "duration_ms": 909,
+      "exit_code": 0,
+      "stdout_path": "evidence/TASK-003/003-node-test-test-name-pattern-Decision-bot.out",
+      "stdout_sha256": "a26c95815070087e5a7450a7ff1c609a6f6c8a6509fef7e113c2e69450cf093c",
+      "stderr_path": "evidence/TASK-003/003-node-test-test-name-pattern-Decision-bot.err",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "report_path": null,
+      "report_sha256": null,
+      "touched_files": [
+        {
+          "path": "hooks/_bin/aidlc-decide.sh",
+          "sha256": "e2306165922f790bb503caeb0cfdb8c4552fdf079c642d548555c3eca97243d8"
+        },
+        {
+          "path": "hooks/aidlc-human-approval-guard/aidlc-human-approval-guard.sh",
+          "sha256": "fb4f1842548677313f6b163fcb18339d5a7da0e10a3fc4f24770c034eacbdd33"
+        },
+        {
+          "path": "adapters/_shared/ci/aidlc-decision.yml",
+          "sha256": "6b4afe0e7f29a3fcef8bd763c58feb86988e047a2622c9302cf2f3b363709657"
+        }
+      ],
+      "touched_hash": "25ba9ee7226b3b30389e4a43c40e381c51abf6e2578d485681b74bb29d2b378d",
+      "stale": false,
+      "model": "unknown",
+      "sdlc": "2.0.0-alpha"
+    },
+    {
+      "id": "E-004",
+      "task": "TASK-004",
+      "acs": [],
+      "kind": "test",
+      "suite": false,
+      "command": "node --test --test-name-pattern=\"Phase 4 wiring\" tests/aidlc-phase4.test.js && node --test tests/pipeline-schema.test.js",
+      "command_hash": "27f07df0f708b21f",
+      "cwd": "/Users/kvel/Documents/manoj_ws/sdlc_central",
+      "started_at": "2026-09-24T19:41:54Z",
+      "finished_at": "2026-09-24T19:41:55Z",
+      "duration_ms": 887,
+      "exit_code": 0,
+      "stdout_path": "evidence/TASK-004/004-node-test-test-name-pattern-Phase-4-wiri.out",
+      "stdout_sha256": "a61fa6bc7a49576df8ed67e4dc4ca8bb53cbf0eb29323ae2cedf70531203928b",
+      "stderr_path": "evidence/TASK-004/004-node-test-test-name-pattern-Phase-4-wiri.err",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "report_path": null,
+      "report_sha256": null,
+      "touched_files": [
+        {
+          "path": "skills/contract-registry/prompt.md",
+          "sha256": "2d1b937b04d6b03e3c1e7bb3f2042ab0dc2741b4b26d7527a1d12dab0f273fe3"
+        },
+        {
+          "path": "pipelines/architect/contract-first.pipeline.yaml",
+          "sha256": "55bc5ecd4df34cfd276d2d01b39da549b6effd97872b2cc6345d875aa07e7db4"
+        }
+      ],
+      "touched_hash": "72fd893899b0b88bc02b570709bf9579b4f8bb674d8a9e970dd2987b01207055",
+      "stale": false,
+      "model": "unknown",
+      "sdlc": "2.0.0-alpha"
+    }
+  ]
+}

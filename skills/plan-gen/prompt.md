@@ -70,6 +70,14 @@ If other plans exist, read them to maintain consistent format and conventions.
 
 ---
 
+### 1.4 AIDLC design and contract context (tier 3)
+
+When the phase's `unit.yaml` names a `hub:` and `consumes:` or `produces:` contracts:
+- Read the hub's central design (`<hub>/.track/TECHNICAL_DESIGN.md`) and cite its **Version** line in the plan's header ("Built against central TDES v0.3.0"). Local design choices must stay inside its integration boundaries.
+- For each consumed contract, name the contract id, version and status from `<hub>/.track/contracts/C-NNN.md`. If a contract is `APPROVED_WITH_RISK`, say so and plan against a mock generated from its schema; the unit's release claims stay excluded until the contract is verified and `LIFT EXCLUSION` is decided.
+- For each produced contract, add a phase that makes the contract's `test_command` pass, and list that command under `## Permitted destructive commands` only if it is destructive.
+- Declare every destructive command under `## Permitted destructive commands` and include `## Rollback`; the plan check fails without them.
+
 ## Phase 2 — Architectural Analysis
 
 Before writing the plan, determine:

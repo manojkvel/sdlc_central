@@ -5,9 +5,19 @@ pipeline:
   trigger: "When a phase (or a tier 3 integration of workstreams) is verified and ready for its release decision"
 
 steps:
+  - id: contracts
+    skill: contract-registry
+    args: "test --all"
+    description: "Tier 3: re-test every approved contract; a breach blocks the integration release"
+    gate:
+      type: decision
+      pass_condition: "marker == CONTRACT OK"
+      on_fail: hitl
+
   - id: scorecard
     skill: governance-scorecard
     args: "$INPUT"
+    depends_on: [contracts]
     description: "Six-dimension scorecard; writes the sealed SCORECARD.md and names the owner of every blocked dimension"
     gate:
       type: decision

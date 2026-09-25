@@ -88,7 +88,7 @@ SKILLS=(
   perf-review
   pipeline-monitor
   pipeline-orchestrator
-  plan-gen plan-check aidlc-evidence-verifier governance-scorecard aidlc-decision-guard aidlc-metrics-extract source-extract wiki-curate
+  plan-gen plan-check aidlc-evidence-verifier governance-scorecard aidlc-decision-guard aidlc-metrics-extract source-extract wiki-curate contract-registry
   plan-merge
   pr-orchestrator
   quality-gate

@@ -27,6 +27,9 @@ Sources: [AIDLC Framework PRD](https://claude.ai/code/artifact/616a5892-9810-42b
 | 17 | Metrics are computed, never reported: a missing source is null, every rate carries its counts, and squads are compared only with their own baseline. | `tests/aidlc-phase3.test.js` metrics test |
 | 18 | Every wiki claim cites a raw source; the console is read-only and self-contained, and every figure names its file. | wiki lint L01-L08 tests; console test "self-contained with no network calls" |
 | 19 | Installed hooks are verifiable: a manifest written at install detects tampering and unwiring. | integrity test (I02, I03) |
+| 20 | No consumer builds against an unapproved producer contract; building on a risk-accepted contract excludes the consumer's release claims until LIFT EXCLUSION is decided. | `tests/aidlc-phase4.test.js` hub-and-spoke tests (W09, D5, lift) |
+| 21 | A broken approved contract is detected by its own test and blocks consumers (BREACHED) until restored; a real edit to an approved contract is detected, registry-maintained fields are not edits. | phase 4 breach and X02 tests |
+| 22 | Authenticated decisions go through the same guard as typed ones; the bot refuses gate races and unauthorised deciders, and can be made mandatory for high and release risk. | phase 4 decision-bot tests (A05, A06) |
 | 14 | Non-goals stay non-goals: no hosted control plane, no database, no compiled engine, no new lifecycle vocabulary. | Review; any change here needs a tech-lead decision first |
 
 ## Decisions still needed from a human
@@ -38,6 +41,6 @@ initialised.
 | Decision | Assumed in phase 1 |
 | --- | --- |
 | Closed decision vocabulary, with casual approvals allowed at low risk only | Yes, as designed |
-| Claude Code is the only enforcing agent in phase 1; others advisory | Yes |
-| Hub is a separate repository (not a monorepo directory) | Not yet built (phase 4) |
+| Claude Code is the only enforcing agent in phase 1; others advisory | Yes; the decision bot adds authenticated decisions on any agent through GitHub Actions |
+| Hub is a separate repository (not a monorepo directory) | Both supported: `hub:` is a path. Default in docs: a separate repository beside the workstreams |
 | Price Elasticity installs phase 1 before its sprint 3 release decision | Not yet scheduled |

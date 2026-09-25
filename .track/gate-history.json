@@ -44,6 +44,21 @@
         "D6": "PASS"
       },
       "seal": "ffc807470a01332d92e4713330e6e2a18bfffdc9ef357c6e517f7c33a9d2b556"
+    },
+    {
+      "type": "release-scorecard",
+      "phase": "04-hub-and-decisions",
+      "date": "2026-09-25T00:48:19Z",
+      "decision": "FAIL",
+      "dimensions": {
+        "D1": "PASS",
+        "D2": "FAIL",
+        "D3": "FAIL",
+        "D4": "PASS",
+        "D5": "N/A",
+        "D6": "PASS"
+      },
+      "seal": "4844d085adc1c9922ae14330710a5ab42563d1d3d360a325f4dc1cc14224dd0b"
     }
   ]
 }

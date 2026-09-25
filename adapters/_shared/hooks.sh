@@ -30,7 +30,7 @@ hook_support_level() {
 _copy_tools() {
   local src="$1" dst="$2"
   mkdir -p "$dst/_lib" "$dst/_bin"
-  cp "$src/_lib/track-parse.sh" "$dst/_lib/"
+  cp "$src"/_lib/*.sh "$dst/_lib/"
   cp "$src"/_bin/*.sh "$dst/_bin/"
   [ -f "$src/../console/console.html" ] && cp "$src/../console/console.html" "$dst/_bin/console.html"
   chmod +x "$dst"/_bin/*.sh "$dst"/_lib/*.sh

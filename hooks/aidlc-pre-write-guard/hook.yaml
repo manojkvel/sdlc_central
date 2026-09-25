@@ -12,3 +12,4 @@ codes:
   W06: stage does not permit source writes
   W07: human-decisions.md written outside the approval guard
   W08: hand-written evidence or scorecard (evidence/, VERIFICATION.md, UAT.md, CONTRACT_EVIDENCE.md, SCORECARD.md)
+  W09: tier 3 source write against a consumed contract that is not approved (risk-accepted contracts allowed, release claims excluded)

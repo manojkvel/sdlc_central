@@ -1,0 +1,12 @@
+name: contract-registry
+version: "1.0.0"
+description: "Run the hub's contract registry for multi-workstream work — register producer contracts, request and apply approval decisions, test contracts to detect breaches, check a consumer's contracts before it builds, and propose lifting a release-claims exclusion"
+category: governance
+argument_hint: "init | workstream WS-NNN ... | register C-NNN ... | request-approval C-NNN | approve C-NNN | test [C-NNN|--all] | check | propose-lift | status"
+roles: [architect, tech-lead, release-manager]
+markers:
+  success: "## CONTRACT OK"
+  block: "## CONTRACT BLOCKED"
+writes: [contracts/C-NNN.md, contract-registry.md, dependency-map.md, workstream-map.md, state.md, lineage.md]
+hooks: [aidlc-pre-write-guard]
+design_ref: "Conversion Technical Guide > hub-and-spoke; PRD FR-E1..E5"

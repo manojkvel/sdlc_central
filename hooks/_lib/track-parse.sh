@@ -129,6 +129,18 @@ aidlc_hash() {
   if [ -f "$1" ]; then shasum -a 256 "$1" | cut -c1-64; else echo "-"; fi
 }
 
+# Hash of an artifact as approved. For contracts, the fields the registry maintains after approval
+# (status, approved_by_decision, last_test) are excluded, so a status change is not an edit; any
+# change to the schema, test command, version, consumers or body still is.
+aidlc_artifact_hash() {
+  [ -f "$1" ] || { echo "-"; return; }
+  case "$1" in
+    */contracts/C-*.md) grep -Ev '^(status|approved_by_decision|last_test):' "$1" | shasum -a 256 | cut -c1-64 ;;
+    */unit.yaml) grep -Ev '^release_claims_excluded:' "$1" | shasum -a 256 | cut -c1-64 ;;
+    *) shasum -a 256 "$1" | cut -c1-64 ;;
+  esac
+}
+
 # Path relative to the project directory.
 aidlc_rel() {
   local p="$1"

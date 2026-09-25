@@ -4,17 +4,72 @@
   "title": "AIDLC unit of work (unit.yaml)",
   "description": "Declares one phase under .track/phases/NN-slug/. Read by the runner and the hooks.",
   "type": "object",
-  "required": ["id", "name"],
+  "required": [
+    "id",
+    "name"
+  ],
   "properties": {
-    "id": {"type": "string", "pattern": "^UOW-[0-9]{3,}$"},
-    "name": {"type": "string", "minLength": 1},
-    "profile": {"enum": ["feature", "bugfix", "poc", "security", "infra", "data", "migration"]},
-    "tier": {"enum": [1, 2, 3]},
-    "repos": {"type": "array", "items": {"type": "string"}},
-    "hub": {"type": "string", "description": "Path or URL of the hub repository (tier 3 only)"},
-    "produces": {"type": "array", "items": {"type": "string", "pattern": "^C-[0-9]{3,}$"}},
-    "consumes": {"type": "array", "items": {"type": "string", "pattern": "^C-[0-9]{3,}$"}},
-    "release_claims_excluded": {"type": "boolean", "default": false}
+    "id": {
+      "type": "string",
+      "pattern": "^UOW-[0-9]{3,}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile": {
+      "enum": [
+        "feature",
+        "bugfix",
+        "poc",
+        "security",
+        "infra",
+        "data",
+        "migration"
+      ]
+    },
+    "tier": {
+      "enum": [
+        1,
+        2,
+        3
+      ]
+    },
+    "repos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hub": {
+      "type": "string",
+      "description": "Path or URL of the hub repository (tier 3 only)"
+    },
+    "produces": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^C-[0-9]{3,}$"
+      }
+    },
+    "consumes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^C-[0-9]{3,}$"
+      }
+    },
+    "release_claims_excluded": {
+      "type": "boolean",
+      "default": false
+    },
+    "workstream": {
+      "type": "string",
+      "pattern": "^WS-[0-9]{3,}$"
+    },
+    "verify_command": {
+      "type": "string"
+    }
   },
   "additionalProperties": false
 }
