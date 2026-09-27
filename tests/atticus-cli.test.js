@@ -48,9 +48,18 @@ describe('atticus CLI', { skip: !jq && 'jq not installed' }, () => {
     assert.strictEqual(at(d, ['doctor']).stdout.includes('hooks intact'), true);
   });
 
-  it('init picks up Cursor from the project files; add appends a role for the same agent', () => {
+  it('a Cursor project gets the supported AGENTS.md adapter by default', () => {
     const d = project(['.cursor']);
-    assert.strictEqual(at(d, ['init', '--role', 'qa']).status, 0);
+    const r = at(d, ['init', '--role', 'qa']);
+    assert.strictEqual(r.status, 0, r.stderr);
+    assert.match(r.stdout, /experimental in this release/);
+    assert.ok(fs.existsSync(path.join(d, 'AGENTS.md')));
+    assert.ok(!fs.existsSync(path.join(d, '.cursor', 'rules', 'sdlc-atticus.mdc')));
+  });
+
+  it('with --experimental, init picks up Cursor from the project files; add keeps it experimental', () => {
+    const d = project(['.cursor']);
+    assert.strictEqual(at(d, ['init', '--role', 'qa', '--experimental']).status, 0);
     assert.ok(fs.existsSync(path.join(d, '.cursor', 'rules', 'sdlc-atticus.mdc')));
     const a = at(d, ['add', 'developer']);
     assert.strictEqual(a.status, 0, a.stderr);
@@ -110,6 +119,38 @@ describe('atticus CLI', { skip: !jq && 'jq not installed' }, () => {
     assert.ok(fs.existsSync(path.join(H, '.claude', 'skills', 'atticus', 'SKILL.md')));
     assert.ok(fs.existsSync(path.join(H, '.claude', 'agents', 'aidlc-orchestrator.md')));
     assert.ok(!fs.existsSync(path.join(H, '.claude', 'hooks')), 'hooks are never global');
+  });
+});
+
+describe('atticus → Go core (v2 track)', { skip: spawnSync('go', ['version']).status !== 0 && 'Go not installed' }, () => {
+  it('layout init, start on a branch, status, context and ledger lint go through atticus-core', () => {
+    const d = fs.mkdtempSync(path.join(os.tmpdir(), 'at-v2-'));
+    execFileSync('bash', ['-c', 'git init -q -b main && git config user.name Dana && git config user.email d@x'], { cwd: d });
+    assert.strictEqual(at(d, ['layout', 'init']).status, 0);
+    execFileSync('bash', ['-c', 'git add -A && git commit -qm init'], { cwd: d });
+    const s = at(d, ['start', 'PAY-142', '--name', 'refund idempotency']);
+    assert.strictEqual(s.status, 0, s.stderr);
+    assert.match(s.stdout, /feat\/PAY-142-refund-idempotency/);
+    assert.match(at(d, ['status']).stdout, /Unit:\s+PAY-142/);
+    assert.match(at(d, ['context']).stdout, /^unit PAY-142 · stage intake/m);
+    assert.match(at(d, ['ledger', 'lint']).stdout, /L000 ledger clean/);
+    const m = at(d, ['migrate', '--to', 'v2']);
+    assert.notStrictEqual(m.status, 0, 'a v2 track cannot be migrated to v2 again');
+  });
+
+  it('migrating a v1 track to v2 needs --force until the hooks are v2-aware, and the bash hooks warn on v2', () => {
+    const d = project(['.claude']);
+    at(d, ['init']);
+    const r = at(d, ['migrate', '--to', 'v2']);
+    assert.strictEqual(r.status, 2);
+    assert.match(r.stderr, /--force/);
+    assert.strictEqual(at(d, ['migrate', '--to', 'v2', '--dry-run']).status, 0);
+    assert.strictEqual(at(d, ['migrate', '--to', 'v2', '--force']).status, 0);
+    const w = spawnSync('bash', [path.join(d, '.claude', 'hooks', 'aidlc-pre-write-guard', 'aidlc-pre-write-guard.sh')],
+      { input: JSON.stringify({ tool: 'write', path: 'src/a.py' }), encoding: 'utf8', env: { ...process.env, AIDLC_PROJECT_DIR: d } });
+    assert.match(w.stderr, /layout v2.*Local enforcement is OFF/);
+    assert.strictEqual(at(d, ['migrate', '--to', 'v1']).status, 0);
+    assert.ok(fs.existsSync(path.join(d, '.track', 'state.md')), 'v1 restored');
   });
 });
 

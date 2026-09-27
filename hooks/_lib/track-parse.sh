@@ -108,7 +108,15 @@ aidlc_load_state() {
 }
 
 # True when the project has adopted AIDLC. Hooks are inert until init-track.sh runs.
-aidlc_active() { [ -d "$AIDLC_TRACK" ] && [ -f "$AIDLC_STATE" ]; }
+# A v2 track root (layout-version 2) is not understood by these bash hooks until roadmap M2: say so
+# on every call instead of going quietly inert.
+aidlc_active() {
+  if [ -f "$AIDLC_TRACK/layout-version" ] && [ "$(tr -d '[:space:]' < "$AIDLC_TRACK/layout-version")" = "2" ]; then
+    echo "AIDLC WARN $AIDLC_HOOK_NAME: this track root is layout v2, which the bash hooks do not enforce yet (roadmap M2). Local enforcement is OFF; CI still runs. Reverse with: atticus-core migrate --to v1" >&2
+    return 1
+  fi
+  [ -d "$AIDLC_TRACK" ] && [ -f "$AIDLC_STATE" ]
+}
 
 # Tier of the current phase: unit.yaml, then config tier_default, then profile floor, then 2.
 aidlc_tier() {

@@ -50,19 +50,21 @@ cat <<U
 Setup and maintenance
   atticus setup [--shell zsh|bash|fish|pwsh] [--global] [--name "Your Name"] [--undo]
   atticus init [--agent A[,B]] [--role R[,S]] [--tier 1|2|3] [--hub] [--ci] [--decisions]
-               [--track-root P] [--no-hooks] [--track-only] [-y]
+               [--track-root P] [--no-hooks] [--track-only] [--experimental] [-y]
   atticus add <role>                 add another role's skills and pipelines
   atticus update [--self|--project]  default: both
   atticus doctor [--fix]
   atticus remove
   atticus ci [--decisions]           add GitHub Actions checks (and the decision bot)
-  atticus migrate [--dry-run] [--from D] [--reverse]
+  atticus migrate [--dry-run] [--from D] [--reverse]   import old specs/ into the track
+  atticus migrate --to v2|v1 [--dry-run] [--force]  convert the track layout (Go core, reversible)
+  atticus ledger list|record|lint | context | views | layout init      Go core (v2 track)
   atticus completion                 print the bash/zsh completion script
 
 Work (the same things /atticus does inside the agent)
   atticus start <what> [--profile feature|bugfix|poc|security|infra|data|migration] [--tier N]
   atticus status | resume | go [path]
-  atticus bench [--open]            refresh metrics and build the Measurement Bench and console
+  atticus bench [--open]            refresh metrics and build the Measurement Bench and console (experimental)
   atticus evidence run --task TASK-001 -- <test command>
   atticus verify | scorecard | metrics | console | portfolio | contract | sla
           | wiki-lint | knowledge-index | integrity | decide     [tool args]
@@ -71,6 +73,28 @@ Agents: $AGENTS
 Roles:  $ROLES
 U
 }
+
+# The Go core (roadmap M1): ledger, units bound to branches, v1↔v2 migration.
+core_bin() {
+  local c b="$AT_HOME/build/atticus-core"
+  # From a source checkout, rebuild when any Go source is newer than the binary (never run a stale core).
+  if command -v go >/dev/null 2>&1 && [ -f "$AT_HOME/go.mod" ] && [ -x "$b" ] && \
+     [ -n "$(cd "$AT_HOME" && find go.mod go.sum cmd internal -newer "$b" -print 2>/dev/null | head -1)" ]; then
+    (cd "$AT_HOME" && go build -o build/atticus-core ./cmd/atticus) >/dev/null 2>&1
+  fi
+  for c in "$ATTICUS_CORE" "$b" "$(command -v atticus-core 2>/dev/null)"; do
+    [ -n "$c" ] && [ -x "$c" ] && { echo "$c"; return 0; }
+  done
+  if command -v go >/dev/null 2>&1 && [ -f "$AT_HOME/go.mod" ]; then
+    (cd "$AT_HOME" && go build -o build/atticus-core ./cmd/atticus) >/dev/null 2>&1 && { echo "$AT_HOME/build/atticus-core"; return 0; }
+  fi
+  return 1
+}
+core() {
+  local c; c="$(core_bin)" || die "the Go core is not built. Install Go 1.23+ and rerun, or build it: (cd $AT_HOME && go build -o build/atticus-core ./cmd/atticus)"
+  exec "$c" "$@"
+}
+track_is_v2() { local r; r="$PROJECT/$(track_root)"; [ -f "$r/layout-version" ] && [ "$(tr -d '[:space:]' < "$r/layout-version")" = "2" ]; }
 
 cfg_file() { for d in .claude .sdlc .cursor .github; do [ -f "$PROJECT/$d/sdlc-central.json" ] && { echo "$PROJECT/$d/sdlc-central.json"; return; }; done; }
 hooks_dir() { for d in .claude .cursor .github .sdlc; do [ -d "$PROJECT/$d/hooks/_bin" ] && { echo "$PROJECT/$d"; return; }; done; }
@@ -148,6 +172,7 @@ cmd_init() {
       --tier|--tier-default) pass+=(--tier-default "$2"); shift 2 ;;
       --track-root) pass+=(--track-root "$2"); tr="$2"; shift 2 ;;
       --no-hooks) pass+=(--no-hooks); shift ;;
+      --experimental) pass+=(--experimental); export ATTICUS_EXPERIMENTAL=1; shift ;;
       --hub) hub=1; shift ;; --ci) ci=1; shift ;; --decisions) ci=1; dec=1; shift ;;
       --track-only) track_only=1; shift ;;
       -y|--yes) export ATTICUS_YES=1; shift ;;
@@ -166,6 +191,13 @@ cmd_init() {
         agents="$(pick_from "Which agents? (numbers, comma separated)" "$found" 1)"
         [ "$agents" = "1" ] && agents="$1"
       else agents="$1"; [ $# -gt 1 ] && say "Using $1 (also found: ${*:2}; add them with --agent)."; fi
+    fi
+    if [ "${ATTICUS_EXPERIMENTAL:-0}" != 1 ]; then
+      case ",$agents," in *,claude-code,*|*,agents-md,*) ;; *)
+        say "Found $agents, which is experimental in this release. Installing the generic AGENTS.md adapter (advisory; CI enforces)."
+        say "For $agents-specific files, rerun with --experimental."
+        agents="agents-md" ;;
+      esac
     fi
     if [ -z "$roles" ]; then
       interactive && say "Your role:"
@@ -199,7 +231,8 @@ cmd_init() {
 cmd_add() {
   [ -n "$1" ] || die "usage: atticus add <role>"
   local a; a="$(installed_agents)"; [ -n "$a" ] || die "Atticus is not set up here. Run: atticus init"
-  AT_ADDING=1 cmd_init --role "$1" --agent "$(echo $a | tr ' ' ',')" -y
+  local xf=""; grep -qs '"experimental": *true' "$PROJECT/.claude/sdlc-central.json" "$PROJECT/.sdlc/sdlc-central.json" && xf="--experimental"
+  AT_ADDING=1 cmd_init --role "$1" --agent "$(echo $a | tr ' ' ',')" -y $xf
 }
 
 cmd_update() {
@@ -214,6 +247,7 @@ cmd_update() {
         git -C "$AT_HOME" pull --quiet --ff-only || say "Atticus: could not fast-forward $AT_HOME; update it by hand."
         after="$(git -C "$AT_HOME" rev-parse --short HEAD)"
         [ "$before" = "$after" ] && say "Atticus is up to date ($after)." || say "Atticus updated $before → $after."
+        if command -v go >/dev/null 2>&1; then (cd "$AT_HOME" && go build -o build/atticus-core ./cmd/atticus) >/dev/null 2>&1 && say "Go core rebuilt."; fi
       fi
     fi
     # Run the project step with the new code.
@@ -330,6 +364,7 @@ cmd_go() {
 
 cmd_bench() {
   [ -n "$(cfg_file)" ] || die "Atticus is not set up here. Run: atticus init"
+  say "Note: the Measurement Bench is experimental (frozen) in this release." >&2
   local open=0; [ "$1" = "--open" ] && open=1
   local m p c; m="$(tool_path metrics)"; p="$(tool_path portfolio)"; c="$(tool_path console)"
   AIDLC_PROJECT_DIR="$PROJECT" bash "$m" > /dev/null || die "metrics failed (atticus metrics shows why)"
@@ -377,6 +412,7 @@ cmd_doctor() {
   chk git  "(required)" req
   if command -v shasum >/dev/null 2>&1 || command -v sha256sum >/dev/null 2>&1; then say "  ok    shasum/sha256sum"; else say "  MISS  shasum or sha256sum (required)"; bad=1; fi
   chk perl "(optional: evidence timing)"
+  if core_bin >/dev/null; then say "  ok    atticus-core ($("$(core_bin)" version | cut -d' ' -f2))"; else say "  MISS  atticus-core  (Go 1.23+ builds it; needed for the v2 track)"; fi
   if command -v atticus >/dev/null 2>&1; then say "  ok    atticus on PATH"
   else say "  MISS  atticus on PATH"; [ $fix -eq 1 ] && cmd_setup -y > /dev/null && say "        fixed: ran atticus setup (open a new terminal)"; fi
   if [ -n "$(cfg_file)" ]; then
@@ -407,12 +443,18 @@ case "${1:-help}" in
   link) shift; mkdir -p "${1:-$HOME/.local/bin}"; ln -sf "$AT_HOME/bin/atticus" "${1:-$HOME/.local/bin}/atticus"; say "linked ${1:-$HOME/.local/bin}/atticus" ;;
   completion) cat "$AT_HOME/completions/atticus.bash" ;;
   ci) shift; ad="$(hooks_dir)"; exec bash "$SETUP/install-ci.sh" --agent-dir "$(basename "${ad:-.claude}")" "$@" ;;
-  migrate) shift; exec bash "$SETUP/migrate-specs.sh" "$@" ;;
+  migrate) shift
+    case " $* " in *" --to "*|*" --to="*) core migrate "$@" ;; esac
+    exec bash "$SETUP/migrate-specs.sh" "$@" ;;
+  ledger|context|views|layout) core "$@" ;;
   bench) shift; cmd_bench "$@" ;;
-  status) cmd_status ;;
-  resume) cmd_resume ;;
-  start) shift; tool start "$@" ;;
-  evidence|verify|scorecard|metrics|console|portfolio|contract|sla|wiki-lint|knowledge-index|integrity|decide)
+  status) if track_is_v2; then shift; core status "$@"; fi; cmd_status ;;
+  resume) if track_is_v2; then core context; fi; cmd_resume ;;
+  start) shift; if track_is_v2; then core start "$@"; fi; tool start "$@" ;;
+  console|portfolio|contract|wiki-lint|knowledge-index)
+    say "Note: '$1' is experimental (frozen) in this release." >&2
+    t="$1"; shift; tool "$t" "$@" ;;
+  evidence|verify|scorecard|metrics|sla|integrity|decide)
     t="$1"; shift; tool "$t" "$@" ;;
   *) die "unknown command '$1' (atticus help)" ;;
 esac

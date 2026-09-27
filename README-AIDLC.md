@@ -8,7 +8,10 @@ by real test runs, and auditable afterwards. You install it into a project as an
 agent you already use: Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, Aider, Gemini CLI,
 Antigravity, Tabnine, or any agent that reads `AGENTS.md`.
 
-> Status: `2.0.0-alpha`, on the `aidlc_framework` branch. Tested on macOS with bash 3.2.
+> Status: `2.0.0-alpha`, on the `aidlc_framework` branch. An enterprise hardening roadmap is under way:
+> see `docs/aidlc/roadmap-enterprise.md`. Some parts are now **frozen**; see
+> [Supported and experimental](#supported-and-experimental).
+> Tested on macOS with bash 3.2.
 > Linux and Windows paths are written to be portable but have not been run in CI yet.
 > See [Known limitations](#known-limitations).
 
@@ -19,26 +22,27 @@ Antigravity, Tabnine, or any agent that reads `AGENTS.md`.
 1. [How it works in one minute](#how-it-works-in-one-minute)
 2. [Quick start](#quick-start)
 3. [Install](#install)
-4. [Shell profile: global and local](#shell-profile-global-and-local)
-5. [Using Atticus in your agent](#using-atticus-in-your-agent)
-6. [Platform setup: macOS, Linux, Windows](#platform-setup-macos-linux-windows)
-7. [Configure your project profile](#configure-your-project-profile)
-8. [Core ideas: units, tiers, profiles, risk, gates](#core-ideas-units-tiers-profiles-risk-gates)
-9. [Use cases, step by step](#use-cases-step-by-step)
-10. [Artifacts: what is created and what to commit](#artifacts-what-is-created-and-what-to-commit)
-11. [Sessions: stop, resume, continue](#sessions-stop-resume-continue)
-12. [Human decisions](#human-decisions)
-13. [Evidence and verification](#evidence-and-verification)
-14. [Handoff](#handoff)
-15. [Context management and token cost](#context-management-and-token-cost)
-16. [Scorecard and release](#scorecard-and-release)
-17. [Metrics, console and wiki](#metrics-console-and-wiki)
-18. [CI and the decision bot](#ci-and-the-decision-bot)
-19. [Update and uninstall](#update-and-uninstall)
-20. [Troubleshooting: block codes](#troubleshooting-block-codes)
-21. [Known limitations](#known-limitations)
-22. [Credits](#credits)
-23. [Command reference](#command-reference)
+4. [Supported and experimental](#supported-and-experimental)
+5. [Shell profile: global and local](#shell-profile-global-and-local)
+6. [Using Atticus in your agent](#using-atticus-in-your-agent)
+7. [Platform setup: macOS, Linux, Windows](#platform-setup-macos-linux-windows)
+8. [Configure your project profile](#configure-your-project-profile)
+9. [Core ideas: units, tiers, profiles, risk, gates](#core-ideas-units-tiers-profiles-risk-gates)
+10. [Use cases, step by step](#use-cases-step-by-step)
+11. [Artifacts: what is created and what to commit](#artifacts-what-is-created-and-what-to-commit)
+12. [Sessions: stop, resume, continue](#sessions-stop-resume-continue)
+13. [Human decisions](#human-decisions)
+14. [Evidence and verification](#evidence-and-verification)
+15. [Handoff](#handoff)
+16. [Context management and token cost](#context-management-and-token-cost)
+17. [Scorecard and release](#scorecard-and-release)
+18. [Metrics, console and wiki](#metrics-console-and-wiki)
+19. [CI and the decision bot](#ci-and-the-decision-bot)
+20. [Update and uninstall](#update-and-uninstall)
+21. [Troubleshooting: block codes](#troubleshooting-block-codes)
+22. [Known limitations](#known-limitations)
+23. [Credits](#credits)
+24. [Command reference](#command-reference)
 
 ---
 
@@ -128,6 +132,7 @@ without questions, for example in scripts.
 | `--ci` / `--decisions` | Add the GitHub Actions checks, and the decision bot. |
 | `--track-root P` | Put the track somewhere other than `.track/`. |
 | `--no-hooks` | Skip hooks. The evidence and scorecard tools are still installed. |
+| `--experimental` | Also install frozen parts: other agents, role extras, hub, console, bench. |
 | `-v` | Show the full installer output. |
 
 **How the agent is detected.** `init` looks for each agent's files in the project: `.claude/` or
@@ -171,6 +176,46 @@ and treat the pull request check as the enforcement point.
 `install-role.sh`, `install-all.sh`, `init-track.sh`, `install-ci.sh`, `update.sh`, `uninstall.sh`.
 The older interactive `setup/install.sh` menu and the npm package in `package/` predate Atticus and
 do not install it.
+
+---
+
+## Supported and experimental
+
+Atticus is narrowing to three capabilities: the spec-to-plan gate, verification, and the audit ledger.
+`registry/support.yaml` lists what is supported. Everything else is **frozen**: kept and working, marked
+experimental, not developed further, and left out of the default install.
+
+| Supported (default install) | Experimental (frozen; `--experimental`) |
+| --- | --- |
+| Agents: Claude Code (enforcing hooks) and AGENTS.md (advisory; CI enforces) | Agents: Cursor, Copilot, Windsurf, Cline, Aider, Gemini, Antigravity, Tabnine |
+| 17 core skills: every skill the `aidlc/unit-of-work` pipeline calls, plus `atticus`, `decision-log`, `aidlc-decision-guard` | The other 54 skills and every role pipeline |
+| Tools: evidence, verify, scorecard, start, integrity, decide, metrics, SLA, usage | Hub and contracts, console, Measurement Bench, portfolio, knowledge index, wiki lint |
+
+- Every role gets the same supported core by default. Role extras need `--experimental`.
+- `atticus init` in a project that only has Cursor or Copilot files installs the AGENTS.md adapter and
+  says so. Add `--experimental` for agent-specific files.
+- Set `ATTICUS_EXPERIMENTAL=1` to make the flag the default in a shell or CI job. `atticus update` and
+  `atticus add` keep an experimental install experimental.
+
+---
+
+## Track layout v2 (preview)
+
+A Go core, `atticus-core`, adds the conflict-free v2 track layout: one immutable file per event, the
+current unit taken from the git branch, and units named by their Jira or Azure Boards key. Parallel
+branches never conflict on `.track/` in this layout. `atticus` builds the core from source when Go 1.23+
+is installed, and hands v2 work to it:
+
+```bash
+atticus layout init                       # new project, v2 layout
+atticus start PAY-142 --name "refund idempotency"   # creates feat/PAY-142-refund-idempotency
+atticus status        # or: atticus context (a short digest for an agent)
+atticus ledger lint   # immutability and schema check
+atticus migrate --to v2 --dry-run         # preview converting an existing v1 track
+```
+
+Until roadmap M2 the bash hooks do not read v2, so migrating needs `--force` and each hook warns that
+local enforcement is off. Keep production repositories on v1 until then. See `docs/aidlc/ledger-v2.md`.
 
 ---
 
@@ -963,6 +1008,8 @@ Full hook reference: `docs/aidlc/hooks.md`.
 
 ## Known limitations
 
+- **Frozen parts.** Experimental agents, role extras, the hub, the console and the Bench still work but get
+  no new development. See [Supported and experimental](#supported-and-experimental).
 - **Tested on macOS only.** Linux and Windows support is written in (the `sha256sum` and GNU
   `date` fallbacks, the Windows launcher) but has not run in CI yet.
 - **Enforcement is Claude Code only.** Other agents are advisory until their hook mechanisms are
