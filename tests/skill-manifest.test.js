@@ -1,6 +1,6 @@
 /**
  * Skill Manifest Tests
- * Validates all 50 skills have correct structure and metadata.
+ * Validates every skill in skills/ has correct structure and metadata, and matches the registry.
  */
 'use strict';
 
@@ -29,8 +29,11 @@ const skillDirs = fs.readdirSync(SKILLS_DIR).filter(d =>
 );
 
 describe('Skill Manifest', () => {
-  it('should have exactly 50 skills', () => {
-    assert.strictEqual(skillDirs.length, 50, `Expected 50 skills, found ${skillDirs.length}`);
+  it('has one skill directory for every skill in registry/catalog.yaml, and no others', () => {
+    const cat = fs.readFileSync(path.join(__dirname, '..', 'registry', 'catalog.yaml'), 'utf8');
+    const block = cat.split(/^skills:\n/m)[1].split(/^agents:\n/m)[0];
+    const names = [...block.matchAll(/^  - name: ([a-z0-9-]+)$/gm)].map(m => m[1]).sort();
+    assert.deepStrictEqual(skillDirs.slice().sort(), names);
   });
 
   for (const skill of skillDirs) {

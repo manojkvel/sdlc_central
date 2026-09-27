@@ -86,7 +86,7 @@ describe('measurement bench', { skip: (!jq || !py) && 'jq and python3 required' 
   it('atticus bench builds both pages in a real project, and the tools install with the hooks', () => {
     const d = fs.mkdtempSync(path.join(os.tmpdir(), 'bench-cli-'));
     execFileSync('bash', ['-c', 'git init -q && mkdir .claude'], { cwd: d });
-    assert.strictEqual(spawnSync('bash', [path.join(ROOT, 'bin', 'atticus'), 'init', '-y'], { cwd: d, encoding: 'utf8' }).status, 0);
+    assert.strictEqual(spawnSync('bash', [path.join(ROOT, 'bin', 'atticus'), 'init', '-y', '--experimental'], { cwd: d, encoding: 'utf8' }).status, 0);
     for (const f of ['bench.js', 'bench.html', 'console.html']) assert.ok(fs.existsSync(path.join(d, '.claude', 'hooks', '_bin', f)), f);
     const r = spawnSync('bash', [path.join(ROOT, 'bin', 'atticus'), 'bench'], { cwd: d, encoding: 'utf8' });
     assert.strictEqual(r.status, 0, r.stderr);

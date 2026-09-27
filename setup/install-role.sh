@@ -22,6 +22,7 @@ VERSION="1.0.0"
 ROLE=""
 AGENT="claude-code"
 NO_HOOKS=0
+EXPERIMENTAL="${ATTICUS_EXPERIMENTAL:-0}"
 TIER_DEFAULT=""
 TRACK_ROOT=""
 
@@ -37,6 +38,10 @@ while [ $# -gt 0 ]; do
       ;;
     --no-hooks)
       NO_HOOKS=1
+      shift
+      ;;
+    --experimental)
+      EXPERIMENTAL=1
       shift
       ;;
     --tier-default)
@@ -108,6 +113,7 @@ case "$ROLE" in
     [ "$NO_HOOKS" = "1" ] && EXTRA_FLAGS="$EXTRA_FLAGS --no-hooks"
     [ -n "$TIER_DEFAULT" ] && EXTRA_FLAGS="$EXTRA_FLAGS --tier-default $TIER_DEFAULT"
     [ -n "$TRACK_ROOT" ] && EXTRA_FLAGS="$EXTRA_FLAGS --track-root $TRACK_ROOT"
+    [ "$EXPERIMENTAL" = "1" ] && EXTRA_FLAGS="$EXTRA_FLAGS --experimental"
     bash "$SCRIPT_DIR/install-all.sh" --agent "$AGENT" $EXTRA_FLAGS
     exit 0
     ;;
@@ -132,6 +138,18 @@ esac
 
 # Every role gets the Atticus entry point (/atticus), which routes work to personas by intent.
 SKILLS=(atticus "${SKILLS[@]}")
+
+# --- Supported surface (registry/support.yaml). Frozen parts install only with --experimental. ---
+source "$SDLC_ROOT/adapters/_shared/support.sh"
+export EXPERIMENTAL
+support_check_agent "$SDLC_ROOT" "$AGENT"
+if [ "$EXPERIMENTAL" != "1" ]; then
+  # Every role gets the supported core: the skills the governed unit-of-work pipeline calls.
+  FROZEN_SKILLS=${#SKILLS[@]}
+  SKILLS=($(support_list "$SDLC_ROOT" skills supported))
+  PIPELINES=()
+  echo "Supported core: ${#SKILLS[@]} skills and the aidlc/unit-of-work pipeline. Role extras are experimental (--experimental)."
+fi
 
 echo "╔══════════════════════════════════════════════╗"
 echo "║     SDLC Central — $ROLE ($AGENT)"
@@ -185,8 +203,8 @@ case "$AGENT" in
     ;;
 esac
 
-mkdir -p "$PIPELINE_DIR/$ROLE"
-for pipeline in "${PIPELINES[@]}"; do
+[ ${#PIPELINES[@]} -gt 0 ] && mkdir -p "$PIPELINE_DIR/$ROLE"
+for pipeline in ${PIPELINES[@]+"${PIPELINES[@]}"}; do
   if [ -f "$SDLC_ROOT/pipelines/$ROLE/$pipeline.pipeline.yaml" ]; then
     cp "$SDLC_ROOT/pipelines/$ROLE/$pipeline.pipeline.yaml" "$PIPELINE_DIR/$ROLE/"
     echo "  ✓ $ROLE/$pipeline"
@@ -295,7 +313,8 @@ cat > "$TRACKING_FILE" << EOF
   "track_root": "$TRACK_ROOT",
   "tier_default": $TIER_DEFAULT,
   "hooks_installed": $HOOKS_INSTALLED,
-  "hook_support_level": "$HOOK_LEVEL"
+  "hook_support_level": "$HOOK_LEVEL",
+  "experimental": $( [ "$EXPERIMENTAL" = "1" ] && echo true || echo false )
 }
 EOF
 

@@ -1,0 +1,25 @@
+# Supported surface of Atticus. Everything else in this repository is frozen: kept, marked
+# experimental, excluded from the default install and from the supported test matrix, and not
+# developed further. Install it with --experimental (or ATTICUS_EXPERIMENTAL=1).
+# Why: the enterprise review narrowed Atticus to three capabilities — the spec→plan gate,
+# verification, and the audit ledger. See docs/aidlc/roadmap-enterprise.md.
+version: 1
+
+agents:
+  supported: [claude-code, agents-md]      # claude-code enforces with hooks; agents-md is advisory, enforced in CI
+  experimental: [cursor, copilot, windsurf, cline, aider, gemini, antigravity, tabnine]
+
+# Every skill the governed aidlc/unit-of-work pipeline calls, plus the entry point and the decision log.
+skills:
+  supported: [atticus, source-extract, grill, spec-gen, spec-review, gate-briefing, risk-tracker, plan-gen, plan-check,
+              task-gen, task-implementer, aidlc-evidence-verifier, review, governance-scorecard, doc-gen,
+              decision-log, aidlc-decision-guard]
+
+pipelines:
+  supported: [aidlc/unit-of-work]          # role pipelines are experimental
+
+tools:
+  supported: [aidlc-evidence.sh, aidlc-verify.sh, aidlc-scorecard.sh, aidlc-start.sh, aidlc-integrity.sh,
+              aidlc-decide.sh, aidlc-metrics.sh, aidlc-sla.sh, aidlc-usage.sh]
+  experimental: [aidlc-contract.sh, aidlc-portfolio.sh, aidlc-console.sh, aidlc-knowledge-index.sh, aidlc-wiki-lint.sh]
+  experimental_files: [console.html, bench.html, bench.js]

@@ -32,7 +32,14 @@ _copy_tools() {
   mkdir -p "$dst/_lib" "$dst/_bin"
   cp "$src"/_lib/*.sh "$dst/_lib/"
   cp "$src"/_bin/*.sh "$dst/_bin/"
-  for f in console.html bench.html bench.js; do [ -f "$src/../console/$f" ] && cp "$src/../console/$f" "$dst/_bin/$f"; done
+  if [ "${EXPERIMENTAL:-0}" = 1 ]; then
+    for f in console.html bench.html bench.js; do [ -f "$src/../console/$f" ] && cp "$src/../console/$f" "$dst/_bin/$f"; done
+  else
+    # Frozen tools (hub, console, bench, knowledge) are not part of the default install.
+    local root; root="$(cd "$src/.." && pwd)"
+    . "$root/adapters/_shared/support.sh"
+    for f in $(support_list "$root" tools experimental); do rm -f "$dst/_bin/$f"; done
+  fi
   chmod +x "$dst"/_bin/*.sh "$dst"/_lib/*.sh
 }
 

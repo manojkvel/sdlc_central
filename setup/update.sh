@@ -45,6 +45,8 @@ INSTALLED_AGENT=$(grep '"agent"' "$TRACKING" 2>/dev/null | sed 's/.*: *"//' | se
 # AIDLC: keep the hook choice made at install time (settings such as track_root are preserved by the installers)
 UPDATE_FLAGS=""
 if grep -q '"hooks_installed": *false' "$TRACKING"; then UPDATE_FLAGS="--no-hooks"; fi
+# Keep an experimental install experimental (frozen parts stay installed).
+if grep -q '"experimental": *true' "$TRACKING"; then UPDATE_FLAGS="$UPDATE_FLAGS --experimental"; fi
 
 # Default to claude-code if no agent recorded (legacy installations)
 if [ -z "$INSTALLED_AGENT" ]; then

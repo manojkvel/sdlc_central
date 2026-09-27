@@ -206,7 +206,7 @@ describe('Phase 4 wiring', () => {
   it('every role, and install-all, get the aidlc/unit-of-work pipeline; install-all includes release-manager pipelines', { skip: !jq && 'jq not installed' }, () => {
     for (const args of [['install-role.sh', 'qa'], ['install-role.sh', 'designer', '--agent', 'cursor'], ['install-all.sh']]) {
       const d = fs.mkdtempSync(path.join(os.tmpdir(), 'aidlc-uow-'));
-      execFileSync('bash', [path.join(ROOT, 'setup', args[0]), ...args.slice(1)], { cwd: d, stdio: 'pipe' });
+      execFileSync('bash', [path.join(ROOT, 'setup', args[0]), ...args.slice(1)], { cwd: d, stdio: 'pipe', env: { ...process.env, ATTICUS_EXPERIMENTAL: '1' } });
       const base = args.includes('cursor') ? '.cursor' : '.claude';
       assert.ok(fs.existsSync(path.join(d, base, 'pipelines', 'aidlc', 'unit-of-work.pipeline.yaml')), args.join(' '));
       if (args[0] === 'install-all.sh') assert.ok(fs.existsSync(path.join(d, base, 'pipelines', 'release-manager', 'integration-release.pipeline.yaml')));
@@ -216,7 +216,7 @@ describe('Phase 4 wiring', () => {
 
   it('the architect installs contract-first and contract-registry', { skip: !jq && 'jq not installed' }, () => {
     const d = fs.mkdtempSync(path.join(os.tmpdir(), 'aidlc-arch-'));
-    execFileSync('bash', [path.join(ROOT, 'setup', 'install-role.sh'), 'architect'], { cwd: d, stdio: 'pipe' });
+    execFileSync('bash', [path.join(ROOT, 'setup', 'install-role.sh'), 'architect'], { cwd: d, stdio: 'pipe', env: { ...process.env, ATTICUS_EXPERIMENTAL: '1' } });
     assert.ok(fs.existsSync(path.join(d, '.claude', 'pipelines', 'architect', 'contract-first.pipeline.yaml')));
     assert.ok(fs.existsSync(path.join(d, '.claude', 'skills', 'contract-registry', 'SKILL.md')));
     assert.ok(fs.existsSync(path.join(d, '.claude', 'hooks', '_bin', 'aidlc-contract.sh')));

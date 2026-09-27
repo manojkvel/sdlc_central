@@ -137,7 +137,7 @@ describe('Governance scorecard', { skip: !jq && 'jq not installed' }, () => {
 describe('Release manager role and pipeline', { skip: !jq && 'jq not installed' }, () => {
   it('install-role release-manager installs its skills, pipeline and template', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'aidlc-rm-'));
-    execFileSync('bash', [path.join(ROOT, 'setup', 'install-role.sh'), 'release-manager', '--agent', 'claude-code'], { cwd: dir, stdio: 'pipe' });
+    execFileSync('bash', [path.join(ROOT, 'setup', 'install-role.sh'), 'release-manager', '--agent', 'claude-code'], { cwd: dir, stdio: 'pipe', env: { ...process.env, ATTICUS_EXPERIMENTAL: '1' } });
     for (const s of ['governance-scorecard', 'release-readiness-checker', 'rollback-assessor', 'aidlc-decision-guard', 'aidlc-evidence-verifier']) {
       assert.ok(fs.existsSync(path.join(dir, '.claude', 'skills', s, 'SKILL.md')), s);
     }
@@ -178,7 +178,7 @@ describe('Personas', () => {
       gemini: ['.sdlc/agents/README.md', /aidlc-orchestrator/] };
     for (const [agent, [file, re]] of Object.entries(cases)) {
       const dir = fs.mkdtempSync(path.join(os.tmpdir(), `aidlc-ag-${agent}-`));
-      execFileSync('bash', [path.join(ROOT, 'setup', 'install-role.sh'), 'qa', '--agent', agent], { cwd: dir, stdio: 'pipe' });
+      execFileSync('bash', [path.join(ROOT, 'setup', 'install-role.sh'), 'qa', '--agent', agent], { cwd: dir, stdio: 'pipe', env: { ...process.env, ATTICUS_EXPERIMENTAL: '1' } });
       assert.match(fs.readFileSync(path.join(dir, file), 'utf8'), re, `${agent}: ${file}`);
       fs.rmSync(dir, { recursive: true, force: true });
     }

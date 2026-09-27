@@ -1,6 +1,6 @@
 #!/bin/bash
 # ------------------------------------------------------------------
-# Install ALL SDLC Central Skills (50 skills + all pipelines)
+# Install ALL SDLC Central Skills (every skill in skills/ + all pipelines)
 # ------------------------------------------------------------------
 # Run this from your project root:
 #   bash /path/to/sdlc_central/setup/install-all.sh [--agent <agent>] [--no-hooks] [--tier-default 1|2|3] [--track-root <path>]
@@ -16,6 +16,7 @@ VERSION="1.0.0"
 # --- Parse arguments ---
 AGENT="claude-code"
 NO_HOOKS=0
+EXPERIMENTAL="${ATTICUS_EXPERIMENTAL:-0}"
 TIER_DEFAULT=""
 TRACK_ROOT=""
 while [ $# -gt 0 ]; do
@@ -30,6 +31,10 @@ while [ $# -gt 0 ]; do
       ;;
     --no-hooks)
       NO_HOOKS=1
+      shift
+      ;;
+    --experimental)
+      EXPERIMENTAL=1
       shift
       ;;
     --tier-default)
@@ -58,28 +63,37 @@ echo "╔═══════════════════════�
 echo "║     SDLC Central — Full Installation         ║"
 echo "╚══════════════════════════════════════════════╝"
 echo ""
-echo "Installing all 50 skills + all pipelines into: $PROJECT_DIR"
-echo "Agent: $AGENT"
-echo ""
 
 # All skills
 SKILLS=(
-  atticus
-  grill
+  aidlc-decision-guard
+  aidlc-evidence-verifier
+  aidlc-metrics-extract
   api-contract-analyzer
   approval-workflow-auditor
+  atticus
   auto-triage
   board-sync
+  bug-report
+  changelog-plain
   code-ownership-mapper
+  codebase-qa
+  component-audit
+  contract-registry
   cross-repo-standards-enforcer
   decision-log
+  demo-prep
   dependency-update
   design-review
+  design-to-code
+  design-token-sync
   doc-gen
   drift-detector
   feature-balance-sheet
   feedback-loop
   gate-briefing
+  governance-scorecard
+  grill
   impact-analysis
   incident-detector
   incident-postmortem-synthesizer
@@ -90,9 +104,11 @@ SKILLS=(
   perf-review
   pipeline-monitor
   pipeline-orchestrator
-  plan-gen plan-check aidlc-evidence-verifier governance-scorecard aidlc-decision-guard aidlc-metrics-extract source-extract wiki-curate contract-registry
+  plan-check
+  plan-gen
   plan-merge
   pr-orchestrator
+  progress-summary
   quality-gate
   regression-check
   release-notes
@@ -108,6 +124,7 @@ SKILLS=(
   security-audit-deep
   skill-gap-analyzer
   slo-sla-tracker
+  source-extract
   spec-evolve
   spec-fix
   spec-gen
@@ -116,8 +133,23 @@ SKILLS=(
   task-implementer
   tech-debt-audit
   test-gen
+  user-story-refiner
+  visual-review
   wave-scheduler
+  wiki-curate
 )
+
+# --- Supported surface (registry/support.yaml). Frozen parts install only with --experimental. ---
+source "$SDLC_ROOT/adapters/_shared/support.sh"
+export EXPERIMENTAL
+support_check_agent "$SDLC_ROOT" "$AGENT"
+if [ "$EXPERIMENTAL" != "1" ]; then
+  SKILLS=($(support_list "$SDLC_ROOT" skills supported))
+  echo "Supported core only: ${#SKILLS[@]} skills and the aidlc/unit-of-work pipeline. Add --experimental for everything."
+fi
+echo "Installing all ${#SKILLS[@]} skills + all pipelines into: $PROJECT_DIR"
+echo "Agent: $AGENT"
+echo ""
 
 ALL_ROLES=(product-owner architect developer qa devops-sre tech-lead scrum-master designer release-manager aidlc)
 
@@ -180,6 +212,7 @@ if [ "$AGENT" != "claude-code" ]; then
   fi
 fi
 
+[ "$EXPERIMENTAL" = "1" ] || ALL_ROLES=(aidlc)
 for role in "${ALL_ROLES[@]}"; do
   if [ -d "$SDLC_ROOT/pipelines/$role" ]; then
     mkdir -p "$PIPELINE_DIR/$role"
@@ -272,7 +305,8 @@ cat > "$TRACKING_FILE" << EOF
   "track_root": "$TRACK_ROOT",
   "tier_default": $TIER_DEFAULT,
   "hooks_installed": $HOOKS_INSTALLED,
-  "hook_support_level": "$HOOK_LEVEL"
+  "hook_support_level": "$HOOK_LEVEL",
+  "experimental": $( [ "$EXPERIMENTAL" = "1" ] && echo true || echo false )
 }
 EOF
 echo ""

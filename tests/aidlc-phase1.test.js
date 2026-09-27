@@ -112,8 +112,9 @@ describe('AIDLC install wiring', { skip: !jqAvailable && 'jq not installed' }, (
   function install(agent, extra = [], seed) {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), `aidlc-inst-${agent}-`));
     if (seed) seed(dir);
+    // Per-agent adapters beyond claude-code and agents-md are experimental (frozen); this suite still covers them.
     execFileSync('bash', [path.join(ROOT, 'setup', 'install-role.sh'), 'developer', '--agent', agent, ...extra],
-      { cwd: dir, stdio: 'pipe' });
+      { cwd: dir, stdio: 'pipe', env: { ...process.env, ATTICUS_EXPERIMENTAL: '1' } });
     return dir;
   }
 

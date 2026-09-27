@@ -1,5 +1,7 @@
 /* Atticus Measurement Bench renderer, shared by the console's Bench tab and the standalone bench.html.
    Input: metrics.json from aidlc-metrics.sh (one squad), or {squads:[...]} from aidlc-portfolio.sh --merge.
+   Gate wait is deliberately not shown: a metric that rewards fast approvals invites rubber-stamping
+   (enterprise review, docs/aidlc/roadmap-enterprise.md). Review depth (read time) replaces it with the M4 providers.
    Every figure is read from that file; nothing is typed in except the value model's planning inputs,
    which are labelled "modelled" and kept in this viewer's browser only. No network, no libraries. */
 (function () {
@@ -169,7 +171,6 @@
       + kpi('Evidence coverage', pct(q.evidence_coverage), '%', 'criteria with fresh passing evidence', null, 'sealed VERIFICATION.md')
       + kpi('Scorecard first pass', pct(q.scorecard_first_pass_rate), '%', 'units approved at the first scorecard', null, 'gate-history.json release-scorecard')
       + kpi('Structured approvals', pct(g.structured_approval_rate), '%', (g.decisions_accepted || 0) + ' accepted, ' + (g.vague_attempts_rejected || 0) + ' vague attempts refused', null, 'human-decisions.md')
-      + kpi('Gate wait share', pct(g.gate_wait_share, 1), '% of lead time', 'checkpoint → decision, released units', null, 'lineage.md checkpoint and decision events')
       + kpi('Asserted identity', fmt(g.asserted_identity_decisions, 0), 'decisions', 'not authenticated by the decision bot', null, 'human-decisions.md identity')
       + kpi('Tokens per tier 2 unit', t2 ? fmt(t2.tokens_per_unit / 1000, 0) : '—', 'k tokens', t2 ? t2.units + ' unit(s) measured' : (c.note || 'no usage recorded'), null, 'runs/usage (Claude Code Stop hook)')
       + '</div>';
@@ -181,7 +182,6 @@
     const units = unitsOf(m);
     const stageRows = units.map(u => { const parts = STAGE_GROUPS.map(() => 0); Object.entries(u.stage_days || {}).forEach(([s, v]) => { parts[groupOf(s)] += +v || 0; }); return { label: u.phase, parts }; }).filter(r => sum(r.parts) > 0);
     const rel = units.filter(u => isNum(u.lead_time_days) && u.released_at).map(u => ({ t: Date.parse(u.released_at), v: u.lead_time_days, label: u.phase, tier: u.tier })).filter(p => isFinite(p.t)).sort((a, b) => a.t - b.t);
-    const lat = Object.entries((m.governance || {}).approval_latency || {}).map(([gname, v]) => ({ label: gname, value: v.mean_hours, tip: `<b>${esc(gname)}</b><br>mean ${fmt(v.mean_hours, 1)} h over ${v.n} decision(s)` })).sort((a, b) => b.value - a.value);
     const blocks = ((m.governance || {}).guardrail_blocks || []).map(x => ({ label: x.code + ' ' + String(x.hook).replace(/^aidlc-/, ''), value: x.count })).sort((a, b) => b.value - a.value).slice(0, 12);
     const tfRows = units.filter(u => u.test_first && u.test_first.tasks).map(u => ({ label: u.phase, parts: [u.test_first.proven, u.test_first.tasks - u.test_first.proven - u.test_first.waived, u.test_first.waived] }));
     const tokRows = units.map(u => ({ label: u.phase, value: tokensOf(u) })).filter(r => isNum(r.value) && r.value > 0).map(r => ({ ...r, value: r.value / 1000 }));
@@ -189,7 +189,6 @@
     let h = '<div class="ab-grid">'
       + panel('Days per stage, per unit', 'Time between stage changes in lineage. The current stage of an open unit is not counted yet.', P('stages'), stageRows.length ? '' : 'No stage changes recorded yet. The runner and atticus start write stage.entered events.')
       + panel('Lead time per released unit', 'Days from a unit\'s first lineage event to its release, against the squad\'s own baseline. All tiers; hover a point for its tier.', P('trend'), rel.length ? '' : 'No released units yet. A unit counts once lineage records stage.entered: released.')
-      + panel('Gate wait by gate', 'Mean hours from a published checkpoint to the decision that closed it.', P('latency'), lat.length ? '' : 'No checkpoint and decision pairs yet. They appear once gates are decided through the approval guard or the decision bot.')
       + panel('Guardrail blocks by code', 'What the hooks stopped. A flat zero with active work usually means hooks are not wired.', P('blocks'), blocks.length ? '' : 'No blocks recorded in guardrail-log.md.')
       + panel('Test first, per unit', 'Tasks whose new test was recorded failing before it passed.', P('tf'), tfRows.length ? '' : 'No TASKS.md with tasks yet.')
       + panel('Tokens per unit', 'Measured model tokens per unit (input, output and cache), in thousands.', P('tokens'), tokRows.length ? '' : ((m.cost || {}).note || 'No usage recorded.'))
@@ -198,7 +197,6 @@
     const S = id => root.querySelector('[id="' + P(id) + '"]');
     if (stageRows.length) { stacked(S('stages'), stageRows, STAGE_GROUPS.map(g => g[0]), { unit: ' d' }); S('stages').nextElementSibling.innerHTML = legend(STAGE_GROUPS.map((g, i) => [SERIES[i], g[0]])); }
     if (rel.length) { trend(S('trend'), rel, (m.baseline || {}).lead_time_days); S('trend').nextElementSibling.innerHTML = legend([[SERIES[0], 'Lead time (days)']].concat(isNum((m.baseline || {}).lead_time_days) ? [[SERIES[1], 'Baseline']] : [])); }
-    if (lat.length) hbar(S('latency'), lat, { unit: ' h' });
     if (blocks.length) hbar(S('blocks'), blocks, {});
     if (tfRows.length) { stacked(S('tf'), tfRows, ['Failed first, then passed', 'No red run yet', 'Waived'], { colors: [SERIES[0], SERIES[1], SERIES[3]] }); S('tf').nextElementSibling.innerHTML = legend([[SERIES[0], 'Failed first, then passed'], [SERIES[1], 'No red run yet'], [SERIES[3], 'Waived']]); }
     if (tokRows.length) hbar(S('tokens'), tokRows, { unit: 'k' });
@@ -212,8 +210,8 @@
       + `<td class="num">${u.evidence && isNum(u.evidence.criteria_total) ? u.evidence.criteria_pass + '/' + u.evidence.criteria_total : '—'}</td>`
       + `<td class="num">${u.test_first ? u.test_first.proven + '/' + (u.test_first.tasks - u.test_first.waived) : '—'}</td>`
       + `<td>${esc(u.scorecard && u.scorecard.first_pass != null ? (u.scorecard.first_pass ? 'first pass' : 'blocked first') : '—')}</td>`
-      + `<td class="num">${fmt(u.gate_wait_hours, 1)}</td><td class="num">${u.guardrail_blocks}</td><td class="num">${isNum(tokensOf(u)) ? fmt(tokensOf(u) / 1000, 0) + 'k' : '—'}</td></tr>`).join('');
-    return `<details><summary>Table of every unit (${units.length})</summary><div class="tw"><table><thead><tr><th>Unit</th><th class="num">Tier</th><th>Profile</th><th class="num">Lead time (d)</th><th class="num">Decisions</th><th class="num">Rework</th><th class="num">Criteria</th><th class="num">Test first</th><th>Scorecard</th><th class="num">Gate wait (h)</th><th class="num">Blocks</th><th class="num">Tokens</th></tr></thead><tbody>${rows}</tbody></table></div></details>`;
+      + `<td class="num">${u.guardrail_blocks}</td><td class="num">${isNum(tokensOf(u)) ? fmt(tokensOf(u) / 1000, 0) + 'k' : '—'}</td></tr>`).join('');
+    return `<details><summary>Table of every unit (${units.length})</summary><div class="tw"><table><thead><tr><th>Unit</th><th class="num">Tier</th><th>Profile</th><th class="num">Lead time (d)</th><th class="num">Decisions</th><th class="num">Rework</th><th class="num">Criteria</th><th class="num">Test first</th><th>Scorecard</th><th class="num">Blocks</th><th class="num">Tokens</th></tr></thead><tbody>${rows}</tbody></table></div></details>`;
   }
 
   /* ---------- value model (modelled; seeded from measured values) ---------- */
@@ -223,13 +221,13 @@
     const seed = {
       base: isNum(b.lead_time_days) ? b.lead_time_days : '', now: isNum(d.lead_time_days_median) ? +d.lead_time_days_median.toFixed(1) : '',
       units: isNum(d.deployment_frequency_per_30d) && d.deployment_frequency_per_30d > 0 ? Math.round(d.deployment_frequency_per_30d * 12) : 12,
-      squads: 1, fte: 1, gate: isNum(g.gate_wait_share) ? +(g.gate_wait_share * 100).toFixed(1) : '',
+      squads: 1, fte: 1,
       tokens: t2 ? Math.round(t2.tokens_per_unit / 1000) : '', price: 3
     };
     const saved = store.get('model.' + key, null);
     const v = Object.assign({}, seed, saved || {});
     const F = [['base', 'Baseline lead time (days)', 'baseline.json lead_time_days'], ['now', 'Lead time now (days)', 'measured median'], ['units', 'Units per squad per year', 'from measured release rate, else 12'],
-               ['squads', 'Squads', 'squads adopting'], ['fte', 'Engineers per unit (FTE)', 'people working a unit at once'], ['gate', 'Gate wait (% of lead time)', 'measured share, inside lead time'],
+               ['squads', 'Squads', 'squads adopting'], ['fte', 'Engineers per unit (FTE)', 'people working a unit at once'],
                ['tokens', 'Tokens per unit (thousands)', 'measured, tier 2'], ['price', 'Blended price per million tokens', 'your contract rate']];
     const box = document.createElement('div'); box.className = 'ab-panel';
     box.innerHTML = `<h3>Planning inputs <span class="ab-tag modelled">modelled</span></h3><p class="note">Seeded from the measured values above. Changes stay in this browser only. This is a sizing aid, not a benefits claim.</p>`
@@ -242,11 +240,9 @@
       const out = box.querySelector('#abm-' + key + '-out');
       if (!isNum(x.base) || !isNum(x.now) || x.base <= 0) { out.innerHTML = '<div class="ab-empty">Enter a baseline and a current lead time to size the change. Record the baseline in .track/baseline.json so it is measured, not typed.</div>'; return; }
       const workFrac = 5 / 7, perUnit = (x.base - x.now) * workFrac * (x.fte || 0), perYear = perUnit * (x.units || 0) * (x.squads || 0);
-      const gateDays = x.now * ((x.gate || 0) / 100) * workFrac * (x.fte || 0);
       const tokYear = (x.tokens || 0) * 1000 / 1e6 * (x.price || 0) * (x.units || 0) * (x.squads || 0);
       out.innerHTML = kpi('Lead time change', fmt((x.base - x.now) / x.base * 100, 0), '%', fmt(x.base - x.now, 1) + ' days per unit', null, 'modelled')
         + kpi('Working days released per unit', fmt(perUnit, 1), 'dev-days', 'calendar days × 5/7 × FTE', null, 'modelled')
-        + kpi('Of which gate wait', fmt(gateDays, 1), 'dev-days', 'already inside the lead time; the cost of governance', null, 'modelled')
         + kpi('Released per year', fmt(perYear, 0), 'dev-days', fmt(perYear / 220, 1) + ' engineer-years at 220 days', null, 'modelled')
         + kpi('Token spend per year', fmt(tokYear, 0), '', 'at the price entered', null, 'modelled');
     };
@@ -263,7 +259,6 @@
     ['Test first', 'evidence/index.json', 'Waiving tasks; red runs that fail for the wrong reason'],
     ['Evidence coverage', 'VERIFICATION.md (sealed)', 'Weak tests that pass; the seal stops hand edits, not weak tests'],
     ['Structured approvals', 'human-decisions.md', 'Hard to game: vague replies are refused by the guard'],
-    ['Gate wait share', 'lineage.md checkpoints and decisions', 'Deciding without reading to shorten the wait'],
     ['Tokens per unit', 'runs/usage', 'Only Claude Code sessions are measured']
   ];
   function defs() { return `<details><summary>Where each number comes from, and how it can be gamed</summary><div class="tw"><table><thead><tr><th>Metric</th><th>Source file</th><th>How it gets gamed</th></tr></thead><tbody>${DEFS.map(r => `<tr><td>${esc(r[0])}</td><td class="mono">${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join('')}</tbody></table></div><p class="note" style="margin-top:8px">Rules: every rate shows its count; a missing source shows a dash, never zero; squads are compared only with their own baseline, never ranked.</p></details>`; }

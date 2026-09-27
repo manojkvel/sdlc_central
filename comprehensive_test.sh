@@ -1,57 +1,41 @@
 #!/bin/bash
-# Comprehensive test: all roles x all agents
-SDLC_ROOT="/Users/kvel/Documents/manoj_ws/sdlc_central"
-ALL_ROLES="product-owner architect developer qa devops-sre scrum-master designer release-manager"
-ALL_AGENTS="claude-code cursor copilot windsurf cline aider gemini antigravity agents-md tabnine"
+# Install matrix.
+#   bash comprehensive_test.sh                 supported surface: 3 roles x 2 agents, tech-lead, and refusal of experimental agents
+#   bash comprehensive_test.sh --experimental  the frozen full matrix: 8 roles x 10 agents + tech-lead, installed with --experimental
+SDLC_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PASS=0; FAIL=0
+ok()  { echo "  ✓ $1"; PASS=$((PASS + 1)); }
+bad() { echo "  ✗ $1"; [ -n "$2" ] && echo "    $2"; FAIL=$((FAIL + 1)); }
 
-PASS=0
-FAIL=0
+install_case() { # install_case <role> <agent> [flags...]
+  local role="$1" agent="$2"; shift 2
+  local dir; dir="$(mktemp -d "${TMPDIR:-/tmp}/sdlc-matrix.XXXXXX")"
+  local out rc
+  out="$(cd "$dir" && bash "$SDLC_ROOT/setup/install-role.sh" "$role" --agent "$agent" "$@" 2>&1)"; rc=$?
+  local items; items="$(printf '%s\n' "$out" | grep -c "✓")"
+  if [ $rc -eq 0 ] && [ "$items" -gt 0 ]; then ok "$agent / $role — $items items"; else bad "$agent / $role — exit $rc" "$(printf '%s\n' "$out" | tail -3)"; fi
+  rm -rf "$dir"
+}
 
-echo "=== COMPREHENSIVE TEST: ALL ROLES x ALL AGENTS ==="
-echo ""
-
-for agent in $ALL_AGENTS; do
-  for role in $ALL_ROLES; do
-    TESTDIR="/tmp/sdlc-test-${agent}-${role}"
-    rm -rf "$TESTDIR"
-    mkdir -p "$TESTDIR"
-
-    OUTPUT=$(cd "$TESTDIR" && bash "$SDLC_ROOT/setup/install-role.sh" "$role" --agent "$agent" 2>&1)
-    SKILL_COUNT=$(echo "$OUTPUT" | grep -c "✓" || true)
-
-    if [ "$SKILL_COUNT" -gt 0 ]; then
-      echo "  ✓ ${agent} / ${role} — ${SKILL_COUNT} items"
-      PASS=$((PASS + 1))
-    else
-      echo "  ✗ ${agent} / ${role} — FAILED"
-      echo "    Output: $(echo "$OUTPUT" | tail -3)"
-      FAIL=$((FAIL + 1))
-    fi
-
-    rm -rf "$TESTDIR"
+if [ "$1" = "--experimental" ]; then
+  echo "=== INSTALL MATRIX (experimental, frozen surface) ==="
+  for agent in claude-code cursor copilot windsurf cline aider gemini antigravity agents-md tabnine; do
+    for role in product-owner architect developer qa devops-sre scrum-master designer release-manager tech-lead; do
+      install_case "$role" "$agent" --experimental
+    done
   done
-done
-
-# Test tech-lead separately (delegates to install-all)
-for agent in $ALL_AGENTS; do
-  TESTDIR="/tmp/sdlc-test-${agent}-tech-lead"
-  rm -rf "$TESTDIR"
-  mkdir -p "$TESTDIR"
-
-  OUTPUT=$(cd "$TESTDIR" && bash "$SDLC_ROOT/setup/install-role.sh" "tech-lead" --agent "$agent" 2>&1)
-  SKILL_COUNT=$(echo "$OUTPUT" | grep -c "✓" || true)
-
-  if [ "$SKILL_COUNT" -gt 0 ]; then
-    echo "  ✓ ${agent} / tech-lead — ${SKILL_COUNT} items"
-    PASS=$((PASS + 1))
-  else
-    echo "  ✗ ${agent} / tech-lead — FAILED"
-    FAIL=$((FAIL + 1))
-  fi
-
-  rm -rf "$TESTDIR"
-done
+else
+  echo "=== INSTALL MATRIX (supported surface) ==="
+  for agent in claude-code agents-md; do
+    for role in product-owner architect developer tech-lead; do install_case "$role" "$agent"; done
+  done
+  # Experimental agents are refused without --experimental (exit 3), with a way forward.
+  dir="$(mktemp -d "${TMPDIR:-/tmp}/sdlc-matrix.XXXXXX")"
+  out="$(cd "$dir" && bash "$SDLC_ROOT/setup/install-role.sh" developer --agent cursor 2>&1)"; rc=$?
+  if [ $rc -eq 3 ] && printf '%s' "$out" | grep -q -- "--experimental"; then ok "cursor refused without --experimental"; else bad "cursor should be refused (exit $rc)"; fi
+  rm -rf "$dir"
+fi
 
 echo ""
 echo "TOTAL: $PASS passed, $FAIL failed out of $((PASS + FAIL)) tests"
-echo "(8 roles x 10 agents + 10 tech-lead = 90 tests)"
+[ $FAIL -eq 0 ]

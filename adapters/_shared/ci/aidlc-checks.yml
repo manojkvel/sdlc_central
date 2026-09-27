@@ -6,6 +6,9 @@ on:
   pull_request:
   schedule:
     - cron: "0 7 * * 1-5"   # weekday mornings: gate SLAs and stale knowledge
+# Least privilege: this workflow only reads the repository. Actions are pinned by commit SHA.
+permissions:
+  contents: read
 env:
   AGENT_DIR: .claude
 jobs:
@@ -13,7 +16,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Hook integrity (hooks match the installed manifest and are still wired)
         run: bash $AGENT_DIR/hooks/_bin/aidlc-integrity.sh
       - name: Phase quality gate (traceability, consistency, hygiene)
@@ -22,23 +25,25 @@ jobs:
         run: bash $AGENT_DIR/hooks/aidlc-artifact-consistency-check/aidlc-artifact-consistency-check.sh --all
       - name: Traceability across all phases
         run: bash $AGENT_DIR/hooks/aidlc-traceability-check/aidlc-traceability-check.sh --all
-      - name: Wiki lint
-        run: bash $AGENT_DIR/hooks/_bin/aidlc-wiki-lint.sh
-      - name: Metrics and knowledge index (artifacts for the console)
+      - name: Metrics
+        run: bash $AGENT_DIR/hooks/_bin/aidlc-metrics.sh
+      # Experimental (frozen) parts run only when they were installed with --experimental.
+      - name: Wiki lint, knowledge index and console data (experimental)
         run: |
-          bash $AGENT_DIR/hooks/_bin/aidlc-metrics.sh
-          bash $AGENT_DIR/hooks/_bin/aidlc-knowledge-index.sh
-          bash $AGENT_DIR/hooks/_bin/aidlc-portfolio.sh
-      - uses: actions/upload-artifact@v4
+          B=$AGENT_DIR/hooks/_bin
+          if [ -f $B/aidlc-wiki-lint.sh ]; then bash $B/aidlc-wiki-lint.sh; fi
+          if [ -f $B/aidlc-knowledge-index.sh ]; then bash $B/aidlc-knowledge-index.sh; fi
+          if [ -f $B/aidlc-portfolio.sh ]; then bash $B/aidlc-portfolio.sh; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: aidlc-console-data
-          path: docs/aidlc/console-data/
+          name: aidlc-metrics
+          path: docs/aidlc/
   scheduled:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Gate SLA
         run: bash $AGENT_DIR/hooks/_bin/aidlc-sla.sh || echo "::warning::$(bash $AGENT_DIR/hooks/_bin/aidlc-sla.sh)"
-      - name: Stale knowledge
-        run: bash $AGENT_DIR/hooks/_bin/aidlc-wiki-lint.sh --stale-only || true
+      - name: Stale knowledge (experimental)
+        run: if [ -f $AGENT_DIR/hooks/_bin/aidlc-wiki-lint.sh ]; then bash $AGENT_DIR/hooks/_bin/aidlc-wiki-lint.sh --stale-only || true; fi
