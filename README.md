@@ -1,5 +1,7 @@
 # SDLC Central — Team Productivity Hub
 
+Governed, AI-assisted delivery — without locking your team into one coding agent. SDLC Central gives product owners, architects, developers, QA, DevOps/SRE and designers a shared, reviewable set of AI skills and pipelines, exported natively to whichever agent each person uses.
+
 A central repository of **61 skills** and **30 composable pipelines** covering the full software development lifecycle. Works with **any coding agent** — Claude Code, Cursor, GitHub Copilot, Windsurf, Cline, Aider, Gemini, Antigravity, Tabnine CLI, or any AGENTS.md-compatible tool.
 
 Includes **Figma MCP integration** for design-to-code workflows and **non-coder skills** for product owners, designers, QA, and scrum masters.
